@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>易鲸捷数据库安装</title>
+<link href="../static/lib/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="../static/lib/css/bootstrap.css" rel="stylesheet">
+<link href="../static/lib/css/bootstrap-multiselect.css" rel="stylesheet">
+<link href="../static/css/navbar.css" rel="stylesheet">
+
+<script src="../static/lib/js/jquery.min.js"></script>
+<script src="../static/lib/js/jquery.dataTables.min.js"></script>
+<script src="../static/lib/js/bootstrap.min.js"></script>
+<script src="../static/lib/js/bootstrap-multiselect.js"></script>
+<script src="../static/js/InstallView.js"></script>
+
+<link href="../static/lib/images/sort_asc.png" rel="stylesheet">
+<link href="../static/lib/images/sort_both.png" rel="stylesheet">
+<link href="../static/css/navbar.css" rel="stylesheet">
+</head>
+
+<body>
+	<div class="navbar-wrapper">
+		<nav class="navbar navbar-inverse navbar-static-top ">
+			<div class="container">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="#">易鲸捷数据库安装</a>
+				</div>
+				<div id="navbar" class="navbar-collapse collapse">
+					<ul class="nav navbar-nav">
+						<li><a href="index">配置</a></li>
+						<li><a href="installPage">安装</a></li>
+						<li><a href="check">进度</a></li>
+						<li><a href="#contact">日志</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+		<div class="container">
+			<div class="pull-left" style="margin-bottom: 20px">
+				<button type="button" class="btn btn-primary" data-toggle="modal"
+                                        data-target="#checkDialog">检查</button>	
+				<button type="button" class="btn btn-primary" data-toggle="modal"
+					data-target="#installDialog">新建</button>
+			</div>
+			<table id="installTable" class="table table-hover"></table>
+
+			<div id="installDialog" class="modal fade bs-example-modal-md" role="dialog">
+				<div class="modal-dialog modal-md">
+					<!-- Modal content-->
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h4 class="modal-title">Confiuration Detail</h4>
+						</div>
+						<div class="modal-body">
+							<form class="form-horizontal" id="form">
+                                                                        <div class="form-group">
+                                                                                <label for="exampleInputEmail1"
+                                                                                        class="col-sm-3 control-label"
+                                                                                        style="padding-left: 0px; padding-right: 0px">选择安装配置</label>
+                                                                                <div class="col-sm-9">
+                                                                                        <select id="selectConfig" name="selectConfig"class="form-control        ">
+                                                                                        </select>
+                                                                                </div>
+                                                                        </div>
+                                                        </form>
+							<div class="alert alert-danger alert-dismissible fade in" role="alert" id="myAlert" style="display:none" >  
+        							<button type="button" class="close"  aria-label="close">  
+							        </button>  请选择配置文件  
+						        </div>
+						</div>
+						<div class="modal-footer" style="height: 90px">
+							<input id="installApplyButton" class="submit btn btn-success"
+								type="submit" value="Install"> <input
+								id="installResetButton" class="submit btn btn-primary"
+								type="button" value="Reset">
+							<button type="button" class="btn btn-primary"
+								data-dismiss="modal">Cancel</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 节点细节modal -->
+			<div id="slaveDialog" class="modal fade bs-example-modal-lg" role="dialog">
+				<div class="modal-dialog modal-lg">
+					<!-- Modal content-->
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<div class="slave-detail"><h4 class="modal-title">Slave Detail</h4></div>
+						</div>
+						<div class="modal-body">
+								<h3>Log Content</h3>									
+								<div id="logContent" class="well">
+						Basic panel example     Basic panel example     Basic panel example  Basic panel example
+Basic panel example     Basic panel example     Basic panel example  Basic panel example
+Basic panel example     Basic panel example     Basic panel example  Basic panel example
+Basic panel example     Basic panel example     Basic panel example  Basic panel example
+Basic panel example     Basic panel example     Basic panel example  Basic panel example
+Basic panel example     Basic panel example     Basic panel example  Basic panel example
+			       Basic panel example     Basic panel example     Basic panel example  Basic panel example
+								</div>
+							</div> 
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary"
+								data-dismiss="modal"> OK </button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			 <div id="checkDialog" class="modal fade bs-example-modal-lg" role="dialog">
+                                <div class="modal-dialog modal-lg">
+                                        <!-- Modal content-->
+                                        <div class="modal-content">
+                                                <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                        <h4 class="modal-title check-list">Slave Check</h4>
+							<h4 id ="hostName"class="modal-title check-detail" style="display:none"></h4>
+                                                </div>
+                                                <div class="modal-body">
+                        				 <div class="check-list">
+                            					<label class="control-label" for="sel_search_orderstatus">slave Select</label>	
+							 	<select id="sel_search_orderstatus" class="col-sm-10" multiple="multiple">
+				                         	       <option value="0">host1</option>
+			                        		        <option value="1">host2</option>
+					                                <option value="2">host3</option>
+			                		                <option value="3">host4</option>
+					                                <option value="4">host5</option>
+		                			                <option value="5">host6</option>
+				        	                        <option value="6">host7</option>
+									<option value="7">host8</option>
+									<option value="8">host9</option>
+									<option value="9">host10</option>
+									<option value="10">host11</option>
+									<option value="11">host12</option>
+									<option value="12">host13</option>
+                                                                        <option value="13">host14</option>
+                                                                        <option value="14">host15</option>
+				                             	</select>
+							  	<button id="checkButton"type="button" class="btn btn-primary">开始检查</button>
+                        				</div>
+							<div class="check-list"> 
+								<table id="checkList" class="table table-hover">
+								</table>	
+							</div>
+							<div class="check-detail" style="display:none" >
+								<table class="table table-striped table-condensed">
+                                                                        <tr>
+                                                                                <th>checkDetail</th>
+                                                                                <th>status</th>
+										<th>checkDetail</th>
+                                                                                <th>status</th>
+                                                                        </tr>
+                                                                        <tr>
+                                                                                <td>ext_interface</td>
+                                                                                <td id="ext_interface"></td>
+                                                                                <td>python_ver</td>
+                                                                                <td id="python_ver"></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                                <td>home_dir</td>
+                                                                                <td id="home_dir"></td>
+                                                                                <td>pidmax</td>
+                                                                                <td id="pidmax"></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                                <td>mem_free</td>
+                                                                                <td id="mem_free"></td>
+                                                                                <td>cpu_model</td>
+                                                                                <td id="cpu_model"></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                                <td>cpu_cores</td>
+                                                                                <td id="cpu_cores"></td>
+                                                                                <td>hadoop_authentication</td>
+                                                                                <td id="hadoop_authentication"></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                                <td>firewall_status</td>
+                                                                                <td id="firewall_status"></td>
+                                                                                <td >hive</td>
+                                                                                <td id="hive"></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                                <td>default_java</td>
+                                                                                <td id="default_java"></td>
+                                                                                <td>linux</td>
+                                                                                <td id="linux"></td>
+                                                                        <tr>
+                                                                                <td>rootdisk_free</td>
+                                                                                <td id="rootdisk_free"></td>
+                                                                                <td>hadoop_security_group_mapping</td>
+                                                                                <td id="hadoop_security_group_mapping"></td>
+                                                                        <tr>
+                                                                                <td>traf_status</td>
+                                                                                <td  id="traf_status"></td>
+                                                                                <td>arch</td>
+                                                                                <td id="arch"></td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                                <td>hbase</td>
+                                                                                <td id="hbase"></td>
+                                                                                <td>mem_total</td>
+                                                                                <td id="mem_total"></td>
+                                                                        </tr>
+                                                                </table>
+							</div>
+						</div>
+                                                <div class="modal-footer">
+                                                        <button type="button" class="btn btn-primary check-detail" style="display:none"
+                                                                id="checkShow"><span class="glyphicon glyphicon-arrow-left">BACK</span></button>
+							 <button type="button" class="btn btn-success"
+                                                                data-dismiss="modal"> OK </button>
+                                                </div>
+                                        </div>
+                                </div>
+                        </div>
+
+		</div>
+	</div>
+</body>
+</html>

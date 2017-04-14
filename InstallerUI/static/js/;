@@ -1,0 +1,265 @@
+/* ========================================================================
+ * Bootstrap: affix.js v3.3.7
+ * http://getbootstrap.com/javascript/#affix
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  	var InstallResetButton  = '#installResetButton',
+  		InstallApplyButton  = '#installApplyButton',
+  		InstallDialog       = '#installDialog',
+  	 	Form 				= '#form',
+  		SelectConfig		= '#selectConfig';
+  	var oTable,
+	    slaveTable,
+	    checkListTable;
+  	$(document).ready(function() {
+	      	oTable=initTable();
+		slaveTable=slaveTable();
+		checkListTable=checkTable();
+		$(InstallResetButton).click(function(){
+		  	resetForm();
+		});
+		  
+		$(InstallApplyButton).click(function(){
+		  	install();
+		});
+		  
+		$(InstallApplyButton).click(function(){
+		  	install();
+		});
+		
+		//init selector
+			queryConfig();
+	      
+	     //form show function 
+//	  	$(InstallDialog).on('show.bs.modal', function (e) {
+				
+//		});
+	
+		//form hide function
+//		$("#slaveDialog").on('hide.bs.modal', function (e, v) {
+
+//		});
+		
+  		
+		$('#installTable tbody').on( 'click', 'tr', function () {
+	        	$("#slaveDialog").modal("show");
+			slaveTable.ajax.reload(); 
+	       } );
+
+		$('#slaveDetail tbody').on( 'click', 'tr', function () {
+                        $(".slave-detail").css("display","none");
+               		$(".log-detail").css("display","block");
+		} );
+			
+		$("#logShow").click(function(){
+                        $(".slave-detail").css("display","block");
+                        $(".log-detail").css("display","none");
+                });
+
+		 $("#checkButton").click(function(){
+			checkListTable.ajax.reload();                       
+                });
+
+
+		$("#sel_search_orderstatus").multiselect({
+			includeSelectAllOption: true,
+		});
+	});
+  
+  	//reset form function
+	var resetForm =function(){
+	  	document.getElementById("form").reset();
+	}
+  
+  	//install function
+  	var install =function(){
+             oTable.draw();
+             $(InstallDialog).modal("hide");
+             
+	}
+  	
+  	var initTable = function(){
+  		var table =$('#installTable').DataTable( {
+  			ajax: {
+  	  		url: "queryInstall",
+  	  		    type: "GET",  
+  	 		    dataType: "json",  
+  	  		    contentType: "application/json", 
+  	  		    dataSrc: ''
+  	  		  	},
+  	  		  	bFilter:false,
+  	  		  	select: 'single',
+  	            columns: [{ data: 'id', title:"id" },
+  	                      { data: 'name',  title:'name'},
+  	                      { data: 'startTime', title:'startTime'},
+  	                      { data: 'rate', title:'process'}
+  	                  ],
+  	            "aoColumnDefs": [ {
+  	  				"aTargets": [ 0 ],
+  	  				"mData": 0,
+  	  				"className" : "dbmgr-nowrap"
+  	  			},
+  	  			{
+  	  				"aTargets": [ 1 ],
+  	  				"mData": 1
+  	  			},
+  	  			{
+  	  				"aTargets": [ 2 ],
+  	  				"mData": 2
+  	  			},{
+  	  				"sWidth": "40%",
+  	  				"aTargets": [ 3 ],
+  	  				"mData": 3,
+	  	  			"mRender": function ( data, type, full ) {
+							if(type == 'display') {
+									var rowcontent =	'<div class="progress"><div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar"'+
+										'aria-valuenow="60"aria-valuemin="0" aria-valuemax="100" style="width:'+data+';min-width: 2em;">'+data+
+										'<span class="sr-only"></span></div></div>';
+								return rowcontent;                         
+	
+							}else { 
+								return data;
+							}
+						}
+  	  			}]
+  	      } );
+    	return table;
+  	}
+  	
+  	var queryConfig =function(){
+  		$.ajax({  
+            url: "queryConfig",    //后台webservice里的方法名称  
+            type: "GET",  
+            dataType: "json",  
+            contentType: "application/json",  
+            traditional: true,  
+            success: function (data) {  
+                    var jsonObj =data;  
+                    var optionstring = "";  
+                    for (var i = 0; i < jsonObj.length; i++) {  
+                        optionstring += "<option value=\"" + jsonObj[i].configureFileName + "\" >" + jsonObj[i].configureFileName + "</option>";  
+                    }  
+                    $(SelectConfig).html("<option value='请选择'>请选择...</option> "+optionstring);  
+            },  
+            error: function (msg) {  
+                alert("出错了！");  
+            }  
+        });            
+  	}
+  	
+
+	
+
+
+        var slaveTable = function(){
+                var table =$('#slaveDetail').DataTable( {
+                        ajax: {
+                        url: "queryInstall",
+                            type: "GET",
+                            dataType: "json",
+                            contentType: "application/json",
+                            dataSrc: ''
+                                },
+                        bFilter:false,
+                   	bDestory:true,
+	 		bAutoWidth:false,
+		    	select: 'single',
+                   	columns: [{ data: 'id', title:"id" },
+                              { data: 'name',  title:'name'},
+                              { data: 'startTime', title:'startTime'},
+                              { data: 'rate', title:'process'}
+                          ],
+                    "aoColumnDefs": [ {
+                                        "aTargets": [ 0 ],
+                                        "mData": 0,
+                                        "className" : "dbmgr-nowrap"
+                                },
+                                {
+                                        "aTargets": [ 1 ],
+                                        "mData": 1
+                                },
+                                {
+                                        "aTargets": [ 2 ],
+                                        "mData": 2
+                                },{
+                                        "sWidth": "40%",
+                                        "aTargets": [ 3 ],
+                                        "mData": 3,
+                                        "mRender": function ( data, type, full ) {
+                                                        if(type == 'display') {
+                                                                        var rowcontent =        '<div class="progress"><div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar"'+
+                                                                                'aria-valuenow="60"aria-valuemin="0" aria-valuemax="100" style="width:'+data+';min-width: 2em;">'+data+
+                                                                                '<span class="sr-only"></span></div></div>';
+                                                                return rowcontent;
+
+                                                        }else {
+                                                                return data;
+                                                        }
+                                                }
+                                }]
+              } );
+        return table;
+        }
+
+	 var checkTable = function(){
+                var table =$('#checkList').DataTable( {
+                        ajax: {
+                        url: "queryCheckList",
+                            type: "GET",
+                            dataType: "json",
+                            contentType: "application/json",
+                            dataSrc: ''
+                                },
+                        bFilter:false,
+                        bDestory:true,
+                        bAutoWidth:false,
+			bPaginate: false,
+                        select:'single',
+                        columns: [{ data: 'hostName', title:"hostName" },
+                              { data: 'firewall_status',  title:'firewall_status'},
+                              { data: 'hive', title:'hive'},
+                              { data: 'traf_status', title:'traf_status'},
+			      { data: null ,title:'Operation'}
+                          ],
+                    "aoColumnDefs": [ {
+                                        "aTargets": [ 0 ],
+                                        "mData": 0,
+                                        "className" : "dbmgr-nowrap"
+                                },
+                                {
+                                        "aTargets": [ 1 ],
+                                        "mData": 1
+                                },
+                                {
+                                        "aTargets": [ 2 ],
+                                        "mData": 2
+                                },{
+                                        "aTargets": [ 3 ],
+                                        "mData": 3,
+                                },{     
+                                        "aTargets": [ 4 ],
+                                        "mData": 4,
+					"mRender": function ( data, type, full ) {
+                                                        if(type == 'display') {
+					                        var alldata=$('#checkList').dataTable().fnGetData();         
+			       					console.info(alldata);
+				                                var rowcontent ='<button type="button" class="btn btn-primary">查看详情</button>';
+                                                                return rowcontent;
+
+                                                        }else {
+                                                                return data;
+                                                        }
+                                                }
+                                }]
+              } );
+        return table;
+        }
+
+}(jQuery);
