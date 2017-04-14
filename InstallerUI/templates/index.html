@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>易鲸捷数据库安装</title>
+<link href="../static/lib/css/bootstrap.css" rel="stylesheet">
+<link href="../static/lib/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="../static/css/navbar.css" rel="stylesheet">
+<link href="../static/lib/css/bootstrapValidator.min.css" rel="stylesheet" />
+<link href="../static/lib/css/bootstrap-switch.css" rel="stylesheet" />
+
+<script src="../static/lib/js/jquery.min.js"></script>
+<script src="../static/lib/js/jquery.dataTables.min.js"></script>
+<script src="../static/lib/js/bootstrap.min.js"></script>
+<script src="../static/js/ConfigureView.js"></script>
+<script src="../static/lib/js/bootstrapValidator.min.js"></script>
+<script src="../static/lib/js/bootstrap-switch.min.js"></script>
+
+<link href="../static/lib/images/sort_asc.png" rel="stylesheet">
+<link href="../static/lib/images/sort_both.png" rel="stylesheet">
+</head>
+
+<body>
+	<div class="navbar-wrapper">
+        <nav class="navbar navbar-inverse navbar-static-top">
+          <div class="container">
+            <div class="navbar-header">
+              <a class="navbar-brand" href="#">易鲸捷数据库安装</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+              <ul class="nav navbar-nav">
+                <li><a href="index">配置</a></li>
+                <li><a href="installPage">安装</a></li>
+                <li><a href="check">进度</a></li>
+                <li><a href="#contact">日志</a></li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+       <div class="container">
+			<div class="btn-group  pull-left" style="margin-bottom: 20px">
+				<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">新建</button>
+			</div>
+			<table id="example" class="table table-hover"></table>
+        
+			<div id="myModal" class="modal fade bs-example-modal-lg" role="dialog">
+				<div class="modal-dialog modal-lg" >
+					<div class="modal-content" >
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h4 class="modal-title">Configuration Detail</h4>
+						</div>
+						<form class="form form-horizontal" id="configForm">
+							<div class="modal-body">
+										<div style="border-bottom:3 double green;height:30px; font-size: 18px">default setting</div>
+										    <div class="traf-box">
+										   		<div class="traf-boxA">
+												    	<div class="form-group">
+																<label for="licenseFile" class="col-sm-4 control-label"
+																	style="padding-left: 0px;padding-right:0px">configure fileName</label>
+																<div class="col-sm-8">
+																	<input type="text" class="form-control" id="configureFileName" name ="configureFileName" required="required"
+																		placeholder="configure File Name">
+																</div>
+														</div>
+												    	<div class="form-group">
+																<label for="licenseFile" class="col-sm-4 control-label"
+																	style="padding-left: 0px;padding-right:0px">license file</label>
+																<div class="col-sm-8">
+																	<input type="text" class="form-control" id="licenseFile" name ="licenseFile" required="required"
+																		placeholder="license file ">
+																</div>
+														</div>
+														<div class="form-group">
+																<label for="traf_user" class="col-sm-4 control-label"
+																	style="padding-left: 0px;padding-right:0px">traf_user</label>
+																<div class="col-sm-8">
+																	<input type="text" class="form-control" id="traf_user" name="traf_user" value="trafodion" required="required"
+																		placeholder="traf_user">
+																</div>
+														</div>
+														<div class="form-group">
+																<label for="traf_pwd" class="col-sm-4 control-label"
+																	style="padding-left: 0px;padding-right:0px">traf_pwd</label>
+																<div class="col-sm-8">
+																	<input type="text" class="form-control" id="traf_pwd" name="traf_pwd" value="traf123" required="required"
+																		placeholder="traf_pwd">
+																</div>
+														</div>
+														<div class="form-group">
+																<label for="home_dir" class="col-sm-4 control-label"
+																	style="padding-left: 0px;padding-right:0px">home_dir</label>
+																<div class="col-sm-8">
+																	<input type="text" class="form-control" id="home_dir" name="home_dir" value="/home" required="required"
+																		placeholder="home_dir">
+																</div>
+														</div>
+														<div class="form-group">
+																<label for="traf_dirname" class="col-sm-4 control-label"
+																	style="padding-left: 0px;padding-right:0px">traf_dirname</label>
+																<div class="col-sm-8">
+																	<input type="text" class="form-control" id="traf_dirname" name="traf_dirname" required="required"
+																		placeholder="traf_dirname ">
+																</div>
+														</div>
+														<div class="form-group">
+																<label for="java_home" class="col-sm-4 control-label"
+																	style="padding-left: 0px;padding-right:0px">java_home</label>
+																<div class="col-sm-8">
+																	<input type="text" class="form-control" id="java_home" name="java_home"
+																		placeholder="java_home">
+																</div>
+														</div>
+														<div class="form-group">
+																<label for="mgr_url" class="col-sm-4 control-label"
+																	style="padding-left: 0px;padding-right:0px">mgr_url</label>
+																<div class="col-sm-8">
+																	<input type="text" class="form-control" id="mgr_url" name="mgr_url" required="required" 
+																		placeholder="mgr_url">
+																</div>
+														</div>
+												</div>
+												<div class="traf-boxB">		
+														<div class="form-group">
+																<label for="mgr_user" class="col-sm-4 control-label"
+																	style="padding-left: 0px;padding-right:0px">mgr_user</label>
+																<div class="col-sm-8">
+																	<input type="text" class="form-control" id="mgr_user" name="mgr_user" value="admin" required="required"
+																		placeholder="mgr_user">
+																</div>
+														</div>
+														<div class="form-group">
+																<label for="mgr_pwd" class="col-sm-4 control-label"
+																	style="padding-left: 0px;padding-right:0px">mgr_pwd</label>
+																<div class="col-sm-8">
+																	<input type="text" class="form-control" id="mgr_pwd" name="mgr_pwd"  value="admin" required="required"
+																		placeholder="license file ">
+																</div>
+														</div>
+														<div class="form-group">
+																<label for="cluster_no" class="col-sm-4 control-label"
+																	style="padding-left: 0px;padding-right:0px">cluster_no</label>
+																<div class="col-sm-8">
+																	<input type="number" class="form-control" id="cluster_no" name="cluster_no" value="1" required="required"
+																		placeholder="license file2 ">
+																</div>
+														</div>
+														<div class="form-group">
+																<label for="traf_package" class="col-sm-4 control-label"
+																	style="padding-left: 0px;padding-right:0px">traf_package</label>
+																<div class="col-sm-8">
+																	<input type="text" class="form-control" id="traf_package" name="traf_package" required="required"
+																		placeholder="license file ">
+																</div>
+														</div>
+														<div class="form-group">
+																<label for="dcs_cnt_per_node" class="col-sm-4 control-label"
+																	style="padding-left: 0px;padding-right:0px">dcs_cnt_per_node</label>
+																<div class="col-sm-8">
+																	<input type="number" class="form-control" id="dcs_cnt_per_node" name="dcs_cnt_per_node"  value="4" required="required"
+																		placeholder="license file2 ">
+																</div>
+														</div>
+														<div class="form-group">
+																<label for="scratch_locs" class="col-sm-4 control-label"
+																	style="padding-left: 0px;padding-right:0px">scratch_locs</label>
+																<div class="col-sm-8">
+																	<input type="text" class="form-control" id="scratch_locs" name="scratch_locs" value="$TRAF_HOME/tmp" required="required"
+																		placeholder="license file ">
+																</div>
+														</div>
+														<div class="form-group">
+																<label for="traf_start" class="col-sm-4 control-label"
+																	style="padding-left: 0px;padding-right:0px">traf_start</label>
+																<div class=" col-sm-8">
+																    <input type="checkbox" checked name ="traf_start" id ="traf_start"/>
+																</div>
+														</div>
+												</div>
+										   </div>
+									 	<hr />
+									    <div style="border-bottom:3 double green;height:30px; font-size: 18px">DCS HA setting</div>
+									    	<div class="traf-box">
+									    		<div class="traf-boxA">
+											    	<div class="form-group">
+															<label for="dcs_ha" class="col-sm-4 control-label"
+																style="padding-left: 0px;padding-right:0px">dcs_ha</label>
+															<div class="switch-off col-sm-8" data-on="primary" data-off="info" >
+																    <input type="checkbox"  name ="dcs_ha" id ="dcs_ha"/>
+															</div>
+													</div>
+													<div class="form-group" id="dcsDisplay1" style="display: none">
+																<label for="dcs_floating_ip" class="col-sm-4 control-label"
+																	style="padding-left: 0px;padding-right:0px">dcs_floating_ip</label>
+																<div class="col-sm-8">
+																	<input type="text" class="form-control" id="dcs_floating_ip" name="dcs_floating_ip"
+																		placeholder="dcs_floating_ip">
+																</div>
+														</div>
+												</div>
+													<div class="traf-boxB" id="dcsDisplay2" style="display: none">
+														<div class="form-group">
+															<label for="dcs_interface" class="col-sm-4 control-label"
+																style="padding-left: 0px;padding-right:0px">dcs_interface</label>
+															<div class="col-sm-8">
+																<input type="text" class="form-control" id="dcs_interface" name="dcs_interface"
+																	placeholder="dcs_interface">
+															</div>
+														</div>
+														<div class="form-group">
+															<label for="dcs_backup_nodes" class="col-sm-4 control-label"
+																style="padding-left: 0px;padding-right:0px">dcs_backup_nodes</label>
+															<div class="col-sm-8">
+																<input type="text" class="form-control" id="dcs_backup_nodes" name="dcs_backup_nodes"
+																	placeholder="dcs_backup_nodes">
+															</div>
+														</div>
+													</div>
+												</div>
+										<hr />
+										<div style="border-bottom:3 double green;height:30px; font-size: 18px">offline install setting</div>
+									    	<div class="traf-box">
+									    		<div class="traf-boxA">
+											    	<div class="form-group">
+															<label for="offline_mode" class="col-sm-4 control-label"
+																style="padding-left: 0px;padding-right:0px">offline_mode</label>
+															<div class="switch-off col-sm-8" data-on="primary" data-off="info" >
+																    <input type="checkbox"  name ="offline_mode" id ="offline_mode"/>
+															</div>
+													</div>
+													
+												</div>
+												<div class="traf-boxB" id="installDisplay" style="display: none">
+													<div class="form-group">
+															<label for="local_repo_dir" class="col-sm-4 control-label"
+																style="padding-left: 0px;padding-right:0px">local_repo_dir</label>
+															<div class="col-sm-8">
+																<input type="text" class="form-control" id="local_repo_dir" name="local_repo_dir"
+																	placeholder="local_repo_dir">
+															</div>
+													</div>
+												</div>
+											</div>
+									  	<hr />
+										<div style="border-bottom:3 double green;height:30px; font-size: 18px">LDAP setting</div>
+										    <div class="traf-box">
+										    	<div class="traf-boxA">
+													<div class="form-group">
+															<label for="ldap_security" class="col-sm-4 control-label"
+																style="padding-left: 0px;padding-right:0px">ldap_security</label>
+															<div class="switch-off col-sm-8" data-on="primary" data-off="info" >
+																    <input type="checkbox"  name ="ldap_security" id ="ldap_security"/>
+															</div>
+													</div>
+													<div id="ldapDisplay1" style="display: none">
+													<div class="form-group">
+															<label for="db_admin_user" class="col-sm-4 control-label"
+																style="padding-left: 0px;padding-right:0px">db_admin_user</label>
+															<div class="col-sm-8"> 
+																<input type="text" class="form-control" id="db_admin_user" name="db_admin_user"
+																	placeholder="db_admin_user">
+															</div>
+													</div>
+													<div class="form-group">
+															<label for="db_admin_pwd" class="col-sm-4 control-label"
+																style="padding-left: 0px;padding-right:0px">db_admin_pwd</label>
+															<div class="col-sm-8">
+																<input type="text" class="form-control" id="db_admin_pwd" name="db_admin_pwd"
+																	placeholder="db_admin_pwd">
+															</div>
+													</div>
+													<div class="form-group">
+															<label for="db_root_user" class="col-sm-4 control-label"
+																style="padding-left: 0px;padding-right:0px">db_root_user</label>
+															<div class="col-sm-8">
+																<input type="text" class="form-control" id="db_root_user" name="db_root_user"
+																	placeholder="db_root_user">
+															</div>
+													</div>
+													<div class="form-group">
+															<label for="ldap_hosts" class="col-sm-4 control-label"
+																style="padding-left: 0px;padding-right:0px">ldap_hosts</label>
+															<div class="col-sm-8">
+																<input type="text" class="form-control" id="ldap_hosts" name="ldap_hosts"
+																	placeholder="ldap_hosts">
+															</div>
+													</div>
+													<div class="form-group">
+															<label for="ldap_port" class="col-sm-4 control-label"
+																style="padding-left: 0px;padding-right:0px">ldap_port</label>
+															<div class="col-sm-8">
+																<input type="text" class="form-control" id="ldap_port" name="ldap_port"
+																	placeholder="ldap_port">
+															</div>
+													</div>
+										    	</div>
+										    	</div>
+										    	<div class="traf-boxB" id="ldapDisplay2" style="display: none">
+										    		<div class="form-group">
+															<label for="ldap_identifiers" class="col-sm-4 control-label"
+																style="padding-left: 0px;padding-right:0px">ldap_identifiers</label>
+															<div class="col-sm-8">
+																<input type="text" class="form-control" id="ldap_identifiers" name="ldap_identifiers"
+																	placeholder="ldap_identifiers">
+															</div>
+													</div>
+													<div class="form-group">
+														<label for="ldap_encrypt" class="col-sm-4 control-label"
+															style="padding-left: 0px;padding-right:0px">ldap_encrypt</label>
+														<div class="col-sm-8">
+													    	<select name="ldap_encrypt" id="ldap_encrypt" class="form-control">
+													    		<option value=""></option>
+													    		<option value="0">0</option>
+													    		<option value="1">1</option>
+													    		<option value="2">2</option>
+															</select>
+														<!-- 	<input type="text" class="form-control" id="ldap_encrypt" name="ldap_encrypt"
+																	placeholder="ldap_identifiers"> -->
+														</div>
+													</div>
+										    		<div class="form-group">
+														<label for="ldap_certpath" class="col-sm-4 control-label"
+															style="padding-left: 0px;padding-right:0px">ldap_certpath</label>
+														<div class="col-sm-8">
+															<input type="text" class="form-control" id="ldap_certpath" name="ldap_certpath"
+																placeholder="ldap_certpath">
+														</div>
+													</div>
+													<div class="form-group">
+														<label for="ldap_user" class="col-sm-4 control-label"
+															style="padding-left: 0px;padding-right:0px">ldap_user</label>
+														<div class="col-sm-8">
+															<input type="text" class="form-control" id="ldap_user" name="ldap_user"
+																placeholder="ldap_user">
+														</div>
+													</div>
+													<div class="form-group">
+														<label for="ldap_pwd" class="col-sm-4 control-label"
+															style="padding-left: 0px;padding-right:0px">ldap_pwd</label>
+														<div class="col-sm-8">
+															<input type="text" class="form-control" id="ldap_pwd" name="ldap_pwd"
+																placeholder="ldap_pwd">
+														</div>
+													</div>
+												</div>
+									    	</div>
+									 	 <hr />
+										<div style="border-bottom:3 double green;height:30px; font-size: 18px">kerberos setting</div>
+											<div class="traf-box">
+												<div class="traf-boxA">
+													<div class="form-group">
+														<label for="kdc_server" class="col-sm-4 control-label"
+															style="padding-left: 0px;padding-right:0px">kdc_server</label>
+														<div class="col-sm-8">
+															<input type="text" class="form-control" id="kdc_server" name="kdc_server"
+																	placeholder="kdc_server">
+														</div>
+													</div>
+													<div class="form-group">
+														<label for="admin_principal" class="col-sm-4 control-label"
+															style="padding-left: 0px;padding-right:0px">admin_principal</label>
+														<div class="col-sm-8">
+															<input type="text" class="form-control" id="admin_principal" name="admin_principal"
+																placeholder="admin_principal">
+														</div>
+													</div>
+												</div>
+												<div class="traf-boxB">
+													<div class="form-group">
+														<label for="kdcadmin_pwd" class="col-sm-4 control-label"
+															style="padding-left: 0px;padding-right:0px">kdcadmin_pwd</label>
+														<div class="col-sm-8">
+															<input type="text" class="form-control" id="kdcadmin_pwd" name="kdcadmin_pwd"
+																placeholder="kdcadmin_pwd">
+														</div>
+													</div>
+												</div>
+											</div>
+								</div>
+								<div class="modal-footer" style="height:90px">
+									<button type="submit" id="newConfig" class="btn btn-success">Submit</button>
+									<button type="reset" class="btn btn-primary">Reset</button>
+									<button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+								</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<div  id="del-confirm-modal"class="modal fade bs-example-modal-sm" role="dialog"style="top:150px">
+				<div class="modal-dialog modal-sm">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h4 class="modal-title">提示信息</h4>
+                        </div>
+					<div class="modal-body">        
+						确定要删除吗？
+                    </div>
+                    <div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-dismiss="modal">取消</button>
+						<a  id="delConfig" class="btn btn-danger" data-dismiss="modal">确定</a>
+                    </div>
+                 </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
