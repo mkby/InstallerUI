@@ -66,9 +66,9 @@ def queryConfig():
                     properties[strs[0]] = strs[1]
         except Exception, e:
             return MSG[EC_NO_FILE], 400
-    else:
-        pro_file.close()
-    fileList.append(properties)
+        else:
+            pro_file.close()
+        fileList.append(properties)
     #print(fileList)
     jsonStr = json.dumps(fileList)
     return jsonStr
