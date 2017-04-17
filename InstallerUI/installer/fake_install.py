@@ -1,7 +1,9 @@
 #!/usr/bin/python
 
 import time
+import sys
 import os
+import random
 
 txt = '''
 [2017-04-10 16:18:00,437 INFO]:  install Start
@@ -93,6 +95,11 @@ t = time.time()
 os.system('rm -rf %s/logs/install*.log' % path)
 for line in txt.split('\n'):
     os.system('echo %s >> %s/logs/install_%s.log' % (line, path, t))
-    time.sleep(0.5)
+    time.sleep(0.2)
 
-exit(0)
+#print 'finish1!'
+if random.randint(1,2) % 2:
+    sys.stderr.write('get error')
+    exit(1)
+else:
+    exit(0)
