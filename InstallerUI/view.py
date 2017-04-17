@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+import time
 import json
 from api import *
 
@@ -66,16 +67,17 @@ def queryConfig():
                     properties[strs[0]] = strs[1]
         except Exception, e:
             return MSG[EC_NO_FILE], 400
-    else:
-        pro_file.close()
-    fileList.append(properties)
+        else:
+            pro_file.close()
+        fileList.append(properties)
     #print(fileList)
     jsonStr = json.dumps(fileList)
     return jsonStr
 
-@app.route('/newConfig',methods=['POST','GET'])
+#@app.route('/newConfig',methods=['POST','GET'])
+@app.route('/newConfig',methods=['POST'])
 def newConfig():
-    i = request.form.to_dict()
+    i = flask.request.form.to_dict()
     i["createTime"]=time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))+""
     os.chdir(CONFIG_PATH)
     for key in ['traf_start','dcs_ha','offline_mode','ldap_security']:
@@ -88,12 +90,12 @@ def newConfig():
         for key in i.keys():
             f.write(key+"="+i.get(key)+"\n")
 
-    return 'success'
+    return 'success', 201
 
 # run discover, return node info as string
 @app.route('/discover',methods=['POST','GET'])
 def run_discover():
-    hosts = request.data()
+    hosts = flask.request.data()
     result = perform_discover(hosts)
 
     return flask.jsonify(result), 201
