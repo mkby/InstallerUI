@@ -44,8 +44,11 @@
   		
 		$('#installTable').on( 'click', '.btn-log', function () {
 	        	$("#slaveDialog").modal("show");
-//			slaveTable.ajax.reload(); 
-	       } );
+	       		var index =0; //行号
+                        var data = checkListTable.rows(index).data()[0];//获取行数据
+			$("#errMsg").html(data.stderr);
+				
+		} );
 
 		$('#checkList tbody').on( 'click', 'tr', function () {
 			var index = $(this).parent().context._DT_RowIndex; //行号
