@@ -23,13 +23,13 @@
   		  bFilter:false,
 		  bLengthChange:false,
            	  columns: [
-                      { data: 'configureFileName',title: 'fileName' },
+                      { data: 'configFileName',title: 'fileName' },
                       {data: 'createTime',title: 'createTime' },
                       {data: 'traf_start',title: 'traf_start' },
                       {data: 'dcs_ha',title: 'dcs_ha' },
                       {data: 'offline_mode',title: 'offline_mode' },
                       {data: 'ldap_security',title: 'ldap_security' },
-		      {data: 'configureFileName',title:'Operation'}
+		      {data: 'configFileName',title:'Operation'}
                   ],
             "aoColumnDefs": [ {
   				"aTargets": [ 0 ],
@@ -99,7 +99,7 @@
 	 $('#example').on( 'click', '.btn-del', function () {
 		$("#del-confirm-modal").modal('show');
                 var data = $('#example').DataTable().rows(index).data()[0];//获取行数据
-		delFileName = data["configureFileName"]
+		delFileName = data["configFileName"]
 	});  
 	
 	$('#example').on( 'click', '.btn-alert', function () {
@@ -202,11 +202,11 @@
 
 	$("#radio1").click(function(){
                 $(".cdhhdp").show();
-        	$(".apachHadoop").hide();
+        	$(".apacheHadoop").hide();
 	});
 
 	$("#radio2").click(function(){
-                $(".apachHadoop").show();
+                $(".apacheHadoop").show();
 		$(".cdhhdp").hide();
         });
 
@@ -232,7 +232,7 @@
                         var data = $('#example').DataTable().rows(index).data()[0];//获取行数据 
 			$("#ssh_user").val(data.ssh_user);
 			$("#ssh_pwd").val(data.ssh_pwd);
-			if(data.apachHadoop=="CDH_HDP"){
+			if(data.apacheHadoop=="CDH_HDP"){
 				document.getElementById("radio1").checked=true;
                                 document.getElementById("radio2").checked=false;
 				$("#mgr_url").val(data.mgr_url);
@@ -250,8 +250,8 @@
 				$("#hbase_user").val(data.hbase_user);
 				$("#first_rsnode").val(data.first_rsnode);
 			}
-			$("#configureFileName").val(data.configureFileName); 
-			$("#configureFileName").attr("readonly",true)
+			$("#configFileName").val(data.configFileName); 
+			$("#configFileName").attr("readonly",true)
 			$("#licenseFile").val(data.licenseFile);
 			$("#traf_user").val(data.traf_user);
 			$("#traf_pwd").val(data.traf_pwd);
@@ -321,7 +321,7 @@
         $.ajax({
               url: "delConfig",
               type: "POST",
-              data:'configureFileName='+delFileName,
+              data:'configFileName='+delFileName,
               dataType:"json",
               traditional: true,
               success: function (data) {
@@ -334,7 +334,7 @@
   var hideModal = function(){
 		document.getElementById("configForm").reset();
                 $("#configForm").bootstrapValidator('resetForm');
-                $("#configureFileName").attr("readonly",false)
+                $("#configFileName").attr("readonly",false)
                 document.getElementById("dcs_ha").checked=false;
                 document.getElementById("offline_mode").checked=false;
                 document.getElementById("ldap_security").checked=false;
@@ -342,7 +342,7 @@
 
                 document.getElementById("radio2").checked=false;		
 		$(".cdhhdp").show();
-                $(".apachHadoop").hide();		
+                $(".apacheHadoop").hide();		
 
 		$(".dcsHa").hide();		
 		$(".ldap").hide();			

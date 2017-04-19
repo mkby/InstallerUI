@@ -257,7 +257,7 @@
                     var jsonObj =data;  
                     var optionstring = "";  
                     for (var i = 0; i < jsonObj.length; i++) {  
-                        optionstring += "<option value=\"" + jsonObj[i].configureFileName + "\" >" + jsonObj[i].configureFileName + "</option>";  
+                        optionstring += "<option value=\"" + jsonObj[i].configFileName + "\" >" + jsonObj[i].configFileName + "</option>";  
                     }  
                     $(SelectConfig).html("<option value=''>请选择...</option> "+optionstring);  
             }  

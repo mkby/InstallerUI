@@ -3,12 +3,12 @@
 import os
 import json
 import sys
+import time
 import re
 import glob
-import requests
 import threading
-import flask
 import subprocess
+import flask
 
 app = flask.Flask(__name__)
 
@@ -22,19 +22,23 @@ INSTALLER_PATH = app.root_path + '/installer'
 INSTALLER_BIN = INSTALLER_PATH + '/db_install.py'
 DISCOVER_BIN = INSTALLER_PATH + '/discovery.py'
 
-# install task return code
+# task return code
 RC_INIT = -1
 RC_OK = 0
 RC_ERROR = 1
 
-# internal error code
+# internal return code and msg
+SUCCESS      = 1000
 EC_PID_EXIST = 1001
 EC_NO_FILE   = 1002
 EC_NO_TASK   = 1003
+EC_INT_ERR   = 1004
 
-MSG = {EC_PID_EXIST: 'Previous task is still running',
-       EC_NO_FILE: 'Config file is not found',
-       EC_NO_TASK: 'Task id is not found'}
+MSG = {SUCCESS: 'Success',
+       EC_PID_EXIST: 'Previous task is still running',
+       EC_NO_FILE: 'File not found',
+       EC_NO_TASK: 'Task id not found',
+       EC_INT_ERR: 'Internal error'}
 
 STAT_IN_PROGRESS = 'IN_PROGRESS'
 STAT_SUCCESS = 'SUCCESS'
@@ -61,13 +65,16 @@ STAGES = ['install End',
 ########### APIs ###############
 class TaskHandler(object):
     def __init__(self):
-        self.id = 0
-        self.pid = 0
-        self.process = 0
-        self.status = ''
-        self.logFile = ''
+        self.id = 0       # task id
+        self.pid = 0      # task running pid
+        self.process = 0  # task progress
+        self.status = ''  # task return status
+        self.logFile = '' # log file location
         self.stdout = ''
-        self.stderr = ''
+        self.stderr = ''  # task error msg
+        self.type = ''    # install or discover
+        self.starttime = ''
+        self.nodelist = ''# task node list
 
     def run(self):
         cmd = '%s/fake_install.py' % self.workPath
@@ -82,7 +89,11 @@ class TaskHandler(object):
 #        if not os.path.exists(self.configFile) or not os.path.exists(self.workPath):
 #            self.rc = EC_NO_FILE
 #        else:
-#            cmd = '%s/db_install.py --config-file %s --silent' % (self.workPath, self.configFile)
+#            if self.type == 'install':
+#                #cmd = '%s/db_install.py --config-file %s --silent' % (self.workPath, self.configFile)
+#                cmd = '%s/fake_install.py' % self.workPath
+#            elif self.type == 'discover':
+#                cmd = '%s/discovery.py' % self.workPath
 #            p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 #            self.pid = p.pid
 #            self.stdout, self.stderr = p.communicate()
@@ -105,11 +116,13 @@ def get_handler_by_id(task_id):
     return task_handler
 
 def get_taskdic_by_handler(task_handler):
-    return {'id':      task_handler.id,
-            'logfile': task_handler.logFile,
-            'process': get_install_process(task_handler),
-            'stderr':  task_handler.stderr,
-            'status':  get_install_status(task_handler)}
+    return {'id':        task_handler.id,
+            'logfile':   task_handler.logFile,
+            'starttime': task_handler.starttime,
+            'type':      task_handler.type,
+            'process':   get_install_process(task_handler),
+            'stderr':    task_handler.stderr,
+            'status':    get_install_status(task_handler)}
 
 def get_install_task(task_id):
     task_handler = get_handler_by_id(task_id)
@@ -147,8 +160,11 @@ def get_install_status(task_handler):
     else:
         return STAT_UNKNOWN
 
-def perform_install(task_id):
-    """ run install on specific task id """
+def get_current_time():
+    return time.strftime('%Y-%m-%d %H:%M:%S')
+
+def perform_by_id(task_id):
+    """ re-run install/discover on specific task id """
     task_handler = get_handler_by_id(task_id)
 
     if task_handler:
@@ -160,7 +176,7 @@ def perform_install(task_id):
 
         # log file name is different for each run, so glob it again
         try:
-            task_handler.logFile = glob.glob('%s/logs/install*.log' % task_handler.workPath)[0]
+            task_handler.logFile = glob.glob('%s/logs/%s*.log' % (task_handler.workPath, task_handler.type))[0]
         except IndexError:
             task_handler.logFile = ''
 
@@ -168,18 +184,21 @@ def perform_install(task_id):
     else:
         return EC_NO_TASK
 
-def perform_new_install(config_file):
+def perform(task_type, config_file):
     global count
     # create new task handler here
     task_handler = TaskHandler()
 
     count += 1
     task_handler.id = count
+    task_handler.type = task_type
     task_handler.workPath = '%s/%d' % (WORK_PATH, count)
     task_handler.configFile = '%s/%s' % (CONFIG_PATH, config_file)
+    task_handler.starttime = get_current_time()
 
-    # create work path for each install task
-    run_cmd('cp -rf %s %s' % (INSTALLER_PATH, task_handler.workPath))
+    # create work path for each task
+    run_cmd('mkdir -p %s/logs' % task_handler.workPath)
+    run_cmd('ln -s %s/* %s/' % (INSTALLER_PATH, task_handler.workPath))
 
     # perform install from a new work path
     thread = threading.Thread(target=task_handler.run)
@@ -187,12 +206,68 @@ def perform_new_install(config_file):
     thread.join(0.1) # async
 
     try:
-        task_handler.logFile = glob.glob('%s/logs/install*.log' % task_handler.workPath)[0]
+        task_handler.logFile = glob.glob('%s/logs/%s*.log' % (task_handler.workPath, task_handler.type))[0]
     except IndexError:
         task_handler.logFile = ''
 
     task_handlers.append(task_handler)
     return task_handler
 
-def perform_discover(hosts):
-    return run_cmd('%s --hosts %s' % (DISCOVER_BIN, host_list))
+def perform_new_install(config_file):
+    return perform('install', config_file)
+
+def perform_new_discover(config_file):
+    return perform('discover', config_file)
+
+def get_log(log_file):
+    try:
+        with open(log_file, 'r') as f:
+            strs = f.read()
+            dic = {'log' : strs}
+        return dic
+    except IOError:
+        return EC_NO_FILE
+
+def get_configs():
+    configs = []
+    if not os.path.exists(CONFIG_PATH):
+        os.mkdir(CONFIG_PATH)
+
+    files = os.listdir(CONFIG_PATH)
+    for fl in files:
+        try:
+            with open(CONFIG_PATH+"/"+fl, 'r') as f:
+                properties = {}
+                for line in f:
+                    if line.find('=') > 0:
+                        strs = line.replace('\n', '').split('=')
+                        properties[strs[0]] = strs[1]
+        except IOError:
+            return EC_NO_FILE
+        configs.append(properties)
+    return configs
+
+def del_config(conf):
+    try:
+        config_file = '%s/%s.properties' % (CONFIG_PATH, conf['configFileName'])
+        os.remove(config_file)
+        return SUCCESS
+    except:
+        return EC_INT_ERR
+
+def save_config(conf):
+    try:
+        config_file = '%s/%s.properties' % (CONFIG_PATH, conf['configFileName'])
+
+        conf['createTime'] = get_current_time()
+        for key in ['traf_start','dcs_ha','offline_mode','ldap_security']:
+            if conf.has_key(key) and conf[key] == 'on':
+                conf[key] = 'Y'
+            else:
+                conf[key] = 'N'
+        with open(config_file, 'w') as f:
+            for key in conf.keys():
+                f.write(key + '=' + conf[key] + '\n')
+        return SUCCESS
+    except:
+        return EC_INT_ERR
