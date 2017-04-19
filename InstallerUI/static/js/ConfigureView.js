@@ -9,18 +9,19 @@
 
 +function ($) {
   'use strict';
-   var  delFileName = "";
+   var  delFileName = "",
+	index;
   $(document).ready(function() {
   	  $('#example').DataTable( {
   		  ajax: {
   			url: "queryConfig",
   		   	type: "GET",
 			dataType: "JSON",
-			contentType: "application/json", 
-			dataSrc: '',
-  		    	crossDomain: true,
+			contentType: "application/json",
+			dataSrc:''
 			}, 
   		  bFilter:false,
+		  bLengthChange:false,
            	  columns: [
                       { data: 'configureFileName',title: 'fileName' },
                       {data: 'createTime',title: 'createTime' },
@@ -89,7 +90,7 @@
                                 "aTargets": [ 6 ],
                                 "mData": 6,
 				"mRender": function ( data, type, full ) {
-                                                        var rowcontent = '<a type="button" class="btn btn-primary btn-alert" data-toggle="modal" data-target="#myModal">修改</a>  <button type="button" class="btn btn-danger btn-del">删除</button>';
+                                                        var rowcontent = '<a type="button" class="btn btn-primary btn-alert">修改</a>  <button type="button" class="btn btn-danger btn-del">删除</button>';
                                                         return rowcontent;
                                                 }
                         }]
@@ -97,11 +98,14 @@
   	  
 	 $('#example').on( 'click', '.btn-del', function () {
 		$("#del-confirm-modal").modal('show');
-		var index = $(this).parent().context._DT_RowIndex; //行号
                 var data = $('#example').DataTable().rows(index).data()[0];//获取行数据
 		delFileName = data["configureFileName"]
 	});  
-
+	
+	$('#example').on( 'click', '.btn-alert', function () {
+		$('#myTab a:last').tab('show');
+	});
+	
   	  $("[name='traf_start']").bootstrapSwitch({
   			onText:"Y",  
   			offText:"N",
@@ -120,14 +124,12 @@
     .on('change', 'input[type="checkbox"][name="dcs_ha"]', function() {
     	var sameAsSender   = $(this).is(':checked');
     	if(sameAsSender){
-    		$("#dcsDisplay1").show();
-    		$("#dcsDisplay2").show();
-    		$('#configForm').bootstrapValidator('addField', 'dcs_floating_ip', {validators: {notEmpty: {message: 'This value is not valid'}}})
+    		$(".dcsHa").show();
+		$('#configForm').bootstrapValidator('addField', 'dcs_floating_ip', {validators: {notEmpty: {message: 'This value is not valid'}}})
     						.bootstrapValidator('addField', 'dcs_interface', {validators: {notEmpty: {message: 'This value is not valid'}}})
     						.bootstrapValidator('addField', 'dcs_backup_nodes', {validators: {notEmpty: {message: 'This value is not valid'}}});
     	}else{
-    		$("#dcsDisplay1").hide();
-    		$("#dcsDisplay2").hide();
+    		$(".dcsHa").hide();	
     		$('#configForm').bootstrapValidator('removeField', 'dcs_floating_ip');
     		$('#configForm').bootstrapValidator('removeField', 'dcs_interface');
     		$('#configForm').bootstrapValidator('removeField', 'dcs_backup_nodes');
@@ -136,18 +138,17 @@
      .on('change', 'input[type="checkbox"][name="offline_mode"]', function() {
 	    	var sameAsSender   = $(this).is(':checked');
 	    	if(sameAsSender){
-	    		$("#installDisplay").show();
+	    		$(".offlineInstall").show();
 	    		$('#configForm').bootstrapValidator('addField', 'local_repo_dir', {validators: {notEmpty: {message: 'This value is not valid'}}});
 	    	}else{
-	    		$("#installDisplay").hide();
+	    		$(".offlineInstall").hide();
 	    		$('#configForm').bootstrapValidator('removeField', 'local_repo_dir');
 	    	}
 	    })
      .on('change', 'input[type="checkbox"][name="ldap_security"]', function() {
 	    	var sameAsSender   = $(this).is(':checked');
 	    	if(sameAsSender){
-	    		$("#ldapDisplay1").show();
-	    		$("#ldapDisplay2").show();
+	    		$(".ldap").show();
 	    		$('#configForm').bootstrapValidator('addField', 'db_admin_user', {validators: {notEmpty: {message: 'This value is not valid'}}})
 	    		.bootstrapValidator('addField', 'db_admin_pwd', {validators: {notEmpty: {message: 'This value is not valid'}}})
 	    		.bootstrapValidator('addField', 'db_root_user', {validators: {notEmpty: {message: 'This value is not valid'}}})
@@ -161,8 +162,7 @@
 	    		$("#ldap_port").val("389");
 	    		$("#ldap_encrypt").val("0");
 	    	}else{
-	    		$("#ldapDisplay1").hide();
-	    		$("#ldapDisplay2").hide();
+	    		$(".ldap").hide();
 	    		$('#configForm').bootstrapValidator('removeField', 'db_admin_user');
 	    		$('#configForm').bootstrapValidator('removeField', 'db_admin_pwd');
 	    		$('#configForm').bootstrapValidator('removeField', 'db_root_user');
@@ -184,7 +184,11 @@
 	    	}else{
 	    		$('#configForm').bootstrapValidator('removeField', 'ldap_certpath');
 	    	}
-	    });
+	    }).on('success.form.bv', function(e) {
+		e.preventDefault();
+		var href=window.location.href;
+        	window.location.href=href;	     
+	});
          
         $("#traf_user").blur(function(){
         	if(this.value==""){
@@ -196,18 +200,56 @@
         	newConfig();
         });
 
+	$("#radio1").click(function(){
+                $(".cdhhdp").show();
+        	$(".apachHadoop").hide();
+	});
+
+	$("#radio2").click(function(){
+                $(".apachHadoop").show();
+		$(".cdhhdp").hide();
+        });
+
 	 $("#delConfig").click(function(){
                  delConfig();
          });
 
-        $("#myModal").on('hide.bs.modal', function (e, v) {
-		hideModal();		
+     //   $("#myModal").on('hide.bs.modal', function (e, v) {
+//		hideModal();		
+  //      });
+	$("#new").click(function(){
+		hideModal();
+		$('#myTab a:last').tab('show');
+	});	
+
+	$("#configTab").click(function(){
+                hideModal();
         });
-	
+
 
 	 $('#example tbody').on( 'click', 'tr', function () {
-                        var index = $(this).parent().context._DT_RowIndex; //行号
+                        index = $(this).parent().context._DT_RowIndex; //行号
                         var data = $('#example').DataTable().rows(index).data()[0];//获取行数据 
+			$("#ssh_user").val(data.ssh_user);
+			$("#ssh_pwd").val(data.ssh_pwd);
+			if(data.apachHadoop=="CDH_HDP"){
+				document.getElementById("radio1").checked=true;
+                                document.getElementById("radio2").checked=false;
+				$("#mgr_url").val(data.mgr_url);
+                        	$("#mgr_user").val(data.mgr_user);
+                           	$("#mgr_pwd").val(data.mgr_pwd);
+                                $("#cluster_no").val(data.cluster_no);	
+			}else{
+				document.getElementById("radio1").checked=false;
+				document.getElementById("radio2").checked=true;
+				$("#node_list").val(data.node_list);
+				$("#hadoop_home").val(data.hadoop_home);
+				$("#hbase_home").val(data.hbase_home);
+				$("#hive_home").val(data.hive_home);
+				$("#hdfs_user").val(data.hdfs_user);
+				$("#hbase_user").val(data.hbase_user);
+				$("#first_rsnode").val(data.first_rsnode);
+			}
 			$("#configureFileName").val(data.configureFileName); 
 			$("#configureFileName").attr("readonly",true)
 			$("#licenseFile").val(data.licenseFile);
@@ -215,14 +257,13 @@
 			$("#traf_pwd").val(data.traf_pwd);
 			$("#home_dir").val(data.home_dir);
 			$("#traf_dirname").val(data.traf_dirname);
-			$("#mgr_url").val(data.mgr_url);
-			$("#mgr_user").val(data.mgr_user);
-			$("#mgr_pwd").val(data.mgr_pwd);
-			$("#cluster_no").val(data.cluster_no);
 			$("#traf_package").val(data.traf_package);
 			$("#dcs_cnt_per_node").val(data.dcs_cnt_per_node);
 			$("#scratch_locs").val(data.scratch_locs);
- 			if(data.traf_start=="N"){
+ 			$("#kdc_server").val(data.kdc_server);
+                        $("#kdcadmin_pwd").val(data.kdcadmin_pwd);
+                        $("#admin_principal").val(data.admin_principal);
+			if(data.traf_start=="N"){
 				$('#traf_start').bootstrapSwitch('toggleState');
 				$('#toggle-state-switch').bootstrapSwitch('setState', false);
 			}
@@ -230,8 +271,7 @@
 			if(data.dcs_ha=="Y"){
 //				$("#dcs_ha").attr("checked", true);
 				document.getElementById("dcs_ha").checked=true;
-				$("#dcsDisplay1").show();
-		                $("#dcsDisplay2").show();
+		        	$(".dcsHa").show();
 				$("#dcs_interface").val(data.dcs_interface);
 				$("#dcs_backup_nodes").val(data.dcs_backup_nodes);
 				$("#dcs_floating_ip").val(data.dcs_floating_ip);
@@ -259,12 +299,6 @@
 				$("#ldap_user").val(data.ldap_user); 
 				$("#ldap_pwd").val(data.ldap_pwd); 
 			}
-
-
-			$("#kdc_server").val(data.kdc_server);
-			$("#kdcadmin_pwd").val(data.kdcadmin_pwd);
-			$("#admin_principal").val(data.admin_principal);
-					
 	});
   } );
   
@@ -272,20 +306,15 @@
   var newConfig =function(){
 	  $('#configForm').bootstrapValidator('validate');
 	  if( $("#configForm").data('bootstrapValidator').isValid()){
+		  var data = $("#configForm").serialize();	
 		  $.ajax({  
 	          url: "newConfig",    
 	          type: "POST",  
-	          data: $("#configForm").serialize(),  
+	          data: data,
 	          dataType:"json",
-	          traditional: true,  
-	          success: function (data) { 
-	        	  $('#example').DataTable().ajax.reload();
-			hideModal();
-	          },  
+	          traditional: true 
 	      }); 
-		  return true;
 	  }
-	  return false;
   }
 
  var delConfig = function(){
@@ -309,12 +338,15 @@
                 document.getElementById("dcs_ha").checked=false;
                 document.getElementById("offline_mode").checked=false;
                 document.getElementById("ldap_security").checked=false;
+		document.getElementById("radio1").checked=true;
 
-                $("#dcsDisplay1").hide();
-                $("#dcsDisplay2").hide();
-                $("#installDisplay").hide();
-                $("#ldapDisplay1").hide();
-                $("#ldapDisplay2").hide();
+                document.getElementById("radio2").checked=false;		
+		$(".cdhhdp").show();
+                $(".apachHadoop").hide();		
+
+		$(".dcsHa").hide();		
+		$(".ldap").hide();			
+		$(".offlineInstall").hide();		
  }
   
 }(jQuery);

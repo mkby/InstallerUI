@@ -16,7 +16,8 @@
   	 	Form 				= '#form',
   		SelectConfig		= '#selectConfig';
   	var oTable,
-	    checkListTable;
+	    checkListTable,
+	    index;
   	$(document).ready(function() {
 	      	oTable=initTable();
 		checkListTable=checkTable();
@@ -44,11 +45,32 @@
   		
 		$('#installTable').on( 'click', '.btn-log', function () {
 	        	$("#slaveDialog").modal("show");
-	       		var index =0; //行号
-                        var data = checkListTable.rows(index).data()[0];//获取行数据
-			$("#errMsg").html(data.stderr);
-				
+              		var data = oTable.rows(index).data()[0];//获取行数据
+			if(data.status!="SUCCESS"&&data.status!="IN_PROGRESS"){
+				$(".errMsg").show();
+				$("#errMsg").css("color","red");
+				$("#errMsg").text(data.stderr);
+			}else{
+				$(".errMsg").hide();
+			}
+			$.ajax({
+           			url: "queryLog",    //后台webservice里的方法名称  
+			      	type: "GET",
+				dataType: "json",
+			        contentType: "application/json",
+			        traditional: true,
+				data:"logPath="+data.logfile,
+			        success: function (data) {
+            				$("#logContent").html("");
+					$("#logContent").append(data.log.replace(/\n/g,"<br>"));	
+				}
+        });
 		} );
+
+
+		$('#installTable tbody').on( 'click', 'tr', function () {
+			index = $(this).parent().context._DT_RowIndex;
+		});
 
 		$('#checkList tbody').on( 'click', 'tr', function () {
 			var index = $(this).parent().context._DT_RowIndex; //行号
@@ -162,7 +184,7 @@
   	  		  	select: 'single',
   	            columns: [{ data: 'id', title:"id" },
   	                      { data: 'process', title:'process'},
-  	                      { data: 'status', title:'process'},
+  	                      { data: 'status', title:'status'},
 			      {data: null ,title:'operation'}
   	                  ],
   	            "aoColumnDefs": [ {
@@ -179,14 +201,18 @@
 									if(data==null){
 										data=0;
 									}
-									if(data==100){
+									if(full.status=="SUCCESS"){
 										var rowcontent =	'<div class="progress"><div class="progress-bar progress-bar-success" role="progressbar"'+
 											'aria-valuenow="60"aria-valuemin="0" aria-valuemax="100" style="width:'+data+'%'+';min-width: 2em;">'+data+'%'+
 											'<span class="sr-only"></span></div></div>';
-									}else{
+									}else if(full.status=="IN_PROGRESS"){
 										var rowcontent =        '<div class="progress"><div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar"'+
                                                                                 	'aria-valuenow="60"aria-valuemin="0" aria-valuemax="100" style="width:'+data+'%'+';min-width: 2em;">'+data+'%'+
 	                                                                                '<span class="sr-only"></span></div></div>';
+									}else{
+										var rowcontent =        '<div class="progress"><div class="progress-bar progress-bar-danger" role="progressbar"'+
+                                                                                        'aria-valuenow="60"aria-valuemin="0" aria-valuemax="100" style="width:'+data+'%'+';min-width: 2em;">'+data+'%'+
+                                                                                        '<span class="sr-only"></span></div></div>';
 									}
 								return rowcontent;                         
 	

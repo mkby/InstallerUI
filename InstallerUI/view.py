@@ -4,7 +4,7 @@ import os
 import time
 import json
 from api import *
-from flask import request
+from flask import request,send_from_directory
 import time
 
 ############## views ###############
@@ -15,6 +15,10 @@ def main_page():
 @app.route('/installPage')
 def installPage():
     return flask.render_template('install.html')
+
+@app.route('/example')
+def example():
+    return flask.render_template('example.html')
 
 # return task list
 @app.route('/tasks')
@@ -107,4 +111,28 @@ def checkServer():
 
     l=[{"hostName":"eason-1","ext_interface": "eth0", "python_ver": "2.6.6", "home_dir": "", "pidmax": "65535", "mem_free": "1.4 GB", "cpu_model": "Intel Xeon E312xx (Sandy Bridge)", "cpu_cores": 2, "hadoop_authentication": "simple", "firewall_status": "Stopped", "hive": "OK", "default_java": "/usr/lib/jvm/java-1.8.0-openjdk.x86_64", "linux": "centos-6.7", "rootdisk_free": "20G", "hadoop_security_group_mapping": "SHELL", "traf_status": "Running", "arch": "x86_64", "hbase": "1.2", "mem_total": "7.7 GB"}, {"hostName":"eason-2","ext_interface": "eth0", "python_ver": "2.6.6", "home_dir": "", "pidmax": "65535", "mem_free": "1.3 GB", "cpu_model": "Intel Xeon E312xx (Sandy Bridge)", "cpu_cores": 4, "hadoop_authentication": "simple", "firewall_status": "Stopped", "hive": "OK", "default_java": "/usr/lib/jvm/java-1.8.0-openjdk.x86_64", "linux": "centos-6.7", "rootdisk_free": "14G", "hadoop_security_group_mapping": "SHELL", "traf_status": "Running", "arch": "x86_64", "hbase": "1.2", "mem_total": "7.7 GB"}]
     jsonStr=json.dumps(l)
+    return jsonStr
+
+
+@app.route('/delConfig',methods=['POST'])
+def delConfig():
+    i = request.form.to_dict()
+    fileName=CONFIG_PATH+'/'+i["configureFileName"]+'.properties'
+    os.remove(fileName)
+    l={"status":"success"}
+    jsonStr=json.dumps(l)
+    return jsonStr
+
+@app.route('/queryLog',methods=['GET'])
+def queryLog():
+    logPath = request.args.get('logPath')
+    try:
+	f=open(logPath,'r')
+	strs=f.read()
+	l={"log":strs}
+	jsonStr = json.dumps(l)
+    except:
+	l={"log":"read log failed"}
+    finally:
+	f.close()
     return jsonStr
