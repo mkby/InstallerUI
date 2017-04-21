@@ -120,11 +120,12 @@ def get_taskdic_by_handler(task_handler):
             'logfile':   task_handler.logFile,
             'starttime': task_handler.starttime,
             'type':      task_handler.type,
-            'process':   get_install_process(task_handler),
+            'process':   get_process(task_handler),
+            'stdout':    task_handler.stdout,
             'stderr':    task_handler.stderr,
-            'status':    get_install_status(task_handler)}
+            'status':    get_status(task_handler)}
 
-def get_install_task(task_id):
+def get_task(task_id):
     task_handler = get_handler_by_id(task_id)
     if not task_handler:
         return {}
@@ -132,13 +133,13 @@ def get_install_task(task_id):
         return get_taskdic_by_handler(task_handler)
 
 # get all running install tasks
-def get_all_install_tasks():
+def get_all_tasks():
     tasks = []
     for task_handler in task_handlers:
         tasks.append(get_taskdic_by_handler(task_handler))
     return tasks
 
-def get_install_process(task_handler):
+def get_process(task_handler):
     try:
         with open(task_handler.logFile, 'r') as f:
             logdata = f.read()
@@ -150,7 +151,7 @@ def get_install_process(task_handler):
         if process in logdata:
             return int(float(100)/float(len(STAGES))*(len(STAGES)-STAGES.index(process)))
 
-def get_install_status(task_handler):
+def get_status(task_handler):
     if task_handler.rc == RC_INIT and is_process_exist(task_handler.pid):
         return STAT_IN_PROGRESS
     elif task_handler.rc == RC_ERROR  and not is_process_exist(task_handler.pid):
@@ -200,7 +201,7 @@ def perform(task_type, config_file):
     run_cmd('mkdir -p %s/logs' % task_handler.workPath)
     run_cmd('ln -s %s/* %s/' % (INSTALLER_PATH, task_handler.workPath))
 
-    # perform install from a new work path
+    # perform task from a new work path
     thread = threading.Thread(target=task_handler.run)
     thread.start()
     thread.join(0.1) # async
