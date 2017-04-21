@@ -19,8 +19,6 @@ count = 0 # global counter
 CONFIG_PATH = app.root_path + '/properties'
 WORK_PATH = app.root_path + '/worker'
 INSTALLER_PATH = app.root_path + '/installer'
-INSTALLER_BIN = INSTALLER_PATH + '/db_install.py'
-DISCOVER_BIN = INSTALLER_PATH + '/discovery.py'
 
 # task return code
 RC_INIT = -1
@@ -45,7 +43,7 @@ STAT_SUCCESS = 'SUCCESS'
 STAT_ERROR = 'ERROR'
 STAT_UNKNOWN = 'UNKNOWN'
 
-STAGES = ['install End',
+STAGES = [' End',
           'traf_start',
           'dbmgr_setup',
           'traf_sqconfig',
@@ -60,7 +58,7 @@ STAGES = ['install End',
           'copy_files',
           'traf_check',
           'traf_license',
-          'install Start']
+          ' Start']
 
 ########### APIs ###############
 class TaskHandler(object):
@@ -77,27 +75,19 @@ class TaskHandler(object):
         self.nodelist = ''# task node list
 
     def run(self):
-        cmd = '%s/fake_install.py' % self.workPath
-        p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-        self.rc = -1
-        self.pid = p.pid
-
-        self.stdout, self.stderr = p.communicate()
-        self.rc = p.returncode
-
-#    def run(self):
+            self.rc = -1
 #        if not os.path.exists(self.configFile) or not os.path.exists(self.workPath):
 #            self.rc = EC_NO_FILE
 #        else:
-#            if self.type == 'install':
-#                #cmd = '%s/db_install.py --config-file %s --silent' % (self.workPath, self.configFile)
-#                cmd = '%s/fake_install.py' % self.workPath
-#            elif self.type == 'discover':
-#                cmd = '%s/discovery.py' % self.workPath
-#            p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-#            self.pid = p.pid
-#            self.stdout, self.stderr = p.communicate()
-#            self.rc = p.returncode
+            if self.type == 'install':
+#                cmd = '%s/db_install.py --config-file %s --silent' % (self.workPath, self.configFile)
+                cmd = '%s/fake_install.py' % self.workPath
+            elif self.type == 'discover':
+                cmd = '%s/discovery.py -j --config-file %s' % (self.workPath, self.configFile)
+            p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+            self.pid = p.pid
+            self.stdout, self.stderr = p.communicate()
+            self.rc = p.returncode
 
 def run_cmd(cmd):
     """ check command return value and return stdout """
@@ -116,14 +106,18 @@ def get_handler_by_id(task_id):
     return task_handler
 
 def get_taskdic_by_handler(task_handler):
+    status = get_status(task_handler)
+    process = get_process(task_handler)
+    if status == STAT_ERROR:
+        process = 100
     return {'id':        task_handler.id,
             'logfile':   task_handler.logFile,
             'starttime': task_handler.starttime,
             'type':      task_handler.type,
-            'process':   get_process(task_handler),
+            'status':    status,
+            'process':   process,
             'stdout':    task_handler.stdout,
-            'stderr':    task_handler.stderr,
-            'status':    get_status(task_handler)}
+            'stderr':    task_handler.stderr}
 
 def get_task(task_id):
     task_handler = get_handler_by_id(task_id)
@@ -150,6 +144,7 @@ def get_process(task_handler):
     for process in STAGES:
         if process in logdata:
             return int(float(100)/float(len(STAGES))*(len(STAGES)-STAGES.index(process)))
+
 
 def get_status(task_handler):
     if task_handler.rc == RC_INIT and is_process_exist(task_handler.pid):
