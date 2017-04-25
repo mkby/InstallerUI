@@ -1,570 +1,423 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<title>易鲸捷数据库安装</title>
-<link href="../static/lib/css/bootstrap.css" rel="stylesheet">
-<link href="../static/lib/css/jquery.dataTables.min.css" rel="stylesheet">
-<link href="../static/lib/css/bootstrapValidator.min.css" rel="stylesheet" />
-<link href="../static/lib/css/bootstrap-switch.css" rel="stylesheet" />
 
-<script src="../static/lib/js/jquery.min.js"></script>
-<script src="../static/lib/js/jquery.dataTables.min.js"></script>
-<script src="../static/lib/js/bootstrap.min.js"></script>
-<script src="../static/js/ConfigureView.js"></script>
-<script src="../static/lib/js/bootstrapValidator.min.js"></script>
-<script src="../static/lib/js/bootstrap-switch.min.js"></script>
+  <head>
+    <meta charset="utf-8">
+    <title>易鲸捷数据库安装</title>
+    <link href="../static/lib/css/bootstrap.css" rel="stylesheet">
+    <link href="../static/lib/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="../static/lib/css/bootstrapValidator.min.css" rel="stylesheet" />
+    <link href="../static/lib/css/bootstrap-switch.css" rel="stylesheet" />
+    <script src="../static/lib/js/jquery.min.js"></script>
+    <script src="../static/lib/js/jquery.dataTables.min.js"></script>
+    <script src="../static/lib/js/bootstrap.min.js"></script>
+    <script src="../static/js/ConfigureView.js"></script>
+    <script src="../static/lib/js/bootstrapValidator.min.js"></script>
+    <script src="../static/lib/js/bootstrap-switch.min.js"></script>
+    <link href="../static/lib/images/sort_asc.png" rel="stylesheet">
+    <link href="../static/lib/images/sort_both.png" rel="stylesheet"></head>
 
-<link href="../static/lib/images/sort_asc.png" rel="stylesheet">
-<link href="../static/lib/images/sort_both.png" rel="stylesheet">
-</head>
-
-<body>
+  <body>
     <div class="navbar-wrapper">
-        <nav class="navbar navbar-inverse navbar-static-top">
-          <div class="container">
-            <div class="navbar-header">
-              <a class="navbar-brand" href="#">易鲸捷数据库安装</a>
+      <nav class="navbar navbar-inverse navbar-static-top">
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="#">易鲸捷数据库安装</a></div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li>
+                <a href="">配置</a></li>
+              <li>
+                <a href="installPage">安装</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <div class="container">
+        <div>
+          <ul class="nav nav-tabs" role="tablist" id="myTab">
+            <li role="presentation" class="active">
+              <a href="#list" aria-controls="list" role="tab" data-toggle="tab">配置列表</a></li>
+            <li role="presentation">
+              <a href="#config" id="configTab" aria-controls="config" role="tab" data-toggle="tab">配置</a></li>
+          </ul>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="list">
+              <!-- <div class="btn-group pull-left" style="margin-bottom: 20px">
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">新建</button></div> -->
+              <div class="panel panel-default" style="margin-top:30px">
+                <div class="panel-heading" style="height:50px">配置文件列表
+                  <button type="button" id="new" class="btn btn-primary" style="float:right">新建</button></div>
+                <table id="example" class="table table-hover"></table>
+              </div>
             </div>
-            <div id="navbar" class="navbar-collapse collapse">
-             <ul class="nav navbar-nav">
-                <li><a href="">配置</a></li>
-                <li><a href="installPage">安装</a></li>
-              </ul> 
+            <div role="tabpanel" class="tab-pane" id="config">
+              <div class="panel panel-default" style="margin-top:30px">
+                <div class="panel-heading">配置项</div>
+                <form class="form form-horizontal" id="configForm">
+                  <div class="modal-body">
+                    <div class="form-group">
+                      <div class="col-sm-4">
+                        <label class="control-label">configFileName</label>
+                        <br>configuration file name</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="configFileName" name="configFileName" required="required" autocomplete="off"></div>
+                    </div>
+                    <hr />
+                    <div style="border-bottom:3 double green;height:30px; font-size: 19px">Connection Settings</div>
+                    <div class="form-group">
+                      <div class="col-sm-4">
+                        <label for="ssh_user" class="control-label">ssh_user</label>
+                        <br>remote node ssh login user</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="ssh_user" name="ssh_user" required="required" autocomplete="off"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-sm-4">
+                        <label for="ssh_pwd" class="control-label">ssh_pwd</label>
+                        <br>remote node ssh login password</div>
+                      <div class="col-sm-5">
+                        <input type="password" class="form-control" id="ssh_pwd" name="ssh_pwd" required="required" autocomplete="off"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-sm-4">
+                        <label for="apacheHadoop" class="control-label">CDH/HDP Install</label></div>
+                      <div class="col-sm-5">
+                        <input type="radio" id="radio1" name="apacheHadoop" value="CDH_HDP" checked>CDH/HDP Install
+                        <br></div></div>
+                    <div class="form-group cdhhdp">
+                      <div class="col-sm-4">
+                        <label for="mgr_url" class="control-label">mgr_url</label>
+                        <br>cloudera/ambari management url address(i.e. http://192.168.0.1:7180)</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="mgr_url" name="mgr_url" required="required" autocomplete="off"></div>
+                    </div>
+                    <div class="form-group cdhhdp">
+                      <div class="col-sm-4">
+                        <label for="mgr_user" class="control-label">mgr_user</label>
+                        <br>user name for cloudera/ambari management url</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="mgr_user" name="mgr_user" value="admin" required="required" autocomplete="off"></div>
+                    </div>
+                    <div class="form-group cdhhdp">
+                      <div class="col-sm-4">
+                        <label for="mgr_pwd" class="control-label">mgr_pwd</label>
+                        <br>password for cloudera/ambari management url</div>
+                      <div class="col-sm-5">
+                        <input type="password" class="form-control" id="mgr_pwd" name="mgr_pwd" required="required" autocomplete="off" value="admin"></div>
+                    </div>
+                    <div class="form-group cdhhdp">
+                      <div class="col-sm-4">
+                        <label for="cluster_no" class="control-label">cluster_no</label>
+                        <br>set the cluster number if multiple clusters managed by one Cloudera manager</div>
+                      <div class="col-sm-5">
+                        <input type="number" class="form-control" id="cluster_no" name="cluster_no" required="required" autocomplete="off" value=1></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-sm-4">
+                        <label for="apacheHadoop" class="control-label">Apache Hadoop Install</label></div>
+                      <div class="col-sm-5">
+                        <input type="radio" id="radio2" name="apacheHadoop" value="apacheHadoop">Apache Hadoop Install
+                        <br></div></div>
+                    <div class="form-group apacheHadoop" style="display:none">
+                      <div class="col-sm-4">
+                        <label for="node_list" class="control-label">node_list</label>
+                        <br>trafodion node list</div>
+                      <div class="col-sm-5">
+                        <textarea class="form-control" id="node_list" name="nodelist" autocomplete="off"></textarea>
+                      </div>
+                    </div>
+                    <hr />
+                    <div style="border-bottom:3 double green;height:30px; font-size: 19px">Basic Settings</div>
+                    <div class="form-group apacheHadoop" style="display:none">
+                      <div class="col-sm-4">
+                        <label for="hadoop_home" class="control-label">hadoop_home</label>
+                        <br>Hadoop HDFS floder location</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="hadoop_home" name="hadoop_home" required="required" autocomplete="off"></div>
+                    </div>
+                    <div class="form-group apacheHadoop" style="display:none">
+                      <div class="col-sm-4">
+                        <label for="hbase_home" class="control-label">hbase_home</label>
+                        <br>HBase floder location</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="hbase_home" name="hbase_home" required="required" autocomplete="off"></div>
+                    </div>
+                    <div class="form-group apacheHadoop" style="display:none">
+                      <div class="col-sm-4">
+                        <label for="hive_home" class="control-label">hive_home</label>
+                        <br>Hive floder location</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="hive_home" name="hive_home" required="required" autocomplete="off" value="NO_HIVE"></div>
+                    </div>
+                    <div class="form-group apacheHadoop" style="display:none">
+                      <div class="col-sm-4">
+                        <label for="hdfs_user" class="control-label">hdfs_user</label>
+                        <br>hdfs linux user name</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="hdfs_user" name="hdfs_user" required="required" autocomplete="off"></div>
+                    </div>
+                    <div class="form-group apacheHadoop" style="display:none">
+                      <div class="col-sm-4">
+                        <label for="hbase_user" class="control-label">hbase_user</label>
+                        <br>hbase linux user name</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="hbase_user" name="hbase_user" required="required" autocomplete="off"></div>
+                    </div>
+                    <div class="form-group apacheHadoop" style="display:none">
+                      <div class="col-sm-4">
+                        <label for="first_rsnode" class="control-label">first_rsnode</label>
+                        <br>first region server node name</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="first_rsnode" name="first_rsnode" required="required" autocomplete="off"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-sm-4">
+                        <label for="lincense_file" class="control-label">lincense_file</label>
+                        <br>license file location on server</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="lincense_file" name="lincense_file" required="required" autocomplete="off"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-sm-4">
+                        <label for="traf_user" class="control-label">traf_user</label>
+                        <br>trafodion username</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="traf_user" name="traf_user" required="required" autocomplete="off" value="trafodion"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-sm-4">
+                        <label for="traf_pwd" class="control-label">traf_pwd</label>
+                        <br>trafodion user password</div>
+                      <div class="col-sm-5">
+                        <input type="password" class="form-control" id="traf_pwd" name="traf_pwd" required="required" autocomplete="off" value="traf123"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-sm-4">
+                        <label for="home_dir" class="control-label">home_dir</label>
+                        <br>trafodion user's home directory</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="home_dir" name="home_dir" required="required" autocomplete="off" value="/home"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-sm-4">
+                        <label for="traf_dirname" class="control-label">traf_dirname</label>
+                        <br>trafodion binary folder location</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="traf_dirname" name="traf_dirname" autocomplete="off"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-sm-4">
+                        <label for="java_home" class="control-label">java_home</label>
+                        <br>java home location on each trafodion node</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="java_home" name="java_home" autocomplete="off"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-sm-4">
+                        <label for="traf_package" class="control-label">traf_package</label>
+                        <br>trafodion binary package location on server</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="traf_package" name="traf_package" required="required" autocomplete="off"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-sm-4">
+                        <label for="dcs_cnt_per_node" class="control-label">dcs_cnt_per_node</label>
+                        <br>the number of dcs servers on each node</div>
+                      <div class="col-sm-5">
+                        <input type="number" class="form-control" id="dcs_cnt_per_node" name="dcs_cnt_per_node" required="required" autocomplete="off" value=4></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-sm-4">
+                        <label for="scratch_locs" class="control-label">scratch_locs</label>
+                        <br>scratch file location, seperated by comma if more than one</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="scratch_locs" name="scratch_locs" required="required" autocomplete="off" value="$TRAF_HOME/tmp"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-sm-4">
+                        <label for="traf_start" class="control-label">traf_start</label>
+                        <br>start trafodion instance after installation completed</div>
+                      <div class=" col-sm-5">
+                        <input type="checkbox" checked name="traf_start" id="traf_start" /></div>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                      <div class="col-sm-4">
+                        <label for="scratch_locs" class="control-label">kdc_server</label>
+                        <br>KDC server address</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="kdc_server" name="kdc_server" autocomplete="off" data-toggle="tooltip" data-placement="left" title="Kerberos启用时才需填写"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-sm-4">
+                        <label for="scratch_locs" class="control-label">admin_principal</label>
+                        <br>Admin principal and realm, i.e. admin/admin@EXAMPLE.COM</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="admin_principal" name="admin_principal" autocomplete="off" data-toggle="tooltip" data-placement="left" title="Kerberos启用时才需填写"></div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-sm-4">
+                        <label for="kdcadmin_pwd" class="control-label">kdcadmin_pwd</label>
+                        <br>Password for admin principal</div>
+                      <div class="col-sm-5">
+                        <input type="password" class="form-control" id="kdcadmin_pwd" name="kdcadmin_pwd" autocomplete="off" data-toggle="tooltip" data-placement="left" title="Kerberos启用时才需填写"></div>
+                    </div>
+                    <hr />
+                    <div style="border-bottom:3 double green;height:30px; font-size: 19px">DCS HA Settings</div>
+                    <div class="form-group">
+                      <div class="col-sm-4">
+                        <label for="dcs_ha" class="control-label">dcs_ha</label>
+                        <br>Enable DCS High Availability</div>
+                      <div class="switch-off col-sm-5" data-on="primary" data-off="info">
+                        <input type="checkbox" name="dcs_ha" id="dcs_ha" /></div>
+                    </div>
+                    <div class="form-group dcsHa" style="display: none" style="display:none">
+                      <div class="col-sm-4">
+                        <label for="dcs_floating_ip" class="control-label">dcs_floating_ip</label>
+                        <br>floating ip address</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="dcs_floating_ip" name="dcs_floating_ip"></div>
+                    </div>
+                    <div class="form-group dcsHa" style="display:none">
+                      <div class="col-sm-4">
+                        <label for="dcs_interface" class="control-label">dcs_interface</label>
+                        <br>network interface that dcs used</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="dcs_interface" name="dcs_interface"></div>
+                    </div>
+                    <div class="form-group dcsHa" style="display:none">
+                      <div class="col-sm-4">
+                        <label for="dcs_backup_nodes" class="control-label">dcs_backup_nodes</label>
+                        <br>backup dcs master nodes, seperated by comma if more than one</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="dcs_backup_nodes" name="dcs_backup_nodes"></div>
+                    </div>
+                    <hr />
+                    <div style="border-bottom:3 double green;height:30px; font-size: 19px">Offline Install Settings</div>
+                    <div class="form-group">
+                      <div class="col-sm-4">
+                        <label for="offline_mode" class="control-label">offline_mode</label>
+                        <br>Install without internet connection</div>
+                      <div class="switch-off col-sm-5" data-on="primary" data-off="info">
+                        <input type="checkbox" name="offline_mode" id="offline_mode" /></div>
+                    </div>
+                    <div class="form-group offlineInstall" style="display:none">
+                      <div class="col-sm-4">
+                        <label for="local_repo_dir" class="control-label">local_repo_dir</label>
+                        <br>local repository directory with all needed RPMs</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="local_repo_dir" name="local_repo_dir"></div>
+                    </div>
+                    <hr />
+                    <div style="border-bottom:3 double green;height:30px; font-size: 19px">LDAP Settings</div>
+                    <div class="form-group">
+                      <div class="col-sm-4">
+                        <label for="ldap_security" class="control-label">ldap_security</label>
+                        <br>Enable LDAP security</div>
+                      <div class="switch-off col-sm-5" data-on="primary" data-off="info">
+                        <input type="checkbox" name="ldap_security" id="ldap_security" /></div>
+                    </div>
+                    <div class="form-group ldap" style="display:none">
+                      <div class="col-sm-4">
+                        <label for="db_admin_user" class="control-label">db_admin_user</label>
+                        <br>LDAP user name to be assigned as DB admin privilege</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="db_admin_user" name="db_admin_user"></div>
+                    </div>
+                    <div class="form-group ldap" style="display:none">
+                      <div class="col-sm-4">
+                        <label for="db_admin_pwd" class="control-label">db_admin_pwd</label>
+                        <br>LDAP user password to be assigned as DB admin privilege</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="db_admin_pwd" name="db_admin_pwd"></div>
+                    </div>
+                    <div class="form-group ldap" style="display:none">
+                      <div class="col-sm-4">
+                        <label for="db_root_user" class="control-label">db_root_user</label>
+                        <br>LDAP user to be assigned DB root privileges (DB__ROOT)</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="db_root_user" name="db_root_user"></div>
+                    </div>
+                    <div class="form-group ldap" style="display:none">
+                      <div class="col-sm-4">
+                        <label for="ldap_hosts" class="control-label">ldap_hosts</label>
+                        <br>ldap server addresses, seperated by comma if more than one</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="ldap_hosts" name="ldap_hosts"></div>
+                    </div>
+                    <div class="form-group ldap" style="display:none">
+                      <div class="col-sm-4">
+                        <label for="ldap_port" class="control-label">ldap_port</label>
+                        <br>LDAP port number, 389 for no encryption or TLS, 636 for SSL</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="ldap_port" name="ldap_port"></div>
+                    </div>
+                    <div class="form-group ldap" style="display:none">
+                      <div class="col-sm-4">
+                        <label for="ldap_identifiers" class="control-label">ldap_identifiers</label>
+                        <br>LDAP unique identifiers (semi-colon separated if more than one identifier)</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="ldap_identifiers" name="ldap_identifiers"></div>
+                    </div>
+                    <div class="form-group ldap" style="display:none">
+                      <div class="col-sm-4">
+                        <label for="ldap_encrypt" class="control-label">ldap_encrypt</label>
+                        <br>LDAP Encryption Level</div>
+                      <div class="col-sm-5">
+                        <select name="ldap_encrypt" id="ldap_encrypt" class="form-control">
+                          <option value=""></option>
+                          <option value="0">0</option>
+                          <option value="1">1</option>
+                          <option value="2">2</option></select>
+                      </div>
+                    </div>
+                    <div class="form-group ldap" style="display:none">
+                      <div class="col-sm-4">
+                        <label for="ldap_certpath" class="control-label">ldap_certpath</label>
+                        <br>full path to TLS certificate file</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="ldap_certpath" name="ldap_certpath"></div>
+                    </div>
+                    <div class="form-group ldap" style="display:none">
+                      <div class="col-sm-4">
+                        <label for="ldap_user" class="control-label">ldap_user</label>
+                        <br>LDAP search username</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="ldap_user" name="ldap_user"></div>
+                    </div>
+                    <div class="form-group ldap" style="display:none">
+                      <div class="col-sm-4">
+                        <label for="ldap_pwd" class="control-label">ldap_pwd</label>
+                        <br>LDAP search password</div>
+                      <div class="col-sm-5">
+                        <input type="text" class="form-control" id="ldap_pwd" name="ldap_pwd"></div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="submit" id="newConfig" class="btn btn-success">Submit</button>
+                    <button type="submit" class="btn btn-success" id="newInstall">Install</button>
+                    <button type="submit" class="btn btn-success" id="newDiscover">Discover</button>
+                    <button type="reset" class="btn btn-primary">Reset</button></div>
+                </form>
+              </div>
             </div>
           </div>
-        </nav>
-       <div class="container">
-            <div>
-
-              <ul class="nav nav-tabs" role="tablist" id="myTab">
-                <li role="presentation" class="active"><a href="#list" aria-controls="list" role="tab" data-toggle="tab">配置列表</a></li>
-                <li role="presentation"><a href="#config" id="configTab" aria-controls="config" role="tab" data-toggle="tab">配置</a></li>
-              </ul>
-
-              <div class="tab-content">
-                <div role="tabpanel" class="tab-pane active" id="list">
-            <!--     <div class="btn-group  pull-left" style="margin-bottom: 20px">
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">新建</button>
-                            </div> -->
-                    <div class="panel panel-default" style="margin-top:30px">
-                    <div class="panel-heading" style="height:50px">配置文件列表 <button type="button" id = "new"class="btn btn-primary" style="float:right">新建</button></div>
-                     <table id="example" class="table table-hover"></table>
-                </div>
-                </div>
-                <div role="tabpanel" class="tab-pane" id="config"> 
-                <div class="panel panel-default" style="margin-top:30px">
-                                     <div class="panel-heading">
-                    配置项
-                    </div>
-                        <form class="form form-horizontal" id="configForm">
-                                                        <div class="modal-body">
-                                <div class="form-group">
-                                                                                <div class="col-sm-4">
-                                                                                                <label  class="control-label">configFileName</label>
-                                                                                                 <br>
-                                                                                                 configuration file name
-                                                                                </div>
-                                                                                <div class="col-sm-5">
-                                                                                                <input type="text" class="form-control" id="configFileName" name ="configFileName" required="required"
-                                                                                                           autocomplete="off">
-                                                                                </div>
-                                                                 </div>
-                                <hr />
-                                <div style="border-bottom:3 double green;height:30px; font-size: 19px">Connection Settings</div>
-                                <div class="form-group">
-                                        <div class="col-sm-4">
-                                                <label for="ssh_user" class="control-label">ssh_user</label>
-                                                <br>
-                                                remote node ssh login user
-                                        </div>
-                                        <div class="col-sm-5">
-                                                <input type="text" class="form-control" id="ssh_user" name ="ssh_user" required="required" autocomplete="off">
-                                        </div>
-                                 </div>
-                                 <div class="form-group">
-                                        <div class="col-sm-4">
-                                                <label for="ssh_pwd" class="control-label">ssh_pwd</label>
-                                                <br>
-                                                remote node ssh login password
-                                        </div>
-                                        <div class="col-sm-5">
-                                                <input type="password" class="form-control" id="ssh_pwd" name ="ssh_pwd" required="required" autocomplete="off">
-                                        </div>
-                                 </div>
-                                 <div class="form-group">
-                                                                                <div class="col-sm-4">
-                                                                                                <label for="apacheHadoop" class="control-label">CDH/HDP Install</label>
-                                                                                </div>
-                                                                                <div class="col-sm-5">
-                                                                                                <input type="radio" id="radio1"name="apacheHadoop" value="CDH_HDP" checked> CDH/HDP Install
-                                                                                                <br>
-                                                                                </div>
-                                                                 </div>
-                                 <div class="form-group cdhhdp">
-                                                                                <div class="col-sm-4">
-                                                                                                <label for="mgr_url" class="control-label">mgr_url</label>
-                                                                                                <br>
-                                                                                                cloudera/ambari management url address(i.e. http://192.168.0.1:7180)
-                                                                                </div>
-                                                                                <div class="col-sm-5">
-                                                                                                <input type="text" class="form-control" id="mgr_url" name ="mgr_url" required="required" autocomplete="off">
-                                                                                </div>
-                                                                 </div>
-                                 <div class="form-group cdhhdp">
-                                                                                <div class="col-sm-4">
-                                                                                                <label for="mgr_user" class="control-label">mgr_user</label>
-                                                                                                <br>
-                                                                                                user name for cloudera/ambari management url
-                                                                                </div>
-                                                                                <div class="col-sm-5">
-                                                                                                <input type="text" class="form-control" id="mgr_user" name ="mgr_user" value="admin"required="required" autocomplete="off">
-                                                                                </div>
-                                                                 </div>
-                                 <div class="form-group cdhhdp">
-                                                                                <div class="col-sm-4">
-                                                                                                <label for="mgr_pwd" class="control-label">mgr_pwd</label>
-                                                                                                <br>
-                                                                                                password for cloudera/ambari management url
-                                                                                </div>
-                                                                                <div class="col-sm-5">
-                                                                                                <input type="password" class="form-control" id="mgr_pwd" name ="mgr_pwd" required="required" autocomplete="off" value="admin">
-                                                                                </div>
-                                                                 </div>
-                                 <div class="form-group cdhhdp">
-                                                                                <div class="col-sm-4">
-                                                                                                <label for="cluster_no" class="control-label">cluster_no</label>
-                                                                                                <br>
-                                                                                                set the cluster number if multiple clusters managed by one Cloudera manager
-                                                                                </div>
-                                                                                <div class="col-sm-5">
-                                                                                                <input type="number" class="form-control" id="cluster_no" name ="cluster_no" required="required" autocomplete="off" value=1>
-                                                                                </div>
-                                                                 </div>
-                                 <div class="form-group">
-                                                                                <div class="col-sm-4">
-                                                                                                <label for="apacheHadoop" class="control-label">Apache Hadoop Install</label>
-                                                                                </div>
-                                                                                <div class="col-sm-5">
-                                                <input type="radio" id="radio2" name="apacheHadoop" value="apacheHadoop"> Apache Hadoop Install
-                                                <br>
-                                                                                </div>
-                                                                 </div>
-                                 <div class="form-group apacheHadoop" style="display:none">
-                                                                                <div class="col-sm-4">
-                                                                                                <label for="node_list" class="control-label">node_list</label>
-                                                                                                <br>
-                                                                                                trafodion node list
-                                                                                </div>
-                                                                                <div class="col-sm-5">
-                                                                                                <textarea class="form-control" id="node_list" name ="nodelist" autocomplete="off"></textarea>
-                                                                                </div>
-                                                                 </div>
-                                 <hr />
-                                 <div style="border-bottom:3 double green;height:30px; font-size: 19px">Basic Settings</div>
-                                 <div class="form-group apacheHadoop" style="display:none">
-                                                                                <div class="col-sm-4">
-                                                                                                <label for="hadoop_home" class="control-label">hadoop_home</label>
-                                                                                                <br>
-                                                                                                Hadoop HDFS floder location
-                                                                                </div>
-                                                                                <div class="col-sm-5">
-                                                                                                <input type="text" class="form-control" id="hadoop_home" name ="hadoop_home" required="required" autocomplete="off">
-                                                                                </div>
-                                                                 </div>
-                                 <div class="form-group apacheHadoop" style="display:none">
-                                                                                <div class="col-sm-4">
-                                                                                                <label for="hbase_home" class="control-label">hbase_home</label>
-                                                                                                <br>
-                                                                                                HBase floder location
-                                                                                </div>
-                                                                                <div class="col-sm-5">
-                                                                                                <input type="text" class="form-control" id="hbase_home" name ="hbase_home" required="required" autocomplete="off">
-                                                                                </div>
-                                                                 </div>
-                                <div class="form-group apacheHadoop"style="display:none">
-                                                                                <div class="col-sm-4">
-                                                                                                <label for="hive_home" class="control-label">hive_home</label>
-                                                                                                <br>
-                                                                                                Hive floder location
-                                                                                </div>
-                                                                                <div class="col-sm-5">
-                                                                                                <input type="text" class="form-control" id="hive_home" name ="hive_home" required="required" autocomplete="off" value="NO_HIVE">
-                                                                                </div>
-                                                                 </div>
-                                 <div class="form-group apacheHadoop" style="display:none">
-                                                                                <div class="col-sm-4">
-                                                                                                <label for="hdfs_user" class="control-label">hdfs_user</label>
-                                                                                                <br>
-                                                                                                hdfs linux user name 
-                                                                                </div>
-                                                                                <div class="col-sm-5">
-                                                                                                <input type="text" class="form-control" id="hdfs_user" name ="hdfs_user" required="required" autocomplete="off">
-                                                                                </div>
-                                                                 </div>
-                                 <div class="form-group apacheHadoop"style="display:none">
-                                                                                <div class="col-sm-4">
-                                                                                                <label for="hbase_user" class="control-label">hbase_user</label>
-                                                                                                <br>
-                                                                                                hbase linux user name 
-                                                                                </div>
-                                                                                <div class="col-sm-5">
-                                                                                                <input type="text" class="form-control" id="hbase_user" name ="hbase_user" required="required" autocomplete="off">
-                                                                                </div>
-                                                                 </div>
-                                 <div class="form-group apacheHadoop"style="display:none">
-                                                                                <div class="col-sm-4">
-                                                                                                <label for="first_rsnode" class="control-label">first_rsnode</label>
-                                                                                                <br>
-                                                                                                first region server node name 
-                                                                                </div>
-                                                                                <div class="col-sm-5">
-                                                                                                <input type="text" class="form-control" id="first_rsnode" name ="first_rsnode" required="required" autocomplete="off">
-                                                                                </div>
-                                                                 </div>
-                                <div class="form-group">
-                                                                                <div class="col-sm-4">
-                                                                                                <label for="lincense_file" class="control-label">lincense_file</label>
-                                                                                                <br>
-                                                                                                license file location on server
-                                                                                </div>
-                                                                                <div class="col-sm-5">
-                                                                                                <input type="text" class="form-control" id="lincense_file" name ="lincense_file" required="required" autocomplete="off">
-                                                                                </div>
-                                                                 </div>
-                                 <div class="form-group">
-                                                                                <div class="col-sm-4">
-                                                                                                <label for="traf_user" class="control-label">traf_user</label>
-                                                                                                <br>
-                                                                                                trafodion username
-                                                                                </div>
-                                                                                <div class="col-sm-5">
-                                                                                                <input type="text" class="form-control" id="traf_user" name ="traf_user" required="required" autocomplete="off" value="trafodion">
-                                                                                </div>
-                                                                 </div>
-                                 <div class="form-group">
-                                                                                <div class="col-sm-4">
-                                                                                                <label for="traf_pwd" class="control-label">traf_pwd</label>
-                                                                                                <br>
-                                                                                                trafodion user password
-                                                                                </div>
-                                                                                <div class="col-sm-5">
-                                                                                                <input type="password" class="form-control" id="traf_pwd" name ="traf_pwd" required="required" autocomplete="off"value = "traf123">
-                                                                                </div>
-                                                                 </div>
-                                 <div class="form-group">
-                                                                                <div class="col-sm-4">
-                                                                                                <label for="home_dir" class="control-label">home_dir</label>
-                                                                                                <br>
-                                                                                                trafodion user's home directory
-                                                                                </div>
-                                                                                <div class="col-sm-5">
-                                                                                                <input type="text" class="form-control" id="home_dir" name ="home_dir" required="required" autocomplete="off" value="/home">
-                                                                                </div>
-                                                                 </div>
-                                 <div class="form-group">
-                                                                                <div class="col-sm-4">
-                                                                                                <label for="traf_dirname" class="control-label">traf_dirname</label>
-                                                                                                <br>
-                                                                                                trafodion binary folder location
-                                                                                </div>
-                                                                                <div class="col-sm-5">
-                                                                                                <input type="text" class="form-control" id="traf_dirname" name ="traf_dirname" autocomplete="off">
-                                                                                </div>
-                                                                 </div>
-                                 <div class="form-group">
-                                                                                <div class="col-sm-4">
-                                                                                                <label for="java_home" class="control-label">java_home</label>
-                                                                                                <br>
-                                                                                                java home location on each trafodion node
-                                                                                </div>
-                                                                                <div class="col-sm-5">
-                                                                                                <input type="text" class="form-control" id="java_home" name ="java_home" autocomplete="off">
-                                                                                </div>
-                                                                 </div>
-                                <div class="form-group">
-                                                                                <div class="col-sm-4">
-                                                                                                <label for="traf_package" class="control-label">traf_package</label>
-                                                                                                <br>
-                                                                                                trafodion binary package location on server
-                                                                                </div>
-                                                                                <div class="col-sm-5">
-                                                                                                <input type="text" class="form-control" id="traf_package" name ="traf_package" required="required" autocomplete="off">
-                                                                                </div>
-                                                                 </div>
-                                <div class="form-group">
-                                                                                <div class="col-sm-4">
-                                                                                                <label for="dcs_cnt_per_node" class="control-label">dcs_cnt_per_node</label>
-                                                                                                <br>
-                                                                                                the number of dcs servers on each node
-                                                                                </div>
-                                                                                <div class="col-sm-5">
-                                                                                                <input type="number" class="form-control" id="dcs_cnt_per_node" name ="dcs_cnt_per_node" required="required" autocomplete="off" value=4>
-                                                                                </div>
-                                                                 </div>
-                                <div class="form-group">
-                                                                                <div class="col-sm-4">
-                                                                                                <label for="scratch_locs" class="control-label">scratch_locs</label>
-                                                                                                <br>
-                                                                                                scratch file location, seperated by comma if more than one
-                                                                                </div>
-                                                                                <div class="col-sm-5">
-                                                                                                <input type="text" class="form-control" id="scratch_locs" name ="scratch_locs" required="required" autocomplete="off" value="$TRAF_HOME/tmp">
-                                                                                </div>
-                                                                 </div>
-                             <div class="form-group">
-                                        <div class="col-sm-4">
-                                                <label for="traf_start" class="control-label" >traf_start</label>
-                                                <br>
-                                                start trafodion instance after installation completed
-                                        </div>
-                                        <div class=" col-sm-5">
-                                                <input type="checkbox" checked name ="traf_start" id ="traf_start"/>
-                                                </div>
-                                        </div>
-                            <br>
-                            <div class="form-group">
-                                                                                <div class="col-sm-4">
-                                                                                                <label for="scratch_locs" class="control-label">kdc_server</label>
-                                                                                                <br>
-                                                                                                KDC server address
-                                                                                </div>
-                                                                                <div class="col-sm-5">
-                                                                                                <input type="text" class="form-control" id="kdc_server" name ="kdc_server" autocomplete="off" data-toggle="tooltip" data-placement="left" title="Kerberos启用时才需填写">
-                                                                                </div>
-                                                                 </div>
-                            <div class="form-group">
-                                                                                <div class="col-sm-4">
-                                                                                                <label for="scratch_locs" class="control-label">admin_principal</label>
-                                                                                                <br>
-                                                                                                Admin principal and realm, i.e. admin/admin@EXAMPLE.COM
-                                                                                </div>
-                                                                                <div class="col-sm-5">
-                                                                                                <input type="text" class="form-control" id="admin_principal" name ="admin_principal" autocomplete="off"data-toggle="tooltip" data-placement="left" title="Kerberos启用时才需填写">
-                                                                                </div>
-                                                                 </div>
-                            <div class="form-group">
-                                                                                <div class="col-sm-4">
-                                                                                                <label for="kdcadmin_pwd" class="control-label">kdcadmin_pwd</label>
-                                                                                                <br>
-                                                                                                Password for admin principal
-                                                                                </div>
-                                                                                <div class="col-sm-5">
-                                                                                                <input type="password" class="form-control" id="kdcadmin_pwd" name ="kdcadmin_pwd"  autocomplete="off"
-                                                        data-toggle="tooltip" data-placement="left" title="Kerberos启用时才需填写">
-                                                                                </div>
-                                                                 </div>
-                                                          <hr />
-                                                          <div style="border-bottom:3 double green;height:30px; font-size: 19px">DCS HA Settings</div>
-                                                          <div class="form-group">
-                                        <div class="col-sm-4">
-                                                                                                <label for="dcs_ha" class="control-label">dcs_ha</label>
-                                                <br>
-                                                Enable DCS High Availability
-                                        </div>
-                                                                                <div class="switch-off col-sm-5" data-on="primary" data-off="info" >
-                                                                                                <input type="checkbox"  name ="dcs_ha" id ="dcs_ha"/>
-                                                                                </div>
-                                                              </div>
-                                                           <div class="form-group dcsHa" style="display: none" style="display:none">
-                                        <div class="col-sm-4">
-                                                                                        <label for="dcs_floating_ip" class="control-label">dcs_floating_ip</label>
-                                                <br>
-                                                floating ip address
-                                        </div>
-                                                                                <div class="col-sm-5">
-                                                                                                <input type="text" class="form-control" id="dcs_floating_ip" name="dcs_floating_ip">
-                                                                                 </div>
-                                                              </div>
-                                                           <div class="form-group dcsHa" style="display:none">
-                                                                                 <div class="col-sm-4">
-                                                <label for="dcs_interface" class="control-label">dcs_interface</label>
-                                                <br>
-                                                network interface that dcs used
-                                         </div>
-                                                                                 <div class="col-sm-5">
-                                                                                          <input type="text" class="form-control" id="dcs_interface" name="dcs_interface">
-                                                                                  </div>
-                                                               </div>
-                                                            <div class="form-group dcsHa" style="display:none">
-                                                                                  <div class="col-sm-4">
-                                                <label for="dcs_backup_nodes" class="control-label">dcs_backup_nodes</label>
-                                                                 <br>
-                                                                 backup dcs master nodes, seperated by comma if more than one
-                                                            </div>
-                                                                                                                        <div class="col-sm-5">
-                                                                                                                                <input type="text" class="form-control" id="dcs_backup_nodes" name="dcs_backup_nodes">
-                                                                                                                        </div>
-                                                                                                                </div>
-                                                                                <hr />
-                                                                                <div style="border-bottom:3 double green;height:30px; font-size: 19px">Offline Install Settings</div>
-                                                                                                <div class="form-group">
-                                                            <div class="col-sm-4">
-                                                                                                                            <label for="offline_mode" class="control-label">offline_mode</label>
-                                                                <br>
-                                                                Install without internet connection
-                                                            </div>
-                                                                                                                        <div class="switch-off col-sm-5" data-on="primary" data-off="info" >
-                                                                                                                                    <input type="checkbox"  name ="offline_mode" id ="offline_mode"/>
-                                                                                                                        </div>
-                                                                                                        </div>
-                                                                                                        <div class="form-group offlineInstall" style="display:none">
-                                                            <div class="col-sm-4">
-                                                                                                                            <label for="local_repo_dir" class="control-label">local_repo_dir</label>
-                                                                <br>
-                                                                local repository directory with all needed RPMs
-                                                            </div>
-                                                                                                                        <div class="col-sm-5">
-                                                                                                                                <input type="text" class="form-control" id="local_repo_dir" name="local_repo_dir">
-                                                                                                                        </div>
-                                                                                                        </div>
-                                                                                <hr />
-                                                                                <div style="border-bottom:3 double green;height:30px; font-size: 19px">LDAP Settings</div>
-                                                                                                        <div class="form-group">
-                                                            <div class="col-sm-4">    
-                                                                                                                            <label for="ldap_security" class="control-label">ldap_security</label>
-                                                                <br>
-                                                                  Enable LDAP security
-                                                            </div>
-                                                                                                                        <div class="switch-off col-sm-5" data-on="primary" data-off="info" >
-                                                                                                                                    <input type="checkbox"  name ="ldap_security" id ="ldap_security"/>
-                                                                                                                        </div>
-                                                                                                        </div>
-                                                                                                        <div class="form-group ldap" style="display:none">
-                                                            <div class="col-sm-4">
-                                                                                                                            <label for="db_admin_user" class="control-label">db_admin_user</label>
-                                                                    <br>
-                                                                LDAP user name to be assigned as DB admin privilege
-                                                            </div>
-                                                                                                                    <div class="col-sm-5">
-                                                                                                                                <input type="text" class="form-control" id="db_admin_user" name="db_admin_user">
-                                                                                                                        </div>
-                                                                                                        </div>
-                                                                                                        <div class="form-group ldap" style="display:none">
-                                                            <div class="col-sm-4">
-                                                                                                                            <label for="db_admin_pwd" class="control-label">db_admin_pwd</label>
-                                                                <br>
-                                                                LDAP user password to be assigned as DB admin privilege
-                                                            </div>
-                                                                                                                        <div class="col-sm-5">
-                                                                                                                                <input type="text" class="form-control" id="db_admin_pwd" name="db_admin_pwd">
-                                                                                                                        </div>
-                                                                                                        </div>
-                                                                                                        <div class="form-group ldap" style="display:none">
-                                                            <div class="col-sm-4">
-                                                                                                                            <label for="db_root_user" class="control-label">db_root_user</label>
-                                                                <br>
-                                                                LDAP user to be assigned DB root privileges (DB__ROOT)
-                                                            </div>
-                                                                                                                        <div class="col-sm-5">
-                                                                                                                                <input type="text" class="form-control" id="db_root_user" name="db_root_user">
-                                                                                                                        </div>
-                                                                                                        </div>
-                                                                                                        <div class="form-group ldap"style="display:none">
-                                                            <div class="col-sm-4">
-                                                                                                                            <label for="ldap_hosts" class="control-label">ldap_hosts</label>
-                                                                <br>
-                                                                ldap server addresses, seperated by comma if more than one
-                                                            </div>
-                                                                                                                        <div class="col-sm-5">
-                                                                                                                                <input type="text" class="form-control" id="ldap_hosts" name="ldap_hosts">
-                                                                                                                        </div>
-                                                                                                        </div>
-                                                                                                        <div class="form-group ldap" style="display:none">
-                                                                    <div class="col-sm-4">
-                                                                                                                    <label for="ldap_port" class="control-label">ldap_port</label>
-                                                                <br>
-                                                                LDAP port number, 389 for no encryption or TLS, 636 for SSL
-                                                            </div>
-                                                            <div class="col-sm-5">
-                                                                                                                                <input type="text" class="form-control" id="ldap_port" name="ldap_port">
-                                                                                                                        </div>
-                                                                                                        </div>
-                                                                                                        <div class="form-group ldap" style="display:none">
-                                                            <div class="col-sm-4">        
-                                                                                                                            <label for="ldap_identifiers" class="control-label">ldap_identifiers</label>
-                                                                                                                            <br>
-                                                                LDAP unique identifiers (semi-colon separated if more than one identifier)
-                                                            </div>
-                                                            <div class="col-sm-5">
-                                                                                                                                <input type="text" class="form-control" id="ldap_identifiers" name="ldap_identifiers">
-                                                                                                                        </div>
-                                                                                                        </div>
-                                                                                                        <div class="form-group ldap" style="display:none">
-                                                        <div class="col-sm-4">
-                                                                                                                    <label for="ldap_encrypt" class="control-label">ldap_encrypt</label>
-                                                            <br>
-                                                            LDAP Encryption Level
-                                                        </div>
-                                                                                                                <div class="col-sm-5">
-                                                                                                                <select name="ldap_encrypt" id="ldap_encrypt" class="form-control">
-                                                                                                                        <option value=""></option>
-                                                                                                                        <option value="0">0</option>
-                                                                                                                        <option value="1">1</option>
-                                                                                                                        <option value="2">2</option>
-                                                                                                                        </select>
-                                                                                                                </div>
-                                                                                                        </div>
-                                                                                                <div class="form-group ldap" style="display:none">
-                                                        <div class="col-sm-4">
-                                                                                                                    <label for="ldap_certpath" class="control-label">ldap_certpath</label>
-                                                            <br>
-                                                            full path to TLS certificate file 
-                                                        </div>
-                                                                                                                <div class="col-sm-5">
-                                                                                                                        <input type="text" class="form-control" id="ldap_certpath" name="ldap_certpath">
-                                                                                                                </div>
-                                                                                                        </div>
-                                                                                                        <div class="form-group ldap" style="display:none">
-                                                        <div class="col-sm-4">
-                                                                                                                    <label for="ldap_user" class="control-label">ldap_user</label>
-                                                            <br>
-                                                            LDAP search username
-                                                        </div>
-                                                                                                                <div class="col-sm-5">
-                                                                                                                        <input type="text" class="form-control" id="ldap_user" name="ldap_user">
-                                                                                                                </div>
-                                                                                                        </div>
-                                                                                                        <div class="form-group ldap" style="display:none">
-                                                        <div class="col-sm-4">    
-                                                                                                                    <label for="ldap_pwd" class="control-label">ldap_pwd</label>
-                                                            <br>
-                                                            LDAP search password
-                                                        </div>
-                                                                                                                <div class="col-sm-5">
-                                                                                                                        <input type="text" class="form-control" id="ldap_pwd" name="ldap_pwd">
-                                                                                                                </div>
-                                                                                                        </div>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                        <button type="submit" id="newConfig" class="btn btn-success">Submit</button>
-                                                                        <button type="submit" class="btn btn-success" id="newInstall">Install</button>
-                                    <button type="submit" class="btn btn-success" id="newDiscover">Discover</button>
-                                    <button type="reset" class="btn btn-primary">Reset</button>
-                                                                </div>
-                                                </form>
-                    </div>
-                </div>    
-               </div>
-              </div>
-
-            </div>            
-            <div  id="del-confirm-modal"class="modal fade bs-example-modal-sm" role="dialog"style="top:150px">
-                <div class="modal-dialog modal-sm">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title">提示信息</h4>
-                        </div>
-                    <div class="modal-body">        
-                        确定要删除吗？
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">取消</button>
-                        <a  id="delConfig" class="btn btn-danger" data-dismiss="modal">确定</a>
-                    </div>
-                 </div>
-            </div>
         </div>
+      </div>
+      <div id="del-confirm-modal" class="modal fade bs-example-modal-sm" role="dialog" style="top:150px">
+        <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">提示信息</h4></div>
+            <div class="modal-body">确定要删除吗？</div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-dismiss="modal">取消</button>
+              <a id="delConfig" class="btn btn-danger" data-dismiss="modal">确定</a></div>
+          </div>
+        </div>
+      </div>
     </div>
-</body>
+  </body>
+
 </html>
