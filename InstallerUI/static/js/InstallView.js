@@ -49,7 +49,7 @@
 			if(data.status!="SUCCESS"&&data.status!="IN_PROGRESS"){
 				$(".errMsg").show();
 				$("#errMsg").css("color","red");
-				$("#errMsg").text(data.stderr);
+				$("#errMsg").html(data.stderr.replace(/\n/g,"<br>"));
 			}else{
 				$(".errMsg").hide();
 			}
@@ -162,7 +162,7 @@
 		dataType: "json",
                 contentType: "application/json",
                 dataSrc: '',
-		data:fileName+".properties",
+		data:fileName,
 		success:function(data){
 			$('#installTable').DataTable().ajax.reload(null,false);		
 		}
@@ -278,7 +278,7 @@
 	 var checkTable = function(){
                 var table =$('#checkList').DataTable( {
                         ajax: {
-                        url: "queryCheckList",
+                        url: "discover1",
                             type: "POST",
                             dataType: "json",
                             contentType: "application/json",

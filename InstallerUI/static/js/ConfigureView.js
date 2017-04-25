@@ -183,7 +183,6 @@
 	    		$('#configForm').bootstrapValidator('removeField', 'ldap_port');
 	    		$('#configForm').bootstrapValidator('removeField', 'ldap_identifiers');
 	    		$('#configForm').bootstrapValidator('removeField', 'ldap_encrypt');
-	    		
 	    		$("#db_admin_user").val("");
 	    		$("#db_admin_pwd").val("");
 	    		$("#db_root_user").val("");
@@ -282,7 +281,7 @@
 			}
 			$("#configFileName").val(data.configFileName); 
 			$("#configFileName").attr("readonly",true)
-			$("#licenseFile").val(data.licenseFile);
+			$("#license_file").val(data.license_file);
 			$("#traf_user").val(data.traf_user);
 			$("#traf_pwd").val(data.traf_pwd);
 			$("#home_dir").val(data.home_dir);
@@ -360,13 +359,13 @@
                   dataType:"json",
                   traditional: true
 		});
-		$.ajax({                 
+		$.ajax({
                    url:"install",
                    type:"POST",
                    dataType: "json",
                    contentType: "application/json",
                    dataSrc: '',
-                   data:$("#configFileName").val()+".properties",
+                   data:$("#configFileName").val(),
                 });
           }else{
 		alert("校验不通过!");
@@ -374,8 +373,8 @@
   }
 
 
- var newDiscover =function(){   
-         buttonClick="discover"; 
+ var newDiscover =function(){
+         buttonClick="discover";
 	 $('#configForm').bootstrapValidator('validate');
           if( $("#configForm").data('bootstrapValidator').isValid()){
                   var data = $("#configForm").serialize();
@@ -393,7 +392,7 @@
                    dataType: "json",
                    contentType: "application/json",
                    dataSrc: '',
-                   data:$("#configFileName").val()+".properties",
+                   data:$("#configFileName").val(),
                 });
 
           }else{

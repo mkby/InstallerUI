@@ -80,11 +80,11 @@ class TaskHandler(object):
 #            self.rc = EC_NO_FILE
 #        else:
             if self.type == 'install':
-#                cmd = '%s/db_install.py --config-file %s --silent' % (self.workPath, self.configFile)
-                cmd = '%s/fake_install.py' % self.workPath
+                cmd = '%s/db_install.py --config-file %s --silent' % (self.workPath, self.configFilePath)
+#                cmd = '%s/fake_install.py' % self.workPath
             elif self.type == 'discover':
                 cmd = '%s/fake_discover.py' % self.workPath
-                #cmd = '%s/discovery.py -j --config-file %s' % (self.workPath, self.configFile)
+                #cmd = '%s/discovery.py -j --config-file %s' % (self.workPath, self.configFilePath)
             p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             self.pid = p.pid
             self.stdout, self.stderr = p.communicate()
@@ -192,7 +192,7 @@ def perform(task_type, config_file):
     task_handler.type = task_type
     task_handler.workPath = '%s/%d' % (WORK_PATH, count)
     task_handler.configFileName = config_file
-    task_handler.configFilePath = '%s/%s' % (CONFIG_PATH, config_file)
+    task_handler.configFilePath = '%s/%s.properties' % (CONFIG_PATH, config_file)
     task_handler.startTime = get_current_time()
 
     # create work path for each task
@@ -265,6 +265,7 @@ def save_config(conf):
             else:
                 conf[key] = 'N'
         with open(config_file, 'w') as f:
+            f.write('[dbconfigs]\n')
             for key in conf.keys():
                 f.write(key + '=' + conf[key] + '\n')
         return SUCCESS
