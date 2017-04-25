@@ -183,19 +183,23 @@
   	  		  	bFilter:false,
   	  		  	select: 'single',
   	            columns: [{ data: 'id', title:"id" },
+			      { data: 'type', title:"type" },
   	                      { data: 'process', title:'process'},
+			      { data: 'starttime',title:'starttime'},
   	                      { data: 'status', title:'status'},
 			      {data: null ,title:'operation'}
   	                  ],
   	            "aoColumnDefs": [ {
   	  				"aTargets": [ 0 ],
   	  				"mData": 0,
-  	  				"className" : "dbmgr-nowrap"
-  	  			},
+  	  			},{
+                                        "aTargets": [ 1 ],
+                                        "mData": 1,
+                                },
   	  			{
-  	  				"sWidth": "60%",
-  	  				"aTargets": [ 1 ],
-  	  				"mData": 1,
+  	  				"sWidth": "40%",
+  	  				"aTargets": [ 2 ],
+  	  				"mData": 2,
 	  	  			"mRender": function ( data, type, full ) {
 							if(type == 'display') {
 									if(data==null){
@@ -220,10 +224,13 @@
 								return data;
 							}
 						}
-  	  			},
+  	  			},{
+                                        "aTargets": [ 3 ],
+                                        "mData": 3,
+                                },
                                 {
-                                        "aTargets": [ 2 ],
-                                        "mData": 2,
+                                        "aTargets": [ 4 ],
+                                        "mData": 4,
                                         "mRender": function ( data, type, full ) {
 									if(data=="SUCCESS"){
 										var rowcontent = '<span class="label label-success">'+data+'</span>';
@@ -235,8 +242,8 @@
                                                                 return rowcontent;
                                                 }
                                 },{
-                                "aTargets": [ 3 ],
-                                "mData": 3,
+                                "aTargets": [ 5 ],
+                                "mData": 5,
                                 "mRender": function ( data, type, full ) {
                                                         var rowcontent = '<button type="button" class="btn btn-primary btn-log">日志信息</button>';
                                                         return rowcontent;

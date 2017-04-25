@@ -10,7 +10,8 @@
 +function ($) {
   'use strict';
    var  delFileName = "",
-	index;
+	index,
+	buttonClick;
   $(document).ready(function() {
   	  $('#example').DataTable( {
   		  ajax: {
@@ -24,7 +25,8 @@
 		  bLengthChange:false,
            	  columns: [
                       { data: 'configFileName',title: 'fileName' },
-                      {data: 'createTime',title: 'createTime' },
+                      {data: 'mgr_url',title: 'mgr_url/node_list' },
+		      {data: 'createTime',title: 'createTime' },
                       {data: 'traf_start',title: 'traf_start' },
                       {data: 'dcs_ha',title: 'dcs_ha' },
                       {data: 'offline_mode',title: 'offline_mode' },
@@ -37,10 +39,21 @@
   			},
   			{
   				"aTargets": [ 1 ],
-  				"mData": 1
+  				"mData": 1,
+				"mRender": function ( data, type, full ) {
+                                                        if(data==""){
+                                                                var rowcontent = full.nodelist
+                                                              return rowcontent;
+							}
+							return data;
+                                                }
+
   			},{
-  				"aTargets": [ 2 ],
-  				"mData": 2,
+                                "aTargets": [ 2 ],
+                                "mData": 2
+                        },{
+  				"aTargets": [ 3 ],
+  				"mData": 3,
                                 "mRender": function ( data, type, full ) {
                                                         if(data=="Y"){
                                                                 var rowcontent = '<span class="label label-success">'+data+'</span>';
@@ -51,8 +64,8 @@
                                                 }
 
   			},{
-  				"aTargets": [ 3 ],
-  				"mData": 3,
+  				"aTargets": [ 4 ],
+  				"mData": 4,
                                 "mRender": function ( data, type, full ) {
                         				if(data=="Y"){
                                                                 var rowcontent = '<span class="label label-success">'+data+'</span>';
@@ -63,8 +76,8 @@
                                                 }
 
   			},{
-  				"aTargets": [ 4 ],
-  				"mData": 4,
+  				"aTargets": [ 5 ],
+  				"mData": 5,
                                 "mRender": function ( data, type, full ) {
                           				if(data=="Y"){
                                                                 var rowcontent = '<span class="label label-success">'+data+'</span>';
@@ -75,8 +88,8 @@
                                                 }
 
   			},{
-                                "aTargets": [ 5 ],
-                                "mData": 5,
+                                "aTargets": [ 6 ],
+                                "mData": 6,
                                 "mRender": function ( data, type, full ) {
 							if(data=="Y"){
                                                         	var rowcontent = '<span class="label label-success">'+data+'</span>';
@@ -87,8 +100,8 @@
                                                 }
 
                         },{
-                                "aTargets": [ 6 ],
-                                "mData": 6,
+                                "aTargets": [ 7 ],
+                                "mData": 7,
 				"mRender": function ( data, type, full ) {
                                                         var rowcontent = '<a type="button" class="btn btn-primary btn-alert">修改</a>  <button type="button" class="btn btn-danger btn-del">删除</button>';
                                                         return rowcontent;
@@ -187,7 +200,13 @@
 	    }).on('success.form.bv', function(e) {
 		e.preventDefault();
 		var href=window.location.href;
-        	window.location.href=href;	     
+		if(buttonClick=="install"){
+		window.location = href+"installPage";
+		}else if(buttonClick=="discover"){
+		window.location = href+"installPage";
+		}else{
+			window.location.href=href;
+		}
 	});
          
         $("#traf_user").blur(function(){
@@ -199,6 +218,15 @@
         $("#newConfig").click(function(){
         	newConfig();
         });
+
+	$("#newInstall").click(function(){
+                newInstall();
+        });
+
+	$("#newDiscover").click(function(){
+                newDiscover();
+        });
+
 
 	$("#radio1").click(function(){
                 $(".cdhhdp").show();
@@ -212,6 +240,8 @@
 
 	 $("#delConfig").click(function(){
                  delConfig();
+		  $('#example').DataTable().ajax.reload();
+                    hideModal();
          });
 
      //   $("#myModal").on('hide.bs.modal', function (e, v) {
@@ -304,6 +334,7 @@
   
   
   var newConfig =function(){
+	  buttonClick="submit";
 	  $('#configForm').bootstrapValidator('validate');
 	  if( $("#configForm").data('bootstrapValidator').isValid()){
 		  var data = $("#configForm").serialize();	
@@ -317,6 +348,59 @@
 	  }
   }
 
+ var newInstall =function(){
+	  buttonClick="install";
+          $('#configForm').bootstrapValidator('validate');
+          if( $("#configForm").data('bootstrapValidator').isValid()){
+                  var data = $("#configForm").serialize();
+                  $.ajax({
+                  url: "newConfig",
+                  type: "POST",
+                  data: data,
+                  dataType:"json",
+                  traditional: true
+		});
+		$.ajax({                 
+                   url:"install",
+                   type:"POST",
+                   dataType: "json",
+                   contentType: "application/json",
+                   dataSrc: '',
+                   data:$("#configFileName").val()+".properties",
+                });
+          }else{
+		alert("校验不通过!");
+	 }
+  }
+
+
+ var newDiscover =function(){   
+         buttonClick="discover"; 
+	 $('#configForm').bootstrapValidator('validate');
+          if( $("#configForm").data('bootstrapValidator').isValid()){
+                  var data = $("#configForm").serialize();
+                  $.ajax({
+                  url: "newConfig",
+                  type: "POST",
+                  data: data,
+                  dataType:"json",
+                  traditional: true
+                });
+
+		$.ajax({
+                   url:"discover",
+                   type:"POST",
+                   dataType: "json",
+                   contentType: "application/json",
+                   dataSrc: '',
+                   data:$("#configFileName").val()+".properties",
+                });
+
+          }else{
+                alert("校验不通过!");
+         }
+  }
+
  var delConfig = function(){
         $.ajax({
               url: "delConfig",
@@ -324,10 +408,6 @@
               data:'configFileName='+delFileName,
               dataType:"json",
               traditional: true,
-              success: function (data) {
-                     $('#example').DataTable().ajax.reload();
-   		    hideModal();
-	           }
         });
    }
 
