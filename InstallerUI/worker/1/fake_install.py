@@ -1,1 +1,0 @@
-/usr/xulei/web/InstallerUI/InstallerUI/installer/fake_install.py

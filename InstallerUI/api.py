@@ -71,19 +71,20 @@ class TaskHandler(object):
         self.stdout = ''
         self.stderr = ''  # task error msg
         self.type = ''    # install or discover
-        self.starttime = ''
-        self.nodelist = ''# task node list
+        self.startTime = ''
+        self.configFileName = ''
 
     def run(self):
             self.rc = -1
-#        if not os.path.exists(self.configFile) or not os.path.exists(self.workPath):
+#        if not os.path.exists(self.configFilePath) or not os.path.exists(self.workPath):
 #            self.rc = EC_NO_FILE
 #        else:
             if self.type == 'install':
 #                cmd = '%s/db_install.py --config-file %s --silent' % (self.workPath, self.configFile)
                 cmd = '%s/fake_install.py' % self.workPath
             elif self.type == 'discover':
-                cmd = '%s/discovery.py -j --config-file %s' % (self.workPath, self.configFile)
+                cmd = '%s/fake_discover.py' % self.workPath
+                #cmd = '%s/discovery.py -j --config-file %s' % (self.workPath, self.configFile)
             p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             self.pid = p.pid
             self.stdout, self.stderr = p.communicate()
@@ -112,7 +113,8 @@ def get_taskdic_by_handler(task_handler):
         process = 100
     return {'id':        task_handler.id,
             'logfile':   task_handler.logFile,
-            'starttime': task_handler.starttime,
+            'name':      task_handler.configFileName,
+            'starttime': task_handler.startTime,
             'type':      task_handler.type,
             'status':    status,
             'process':   process,
@@ -189,8 +191,9 @@ def perform(task_type, config_file):
     task_handler.id = count
     task_handler.type = task_type
     task_handler.workPath = '%s/%d' % (WORK_PATH, count)
-    task_handler.configFile = '%s/%s' % (CONFIG_PATH, config_file)
-    task_handler.starttime = get_current_time()
+    task_handler.configFileName = config_file
+    task_handler.configFilePath = '%s/%s' % (CONFIG_PATH, config_file)
+    task_handler.startTime = get_current_time()
 
     # create work path for each task
     run_cmd('mkdir -p %s/logs' % task_handler.workPath)
