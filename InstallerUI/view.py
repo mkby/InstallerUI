@@ -4,7 +4,6 @@ import os
 import time
 import json
 from api import *
-import time
 
 ############## views ###############
 @app.route('/')
@@ -18,14 +17,14 @@ def installPage():
 # return task list
 @app.route('/tasks')
 def getTasks():
-    tasks = get_all_install_tasks()
+    tasks = get_all_tasks()
     #return flask.jsonify(tasks), 200
     return json.dumps(tasks, indent=2), 200
 
 # return task status
 @app.route('/tasks/<int:task_id>')
 def getTaskById(task_id):
-    task = get_install_task(task_id)
+    task = get_task(task_id)
     if not task:
         flask.abort(404)
     return flask.jsonify(task), 200
@@ -53,7 +52,6 @@ def runInstall():
     else:
         return flask.jsonify(dic), 201
 
-# run discover, return node info as string
 @app.route('/discover',methods=['POST'])
 def runDiscover():
     config_file = flask.request.data
@@ -99,10 +97,3 @@ def queryLog():
         return MSG[EC_NO_FILE], 400
     else:
         return flask.jsonify(dic), 200
-
-@app.route('/queryCheckList',methods=['POST','GET'])
-def checkServer():
-
-    l=[{"hostName":"eason-1","ext_interface": "eth0", "python_ver": "2.6.6", "home_dir": "", "pidmax": "65535", "mem_free": "1.4 GB", "cpu_model": "Intel Xeon E312xx (Sandy Bridge)", "cpu_cores": 2, "hadoop_authentication": "simple", "firewall_status": "Stopped", "hive": "OK", "default_java": "/usr/lib/jvm/java-1.8.0-openjdk.x86_64", "linux": "centos-6.7", "rootdisk_free": "20G", "hadoop_security_group_mapping": "SHELL", "traf_status": "Running", "arch": "x86_64", "hbase": "1.2", "mem_total": "7.7 GB"}, {"hostName":"eason-2","ext_interface": "eth0", "python_ver": "2.6.6", "home_dir": "", "pidmax": "65535", "mem_free": "1.3 GB", "cpu_model": "Intel Xeon E312xx (Sandy Bridge)", "cpu_cores": 4, "hadoop_authentication": "simple", "firewall_status": "Stopped", "hive": "OK", "default_java": "/usr/lib/jvm/java-1.8.0-openjdk.x86_64", "linux": "centos-6.7", "rootdisk_free": "14G", "hadoop_security_group_mapping": "SHELL", "traf_status": "Running", "arch": "x86_64", "hbase": "1.2", "mem_total": "7.7 GB"}]
-    jsonStr=json.dumps(l)
-    return jsonStr
