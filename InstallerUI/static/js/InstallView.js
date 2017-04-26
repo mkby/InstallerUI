@@ -15,10 +15,9 @@ function($) {
     InstallDialog = '#installDialog',
     Form = '#form',
     SelectConfig = '#selectConfig';
-    var oTable, checkListTable, index;
+    var oTable, index;
     $(document).ready(function() {
         oTable = initTable();
-        checkListTable = checkTable();
         $(InstallResetButton).click(function() {
             resetForm();
         });
@@ -39,6 +38,8 @@ function($) {
 
         $('#installTable').on('click', '.btn-log',
         function() {
+            $("#logContent").html("");
+            $("#errMsg").html("");
             $("#slaveDialog").modal("show");
             var data = oTable.rows(index).data()[0]; //获取行数据
             if (data.status != "SUCCESS" && data.status != "IN_PROGRESS") {
@@ -56,10 +57,18 @@ function($) {
                 traditional: true,
                 data: "logPath=" + data.logfile,
                 success: function(data) {
-                    $("#logContent").html("");
                     $("#logContent").append(data.log.replace(/\n/g, "<br>"));
                 }
             });
+        });
+
+
+        $('#installTable').on('click', '.btn-slave',
+        function() {
+            $("#checkDialog").modal("show");
+            var data = oTable.rows(index).data()[0]; //获取行数据
+            var list =data.stdout;
+            
         });
 
         $('#installTable tbody').on('click', 'tr',
@@ -118,10 +127,6 @@ function($) {
             $("#arch").html("");
             $("#hbase").html("");
             $("#mem_total").html("");
-        });
-
-        $("#checkButton").click(function() {
-            checkListTable.ajax.reload();
         });
 
         $("#sel_search_orderstatus").multiselect({
@@ -251,7 +256,11 @@ function($) {
                 "aTargets": [5],
                 "mData": 5,
                 "mRender": function(data, type, full) {
-                    var rowcontent = '<button type="button" class="btn btn-primary btn-log">日志信息</button>';
+                    if(full.type=="discover"){
+                        var rowcontent = '<button type="button" class="btn btn-primary btn-slave">节点信息</button>';
+                    }else{  
+	                var rowcontent = '<button type="button" class="btn btn-primary btn-log">日志信息</button>';
+                    }
                     return rowcontent;
                 }
             }]
@@ -275,68 +284,6 @@ function($) {
                 $(SelectConfig).html("<option value=''>请选择...</option> " + optionstring);
             }
         });
-    }
-
-    var checkTable = function() {
-        var table = $('#checkList').DataTable({
-            ajax: {
-                url: "discover1",
-                type: "POST",
-                dataType: "json",
-                contentType: "application/json",
-                data: function(d) {
-                    var selector = "";
-                    $('#sel_search_orderstatus option:selected').each(function() {
-                        if (selector.length == 0) {
-                            selector = selector + $(this).val();
-                        } else {
-                            selector = selector + "," + $(this).val();
-                        }
-                    });
-                    d.slaveList = selector;
-                },
-                dataSrc: ''
-            },
-            bFilter: false,
-            bDestory: true,
-            bAutoWidth: false,
-            bPaginate: false,
-            select: 'single',
-            columns: [{
-                data: 'hostName',
-                title: "hostName"
-            },
-            {
-                data: 'firewall_status',
-                title: 'firewall_status'
-            },
-            {
-                data: 'hive',
-                title: 'hive'
-            },
-            {
-                data: 'traf_status',
-                title: 'traf_status'
-            }],
-            "aoColumnDefs": [{
-                "aTargets": [0],
-                "mData": 0,
-                "className": "dbmgr-nowrap"
-            },
-            {
-                "aTargets": [1],
-                "mData": 1
-            },
-            {
-                "aTargets": [2],
-                "mData": 2
-            },
-            {
-                "aTargets": [3],
-                "mData": 3,
-            }]
-        });
-        return table;
     }
 
 } (jQuery);
