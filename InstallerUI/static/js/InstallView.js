@@ -57,18 +57,44 @@ function($) {
                 traditional: true,
                 data: "logPath=" + data.logfile,
                 success: function(data) {
+                 
                     $("#logContent").append(data.log.replace(/\n/g, "<br>"));
+                },
+                error:function(msg){
+                    $("#logContent").css("color", "red");
+                    $("#logContent").append(msg.responseText);
                 }
             });
         });
 
-
+        $("#slaveSelect").on('change',function(){
+            var data = oTable.rows(index).data()[0]; //获取行数据
+            var jsonList = JSON.parse(data.stdout);
+            var json = jsonList[$("#slaveSelect").val()];
+            var optionstring ="";
+            $("#slaveTable tbody").html("");
+            for(var o in json){
+                var trHTML = "<tr><td style='font-weight:normal'>"+o+"</td><td>"+json[o]+"</td></tr>";
+                $("#slaveTable").append(trHTML);
+            }
+ 
+        });
         $('#installTable').on('click', '.btn-slave',
         function() {
             $("#checkDialog").modal("show");
             var data = oTable.rows(index).data()[0]; //获取行数据
-            var list =data.stdout;
-            
+            var jsonList = JSON.parse(data.stdout);
+            var json = jsonList[0];
+            var optionstring ="";
+            $("#slaveTable tbody").html("");
+            for(var o in json){
+                var trHTML = "<tr><td style='font-weight:normal'>"+o+"</td><td>"+json[o]+"</td></tr>";
+                $("#slaveTable").append(trHTML);
+            }
+            for(var i=0;i<jsonList.length;i++){
+			optionstring += "<option value=\"" +i + "\" >" + jsonList[i].hostname + "</option>";
+		    }
+		    $("#slaveSelect").html(optionstring);
         });
 
         $('#installTable tbody').on('click', 'tr',
@@ -76,58 +102,7 @@ function($) {
             index = $(this).parent().context._DT_RowIndex;
         });
 
-        $('#checkList tbody').on('click', 'tr',
-        function() {
-            var index = $(this).parent().context._DT_RowIndex; //行号
-            var data = checkListTable.rows(index).data()[0]; //获取行数据
-            $("#hostName").html(data.hostName);
-            $("#ext_interface").html(data.ext_interface);
-            $("#python_ver").html(data.python_ver);
-            $("#home_dir").html(data.home_dir);
-            $("#pidmax").html(data.pidmax);
-            $("#mem_free").html(data.mem_free);
-            $("#cpu_model").html(data.cpu_model);
-            $("#cpu_cores").html(data.cpu_cores);
-            $("#hadoop_authentication").html(data.hadoop_authentication);
-            $("#firewall_status").html(data.firewall_status);
-            $("#hive").html(data.hive);
-            $("#default_java").html(data.default_java);
-            $("#linux").html(data.linux);
-            $("#rootdisk_free").html(data.rootdisk_free);
-            $("#hadoop_security_group_mapping").html(data.hadoop_security_group_mapping);
-            $("#traf_status").html(data.traf_status);
-            $("#arch").html(data.arch);
-            $("#hbase").html(data.hbase);
-            $("#mem_total").html(data.mem_total);
 
-            $(".check-list").hide();
-            $(".check-detail").show();
-        });
-
-        $("#checkShow").click(function() {
-            $(".check-list").show();
-            $(".check-detail").hide();
-
-            $("#hostName").html("");
-            $("#ext_interface").html("");
-            $("#python_ver").html("");
-            $("#home_dir").html("");
-            $("#pidmax").html("");
-            $("#mem_free").html("");
-            $("#cpu_model").html("");
-            $("#cpu_cores").html("");
-            $("#hadoop_authentication").html("");
-            $("#firewall_status").html("");
-            $("#hive").html("");
-            $("#default_java").html("");
-            $("#linux").html("");
-            $("#rootdisk_free").html("");
-            $("#hadoop_security_group_mapping").html("");
-            $("#traf_status").html("");
-            $("#arch").html("");
-            $("#hbase").html("");
-            $("#mem_total").html("");
-        });
 
         $("#sel_search_orderstatus").multiselect({
             includeSelectAllOption: true,
@@ -182,6 +157,9 @@ function($) {
             columns: [{
                 data: 'id',
                 title: "id"
+            },{
+                data:'name',
+                title:'fileName'
             },
             {
                 data: 'type',
@@ -210,15 +188,18 @@ function($) {
             {
                 "aTargets": [1],
                 "mData": 1,
+            },{
+                "aTargets": [2],
+                "mData": 2,
             },
             {
                 "sWidth": "40%",
-                "aTargets": [2],
-                "mData": 2,
+                "aTargets": [3],
+                "mData": 3,
                 "mRender": function(data, type, full) {
                     if (type == 'display') {
                         if (data == null) {
-                            data = 0;
+                            data = 100;
                         }
                         if (full.status == "SUCCESS") {
                             var rowcontent = '<div class="progress"><div class="progress-bar progress-bar-success" role="progressbar"' + 'aria-valuenow="60"aria-valuemin="0" aria-valuemax="100" style="width:' + data + '%' + ';min-width: 2em;">' + data + '%' + '<span class="sr-only"></span></div></div>';
@@ -235,12 +216,12 @@ function($) {
                 }
             },
             {
-                "aTargets": [3],
-                "mData": 3,
-            },
-            {
                 "aTargets": [4],
                 "mData": 4,
+            },
+            {
+                "aTargets": [5],
+                "mData": 5,
                 "mRender": function(data, type, full) {
                     if (data == "SUCCESS") {
                         var rowcontent = '<span class="label label-success">' + data + '</span>';
@@ -253,10 +234,10 @@ function($) {
                 }
             },
             {
-                "aTargets": [5],
-                "mData": 5,
+                "aTargets": [6],
+                "mData": 6,
                 "mRender": function(data, type, full) {
-                    if(full.type=="discover"){
+                    if(full.type=="Discover"){
                         var rowcontent = '<button type="button" class="btn btn-primary btn-slave">节点信息</button>';
                     }else{  
 	                var rowcontent = '<button type="button" class="btn btn-primary btn-log">日志信息</button>';
