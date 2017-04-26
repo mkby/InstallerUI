@@ -17,8 +17,10 @@ count = 0 # global counter
 
 ########## constants #############
 CONFIG_PATH = app.root_path + '/properties'
-WORK_PATH = app.root_path + '/worker'
 INSTALLER_PATH = app.root_path + '/installer'
+
+TYPE_INSTALL = 'Install'
+TYPE_DISCOVER = 'Discover'
 
 # task return code
 RC_INIT = -1
@@ -79,11 +81,11 @@ class TaskHandler(object):
 #        if not os.path.exists(self.configFilePath) or not os.path.exists(self.workPath):
 #            self.rc = EC_NO_FILE
 #        else:
-            if self.type == 'install':
-                cmd = '%s/db_install.py --config-file %s --silent' % (self.workPath, self.configFilePath)
+            if self.type == TYPE_INSTALL:
+                cmd = '%s/db_install.py --config-file %s --log-file %s --silent' % (INSTALLER_PATH, self.configFilePath, self.logFile)
 #                cmd = '%s/fake_install.py' % self.workPath
-            elif self.type == 'discover':
-                cmd = '%s/fake_discover.py' % self.workPath
+            elif self.type == TYPE_DISCOVER:
+                cmd = '%s/fake_discover.py' % INSTALLER_PATH
                 #cmd = '%s/discovery.py -j --config-file %s' % (self.workPath, self.configFilePath)
             p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             self.pid = p.pid
@@ -172,12 +174,6 @@ def perform_by_id(task_id):
         thread.start()
         thread.join(0.1) # async
 
-        # log file name is different for each run, so glob it again
-        try:
-            task_handler.logFile = glob.glob('%s/logs/%s*.log' % (task_handler.workPath, task_handler.type))[0]
-        except IndexError:
-            task_handler.logFile = ''
-
         return task_handler.rc
     else:
         return EC_NO_TASK
@@ -190,33 +186,25 @@ def perform(task_type, config_file):
     count += 1
     task_handler.id = count
     task_handler.type = task_type
-    task_handler.workPath = '%s/%d' % (WORK_PATH, count)
     task_handler.configFileName = config_file
     task_handler.configFilePath = '%s/%s.properties' % (CONFIG_PATH, config_file)
     task_handler.startTime = get_current_time()
+    task_handler.logFile = '%s/logs/%s_task%s_%s.log' % (INSTALLER_PATH, task_handler.type, count, time.strftime('%y%m%d_%H%M'))
 
-    # create work path for each task
-    run_cmd('mkdir -p %s/logs' % task_handler.workPath)
-    run_cmd('ln -s %s/* %s/' % (INSTALLER_PATH, task_handler.workPath))
-
-    # perform task from a new work path
+    # perform task
     thread = threading.Thread(target=task_handler.run)
     thread.start()
     thread.join(0.1) # async
 
-    try:
-        task_handler.logFile = glob.glob('%s/logs/%s*.log' % (task_handler.workPath, task_handler.type))[0]
-    except IndexError:
-        task_handler.logFile = ''
-
     task_handlers.append(task_handler)
+
     return task_handler
 
 def perform_new_install(config_file):
-    return perform('install', config_file)
+    return perform(TYPE_INSTALL, config_file)
 
 def perform_new_discover(config_file):
-    return perform('discover', config_file)
+    return perform(TYPE_DISCOVER, config_file)
 
 def get_log(log_file):
     try:
@@ -267,7 +255,8 @@ def save_config(conf):
         with open(config_file, 'w') as f:
             f.write('[dbconfigs]\n')
             for key in conf.keys():
-                f.write(key + '=' + conf[key] + '\n')
+                if conf[key]:
+                    f.write(key + '=' + conf[key] + '\n')
         return SUCCESS
     except:
         return EC_INT_ERR
