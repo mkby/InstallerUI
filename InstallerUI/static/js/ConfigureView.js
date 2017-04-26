@@ -24,31 +24,31 @@ function($) {
             bLengthChange: false,
             columns: [{
                 data: 'configFileName',
-                title: 'fileName'
+                title: 'Config File Name'
             },
             {
                 data: 'mgr_url',
-                title: 'mgr_url/node_list'
+                title: 'Management URL'
             },
             {
                 data: 'createTime',
-                title: 'createTime'
+                title: 'Created Time'
             },
             {
                 data: 'traf_start',
-                title: 'traf_start'
+                title: 'Auto Start'
             },
             {
                 data: 'dcs_ha',
-                title: 'dcs_ha'
+                title: 'DCS HA'
             },
             {
                 data: 'offline_mode',
-                title: 'offline_mode'
+                title: 'Offline Install'
             },
             {
                 data: 'ldap_security',
-                title: 'ldap_security'
+                title: 'LDAP Security'
             },
             {
                 data: 'configFileName',
