@@ -12,6 +12,7 @@ function($) {
 
     var InstallResetButton = '#installResetButton',
     InstallApplyButton = '#installApplyButton',
+    DiscoverApplyButton = '#discoverApplyButton',
     InstallDialog = '#installDialog',
     Form = '#form',
     SelectConfig = '#selectConfig';
@@ -26,6 +27,9 @@ function($) {
             install();
         });
 
+        $(DiscoverApplyButton).click(function() {
+            discover();
+        });
         //init selector
         queryConfig();
 
@@ -57,7 +61,6 @@ function($) {
                 traditional: true,
                 data: "logPath=" + data.logfile,
                 success: function(data) {
-                 
                     $("#logContent").append(data.log.replace(/\n/g, "<br>"));
                 },
                 error:function(msg){
@@ -120,6 +123,28 @@ function($) {
         document.getElementById("form").reset();
     }
 
+    //discover function
+    var discover = function() {
+        var fileName = $("#selectConfig").val();
+        if (fileName == "") {
+            document.getElementById("myAlert").style.display = "block";
+            setTimeout("document.getElementById('myAlert').style.display='none'", 1000 * 2);
+            return;
+        }
+        $.ajax({
+            url: "discover",
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json",
+            dataSrc: '',
+            data: fileName,
+            success: function(data) {
+                $('#installTable').DataTable().ajax.reload(null, false);
+            }
+        });
+        $(InstallDialog).modal("hide");
+    }
+
     //install function
     var install = function() {
         var fileName = $("#selectConfig").val();
@@ -140,7 +165,6 @@ function($) {
             }
         });
         $(InstallDialog).modal("hide");
-
     }
 
     var initTable = function() {
@@ -156,30 +180,30 @@ function($) {
             select: 'single',
             columns: [{
                 data: 'id',
-                title: "id"
+                title: "Tasks"
             },{
                 data:'name',
-                title:'fileName'
+                title:'Config File Name'
             },
             {
                 data: 'type',
-                title: "type"
+                title: "Type"
             },
             {
                 data: 'process',
-                title: 'process'
+                title: 'Progress'
             },
             {
                 data: 'starttime',
-                title: 'starttime'
+                title: 'Start Time'
             },
             {
                 data: 'status',
-                title: 'status'
+                title: 'Status'
             },
             {
                 data: null,
-                title: 'operation'
+                title: 'Operation'
             }],
             "aoColumnDefs": [{
                 "aTargets": [0],
