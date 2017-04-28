@@ -95,7 +95,7 @@ function($) {
 			tabContent +='<br><div role="tabpanel" class="tab-pane fade in active" id="'+jsonList[i].hostname+'">';
                         }else{
                         tab +='<li role="presentation"><a href="#'+jsonList[i].hostname+'" aria-controls="'+jsonList[i].hostname+'" role="tab" data-toggle="tab">'+jsonList[i].hostname+'</a></li>';
-                        tabContent +='<br><div role="tabpanel" class="tab-pane fade" id="'+jsonList[i].hostname+'">';
+                        tabContent +='<div role="tabpanel" class="tab-pane fade" id="'+jsonList[i].hostname+'">';
                         }
                         var table ='<table class="table table-striped table-condensed"><tr><th>checkDetail</th><th>status</th></tr>' 
                         for(var o in jsonList[i]){
