@@ -87,17 +87,26 @@ function($) {
             $("#checkDialog").modal("show");
             var data = oTable.rows(index).data()[0]; //获取行数据
             var jsonList = JSON.parse(data.stdout);
-            var json = jsonList[0];
-            var optionstring ="";
-            $("#slaveTable tbody").html("");
-            for(var o in json){
-                var trHTML = "<tr><td style='font-weight:normal'>"+o+"</td><td>"+json[o]+"</td></tr>";
-                $("#slaveTable").append(trHTML);
-            }
-            for(var i=0;i<jsonList.length;i++){
-			optionstring += "<option value=\"" +i + "\" >" + jsonList[i].hostname + "</option>";
-		    }
-		    $("#slaveSelect").html(optionstring);
+            var tab = ' <ul class="nav nav-tabs" role="tablist">';
+            var tabContent = '<div class="tab-content style="margin-top:100px"">';
+		for(var i=0;i<jsonList.length;i++){
+			if(i==0){
+                        tab +='<li role="presentation" class="active"><a href="#'+jsonList[i].hostname+'" aria-controls="'+jsonList[i].hostname+'" role="tab" data-toggle="tab">'+jsonList[i].hostname+'</a></li>';
+			tabContent +='<br><div role="tabpanel" class="tab-pane fade in active" id="'+jsonList[i].hostname+'">';
+                        }else{
+                        tab +='<li role="presentation"><a href="#'+jsonList[i].hostname+'" aria-controls="'+jsonList[i].hostname+'" role="tab" data-toggle="tab">'+jsonList[i].hostname+'</a></li>';
+                        tabContent +='<br><div role="tabpanel" class="tab-pane fade" id="'+jsonList[i].hostname+'">';
+                        }
+                        var table ='<table class="table table-striped table-condensed"><tr><th>checkDetail</th><th>status</th></tr>' 
+                        for(var o in jsonList[i]){
+                            table += "<tr><td style='font-weight:normal'>"+o+"</td><td>"+jsonList[i][o]+"</td></tr>";
+                        }
+                        table +='</table>';
+                        tabContent = tabContent+table+'</div>';
+                    }
+                tabContent +='</div>';
+		tab +='</ul>';
+                $("#tab").append(tab+tabContent);
         });
 
         $('#installTable tbody').on('click', 'tr',
