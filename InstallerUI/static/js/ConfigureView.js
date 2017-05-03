@@ -11,7 +11,9 @@ function($) {
     'use strict';
     var delFileName = "",
     index, buttonClick;
+    var alertFileName = false;
     $(document).ready(function() {
+        $("#common").html("head.html");
         $('#example').DataTable({
             ajax: {
                 url: "queryConfig",
@@ -22,17 +24,23 @@ function($) {
             },
             bFilter: false,
             bLengthChange: false,
+            bautoWidth: false,
+            ordering: false,
+            sScrollX: "3000px",
             columns: [{
+                data: null,
+                title: 'Check'
+            },{
                 data: 'configFileName',
-                title: 'Config File Name'
+                title: 'File Name'
             },
             {
-                data: 'mgr_url',
+                data: null,
                 title: 'Management URL'
             },
             {
                 data: 'createTime',
-                title: 'Created Time'
+                title: 'Create Time'
             },
             {
                 data: 'traf_start',
@@ -54,38 +62,33 @@ function($) {
                 data: 'configFileName',
                 title: 'Operation'
             }],
-            "aoColumnDefs": [{
+            "aoColumnDefs": [
+             {
                 "aTargets": [0],
                 "mData": 0,
-            },
-            {
+                "mRender": function(data, type, full) {
+                    return '<input type="radio" name="checkboxDemo" value='+full.configFileName+'>';
+                }
+             },
+             {
                 "aTargets": [1],
                 "mData": 1,
-                "mRender": function(data, type, full) {
-                    if (data == "") {
-                        var rowcontent = full.nodelist
-                        return rowcontent;
-                    }
-                    return data;
-                }
-
             },
             {
                 "aTargets": [2],
-                "mData": 2
+                "mData": 2,
+                "mRender": function(data, type, full) {
+                    if (full.apacheHadoop=="apacheHadoop") {
+                        var rowcontent = full.nodelist
+                        return rowcontent;
+                    }
+                    return full.mgr_url;
+                }
+
             },
             {
                 "aTargets": [3],
-                "mData": 3,
-                "mRender": function(data, type, full) {
-                    if (data == "Y") {
-                        var rowcontent = '<span class="label label-success">' + data + '</span>';
-                    } else {
-                        var rowcontent = '<span class="label label-warning">' + data + '<span>';
-                    }
-                    return rowcontent;
-                }
-
+                "mData": 3
             },
             {
                 "aTargets": [4],
@@ -130,6 +133,19 @@ function($) {
                 "aTargets": [7],
                 "mData": 7,
                 "mRender": function(data, type, full) {
+                    if (data == "Y") {
+                        var rowcontent = '<span class="label label-success">' + data + '</span>';
+                    } else {
+                        var rowcontent = '<span class="label label-warning">' + data + '<span>';
+                    }
+                    return rowcontent;
+                }
+
+            },
+            {
+                "aTargets": [8],
+                "mData": 8,
+                "mRender": function(data, type, full) {
                     var rowcontent = '<a type="button" class="btn btn-primary btn-alert">修改</a>  <button type="button" class="btn btn-danger btn-del">删除</button>';
                     return rowcontent;
                 }
@@ -145,6 +161,7 @@ function($) {
 
         $('#example').on('click', '.btn-alert',
         function() {
+            alertFileName=true;
             $('#myTab a:last').tab('show');
         });
 
@@ -160,6 +177,27 @@ function($) {
                 valid: 'glyphicon glyphicon-ok',
                 invalid: 'glyphicon glyphicon-remove',
                 validating: 'glyphicon glyphicon-refresh'
+            },
+            fields:{
+               configFileName:{
+                selector:'#configFileName',
+                validators:{
+                    callback:{
+                        message:'文件已存在，请重新输入',
+                        callback:function(value,validator){
+                            var  data = $('#example').DataTable().data();
+                            if(alertFileName==true)
+                               return true;
+                            for(var i=0;i<data.length;i++){
+                                if(data[i].configFileName==value){
+                                    return false;
+                                }
+                            }
+                            return true;
+                        }
+                    }
+                }
+            }
             }
         }).on('change', 'input[type="checkbox"][name="dcs_ha"]',
         function() {
@@ -290,7 +328,7 @@ function($) {
                 $('#configForm').bootstrapValidator('removeField', 'ldap_certpath');
             }
         }).on('success.form.bv',
-        function(e) {
+            function(e) {
             e.preventDefault();
             var href = window.location.href;
             if (buttonClick == "install") {
@@ -316,6 +354,52 @@ function($) {
             newInstall();
         });
 
+        $("#configFileName").change(function() {
+           // checkFileName();
+	});
+
+
+        $("#install").click(function(){
+          var val =  getChangeVal(document.getElementsByName("checkboxDemo"));
+           if(val==""){
+             alert("请先选择数据");
+             return ;
+           }     
+           $.ajax({
+                url: "install",
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json",
+                dataSrc: '',
+                data:val,
+                success:function(){
+                   var href = window.location.href;
+                   window.location = href + "installPage";
+		}
+           }); 
+        });
+
+
+        $("#discover").click(function(){
+        var val =  getChangeVal(document.getElementsByName("checkboxDemo"));
+            if(val==""){
+              alert("请先选择数据");
+              return ;
+            }
+            $.ajax({
+                 url: "discover",
+                 type: "POST",
+                 dataType: "json",
+                 contentType: "application/json",
+                 dataSrc: '',
+                 data: val,
+                 success:function(){
+                    var href = window.location.href;
+                    window.location = href + "installPage";
+                 }
+             });
+        });
+
         $("#newDiscover").click(function() {
             newDiscover();
         });
@@ -336,9 +420,6 @@ function($) {
             hideModal();
         });
 
-        //   $("#myModal").on('hide.bs.modal', function (e, v) {
-        //      hideModal();
-        //      });
         $("#new").click(function() {
             hideModal();
             $('#myTab a:last').tab('show');
@@ -352,6 +433,7 @@ function($) {
         function() {
             index = $(this).parent().context._DT_RowIndex; //行号
             var data = $('#example').DataTable().rows(index).data()[0]; //获取行数据
+            change(document.getElementsByName("checkboxDemo"),data.configFileName);
             $("#ssh_user").val(data.ssh_user);
             $("#ssh_pwd").val(data.ssh_pwd);
             if (data.apacheHadoop == "CDH_HDP") {
@@ -441,7 +523,7 @@ function($) {
         buttonClick = "install";
         $('#configForm').bootstrapValidator('validate');
         if ($("#configForm").data('bootstrapValidator').isValid()) {
-            var data = $("#configForm").serialize();
+           var data = $("#configForm").serialize();
             $.ajax({
                 url: "newConfig",
                 type: "POST",
@@ -461,6 +543,19 @@ function($) {
             alert("校验不通过!");
         }
     }
+
+    var checkFileName = function(){
+        var fileName = $("#configFileName").val();
+        var  data = $('#example').DataTable().data();
+        for(var i=0;i<data.length;i++){
+            if(data[i].configFileName==fileName){
+             alert("该文件名已存在，请重新输入"); 
+              $("#configFileName").val("");
+              return ;
+             }
+        }
+    }
+
 
     var newDiscover = function() {
         buttonClick = "discover";
@@ -499,6 +594,7 @@ function($) {
     }
 
     var hideModal = function() {
+        alertFileName=false;
         document.getElementById("configForm").reset();
         $("#configForm").bootstrapValidator('resetForm');
         $("#configFileName").attr("readonly", false);
@@ -514,5 +610,25 @@ function($) {
         $(".ldap").hide();
         $(".offlineInstall").hide();
     }
+    
 
+
+    var  change= function(radio_oj,aValue){//传入一个对象
+      for(var i=0;i<radio_oj.length;i++) {//循环
+        if(radio_oj[i].value==aValue){  //比较值
+          radio_oj[i].checked=true; //修改选中状态
+          break; //停止循环
+        }
+     }
+  }
+
+
+    var  getChangeVal = function(radio_oj){//传入一个对象
+       for(var i=0;i<radio_oj.length;i++) {//循环
+         if(radio_oj[i].checked==true){  //比较值
+           return radio_oj[i].value;
+         }
+       }
+       return "";
+   }
 } (jQuery);

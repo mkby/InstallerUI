@@ -32,9 +32,15 @@
         </div>
       </nav>
       <div class="container">
-        <div class="pull-left" style="margin-bottom: 20px ;margin-top:100px">
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#installDialog">新建</button></div>
-        <table id="installTable" class="table table-hover"></table>
+        <div role="tabpanel" class="tab-pane active" id="list">
+              <div class="panel panel-default" style="margin-top:80px">
+                <div class="panel-heading" style="height:50px">安装列表
+                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#installDialog" style="float:right;margin-left:10px">新建</button>
+                </div>
+                <table id="installTable" class="table table-hover"></table>
+              </div>
+            </div>
+
         <div id="installDialog" class="modal fade bs-example-modal-md" role="dialog">
           <div class="modal-dialog modal-md">
             <!-- Modal content-->
@@ -47,12 +53,14 @@
                   <div class="form-group">
                     <label for="exampleInputEmail1" class="col-sm-3 control-label" style="padding-left: 0px; padding-right: 0px">选择安装配置</label>
                     <div class="col-sm-9">
-                      <select id="selectConfig" name="selectConfig" class="form-control        "></select>
+                      <select id="selectConfig" name="selectConfig" class="form-control"></select>
                     </div>
                   </div>
                 </form>
                 <div class="alert alert-danger alert-dismissible fade in" role="alert" id="myAlert" style="display:none">
                   <button type="button" class="close" aria-label="close"></button>请选择配置文件</div>
+              <div class="alert alert-danger alert-dismissible fade in" role="alert" id="myAlert1" style="display:none">
+                  <button type="button" class="close" aria-label="close"></button>该配置文件正在安装</div>
               </div>
               <div class="modal-footer" style="height: 90px">
                 <input id="installApplyButton" class="submit btn btn-success" type="submit" value="Install">

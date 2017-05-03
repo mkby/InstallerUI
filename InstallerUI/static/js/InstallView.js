@@ -97,9 +97,9 @@ function($) {
                         tab +='<li role="presentation"><a href="#'+jsonList[i].hostname+'" aria-controls="'+jsonList[i].hostname+'" role="tab" data-toggle="tab">'+jsonList[i].hostname+'</a></li>';
                         tabContent +='<div role="tabpanel" class="tab-pane fade" id="'+jsonList[i].hostname+'">';
                         }
-                        var table ='<table class="table table-striped table-condensed"><tr><th>checkDetail</th><th>status</th></tr>' 
+                        var table ='<table class="table table-striped table-condensed"><tr><th>checkDetail</th><th>value</th><th>status</th></tr>' 
                         for(var o in jsonList[i]){
-                            table += "<tr><td style='font-weight:normal'>"+o+"</td><td>"+jsonList[i][o]+"</td></tr>";
+                            table += "<tr><td style='font-weight:normal'>"+o+"</td><td>"+jsonList[i][o]+"</td><td><span class='label label-success'>OK<span></td></tr>";
                         }
                         table +='</table>';
                         tabContent = tabContent+table+'</div>';
@@ -162,18 +162,34 @@ function($) {
             setTimeout("document.getElementById('myAlert').style.display='none'", 1000 * 2);
             return;
         }
-        $.ajax({
-            url: "install",
-            type: "POST",
-            dataType: "json",
-            contentType: "application/json",
-            dataSrc: '',
-            data: fileName,
-            success: function(data) {
-                $('#installTable').DataTable().ajax.reload(null, false);
-            }
+       $.ajax({
+                url: "tasks",
+                type: "GET",
+                dataType: "json",
+                contentType: "application/json",
+                dataSrc: '',
+                success:function(data){
+                  for(var i=0;i<data.length;i++){
+                   if(data[i].name==fileName&&data[i].status=="IN_PROCESS"){
+                      document.getElementById("myAlert1").style.display = "block";
+                      setTimeout("document.getElementById('myAlert1').style.display='none'", 1000 * 2); 
+		      return ;
+                   }
+                  }
+                  $.ajax({
+                    url: "install",
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json",
+                    dataSrc: '',
+                    data: fileName,
+                    success: function(data) {
+                      $('#installTable').DataTable().ajax.reload(null, false);
+                    } 
+                 });
+                 $(InstallDialog).modal("hide");
+                }
         });
-        $(InstallDialog).modal("hide");
     }
 
     var initTable = function() {
@@ -187,6 +203,8 @@ function($) {
             },
             bFilter: false,
             select: 'single',
+            ordering: false,
+            bLengthChange: false,
             columns: [{
                 data: 'id',
                 title: "Tasks"
@@ -271,12 +289,14 @@ function($) {
                 "mData": 6,
                 "mRender": function(data, type, full) {
                     if(full.type=="Discover"){
+                        if(full.status=="SUCCESS"){
                         var rowcontent = '<button type="button" class="btn btn-primary btn-slave">节点信息</button>';
-                    }else{  
-	                var rowcontent = '<button type="button" class="btn btn-primary btn-log">日志信息</button>';
+                        return rowcontent;
+                        }
                     }
+	            var rowcontent = '<button type="button" class="btn btn-primary btn-log">日志信息</button>';
                     return rowcontent;
-                }
+                   }   
             }]
         });
         return table;
@@ -296,8 +316,8 @@ function($) {
                     optionstring += "<option value=\"" + jsonObj[i].configFileName + "\" >" + jsonObj[i].configFileName + "</option>";
                 }
                 $(SelectConfig).html("<option value=''>请选择...</option> " + optionstring);
-            }
-        });
+           }
+          });
     }
 
 } (jQuery);
