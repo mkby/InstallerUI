@@ -92,10 +92,10 @@ Start trafodion successfully.
 
 path = os.path.dirname(os.path.abspath(__file__))
 t = time.time()
-os.system('rm -rf %s/logs/install*.log' % path)
+logfile = sys.argv[1]
 for line in txt.split('\n'):
-    os.system('echo %s >> %s/logs/install_%s.log' % (line, path, t))
-    time.sleep(0.2)
+    os.system('echo %s >> %s' % (line, logfile))
+    time.sleep(0.3)
 
 #print 'finish1!'
 if random.randint(1,2) % 2:

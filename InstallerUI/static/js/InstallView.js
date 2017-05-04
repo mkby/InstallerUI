@@ -255,7 +255,7 @@ function($) {
 					"mData": 2,
 				},
 				{
-					"sWidth": "40%",
+					"sWidth": "30%",
 					"aTargets": [3],
 					"mData": 3,
 					"mRender": function(data, type, full) {
@@ -271,7 +271,6 @@ function($) {
 								var rowcontent = '<div class="progress"><div class="progress-bar progress-bar-danger" role="progressbar"' + 'aria-valuenow="60"aria-valuemin="0" aria-valuemax="100" style="width:' + data + '%' + ';min-width: 2em;">' + data + '%' + '<span class="sr-only"></span></div></div>';
 							}
 							return rowcontent;
-
 						} else {
 							return data;
 						}
