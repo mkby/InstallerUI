@@ -6,6 +6,10 @@ import json
 from api import *
 
 ############## views ###############
+@app.route('/ui')
+def ui():
+    return flask.render_template('flatui.html')
+
 @app.route('/')
 def mainPage():
     return flask.render_template('index.html')
@@ -57,6 +61,17 @@ def runDiscover():
     config_file = flask.request.data
 
     th = perform_new_discover(config_file)
+    dic = {'id': th.id, 'pid': th.pid}
+    if th.rc == EC_NO_FILE:
+        return MSG[EC_NO_FILE], 400
+    else:
+        return flask.jsonify(dic), 201
+
+@app.route('/perf',methods=['POST'])
+def runPerf():
+    config_file = flask.request.data
+
+    th = perform_new_perf(config_file)
     dic = {'id': th.id, 'pid': th.pid}
     if th.rc == EC_NO_FILE:
         return MSG[EC_NO_FILE], 400

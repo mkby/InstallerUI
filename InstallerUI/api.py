@@ -21,6 +21,7 @@ INSTALLER_PATH = app.root_path + '/installer'
 
 TYPE_INSTALL = 'Install'
 TYPE_DISCOVER = 'Discover'
+TYPE_PERF = 'NetPerf'
 
 # task return code
 RC_INIT = -1
@@ -46,6 +47,7 @@ STAT_ERROR = 'ERROR'
 STAT_UNKNOWN = 'UNKNOWN'
 
 STAGES = [' End',
+          'traf_discover',
           'traf_start',
           'dbmgr_setup',
           'traf_sqconfig',
@@ -77,19 +79,25 @@ class TaskHandler(object):
         self.configFileName = ''
 
     def run(self):
-            self.rc = -1
-#        if not os.path.exists(self.configFilePath) or not os.path.exists(self.workPath):
-#            self.rc = EC_NO_FILE
-#        else:
+        self.rc = -1
+        if not os.path.exists(self.configFilePath):
+            self.rc = EC_NO_FILE
+        else:
             if self.type == TYPE_INSTALL:
                 cmd = '%s/db_install.py --config-file %s --log-file %s --silent' % (INSTALLER_PATH, self.configFilePath, self.logFile)
-#                cmd = '%s/fake_install.py' % self.workPath
+#                cmd = '%s/fake_install.py' % INSTALLER_PATH
             elif self.type == TYPE_DISCOVER:
-                cmd = '%s/fake_discover.py' % INSTALLER_PATH
-                #cmd = '%s/discovery.py -j --config-file %s' % (self.workPath, self.configFilePath)
+                cmd = '%s/discovery.py -j --config-file %s --log-file %s' % (INSTALLER_PATH, self.configFilePath, self.logFile)
+#                cmd = '%s/fake_discover.py' % INSTALLER_PATH
+            elif self.type == TYPE_PERF:
+                cmd = '%s/discovery.py -p --config-file %s --log-file %s' % (INSTALLER_PATH, self.configFilePath, self.logFile)
+
             p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             self.pid = p.pid
             self.stdout, self.stderr = p.communicate()
+            # filter discover output
+            if self.type == TYPE_DISCOVER:
+                self.stdout = re.search(r'(\[.*\])', self.stdout).groups()[0]
             self.rc = p.returncode
 
 def run_cmd(cmd):
@@ -111,7 +119,7 @@ def get_handler_by_id(task_id):
 def get_taskdic_by_handler(task_handler):
     status = get_status(task_handler)
     process = get_process(task_handler)
-    if status == STAT_ERROR:
+    if status != STAT_IN_PROGRESS:
         process = 100
     return {'id':        task_handler.id,
             'logfile':   task_handler.logFile,
@@ -153,7 +161,7 @@ def get_process(task_handler):
 def get_status(task_handler):
     if task_handler.rc == RC_INIT and is_process_exist(task_handler.pid):
         return STAT_IN_PROGRESS
-    elif task_handler.rc == RC_ERROR  and not is_process_exist(task_handler.pid):
+    elif task_handler.rc == RC_ERROR and not is_process_exist(task_handler.pid):
         return STAT_ERROR
     elif task_handler.rc == RC_OK and not is_process_exist(task_handler.pid):
         return STAT_SUCCESS
@@ -205,6 +213,9 @@ def perform_new_install(config_file):
 
 def perform_new_discover(config_file):
     return perform(TYPE_DISCOVER, config_file)
+
+def perform_new_perf(config_file):
+    return perform(TYPE_PERF, config_file)
 
 def get_log(log_file):
     try:
