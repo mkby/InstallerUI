@@ -16,9 +16,127 @@ function($) {
 		InstallDialog = '#installDialog',
 		Form = '#form',
 		SelectConfig = '#selectConfig';
-	var oTable, index;
+	var index;
 	$(document).ready(function() {
-		oTable = initTable();
+		$('#installTable').DataTable({
+			ajax: {
+				url: "tasks",
+				type: "GET",
+				dataType: "json",
+				contentType: "application/json",
+				dataSrc: ''
+			},
+			bFilter: false,
+                        bLengthChange: false,
+                        bautoWidth: false,
+			order:[[0,"desc"]],
+                        sScrollX: "3000px",
+			columns: [{
+					data: 'id',
+					title: "Tasks"
+                                        
+				}, {
+					data: 'name',
+					title: 'Config File Name'
+				},
+				{
+					data: 'type',
+					title: "Type"
+				},
+				{
+					data: 'process',
+					title: 'Progress'
+				},
+				{
+					data: 'starttime',
+					title: 'Start Time'
+				},
+				{
+					data: 'status',
+					title: 'Status'
+				},
+				{
+					data: null,
+					title: 'Operation'
+				}
+			],
+			"aoColumnDefs": [{
+				    "sWidth": "100px",
+					"aTargets": [0],
+					"mData": 0,
+				},
+				{
+					"sWidth": "100px",
+					"aTargets": [1],
+					"mData": 1,
+				}, {
+					"sWidth": "100px",
+					"aTargets": [2],
+					"mData": 2,
+				},
+				{
+					"sWidth": "300px",
+					"aTargets": [3],
+					"mData": 3,
+					"mRender": function(data, type, full) {
+						if(type == 'display') {
+							if(data == null) {
+								data = 0;
+							}
+							if(full.status == "SUCCESS") {
+								var rowcontent = '<div class="progress"><div class="progress-bar progress-bar-success" role="progressbar"' + 'aria-valuenow="60"aria-valuemin="0" aria-valuemax="100" style="width:' + data + '%' + ';min-width: 2em;"><span class="sr-only"></span></div></div>';
+							} else if(full.status == "IN_PROGRESS") {
+								var rowcontent = '<div class="progress"><div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar"' + 'aria-valuenow="60"aria-valuemin="0" aria-valuemax="100" style="width:' + data + '%' + ';min-width: 2em;"><span class="sr-only"></span></div></div>';
+							} else {
+								var rowcontent = '<div class="progress"><div class="progress-bar progress-bar-danger" role="progressbar"' + 'aria-valuenow="60"aria-valuemin="0" aria-valuemax="100" style="width:' + data + '%' + ';min-width: 2em;"><span class="sr-only"></span></div></div>';
+							}
+							return rowcontent;
+						} else {
+							return data;
+						}
+					}
+				},
+				{
+					"sWidth": "100px",
+					"aTargets": [4],
+					"mData": 4,
+				},
+				{
+					"sWidth": "100px",
+					"aTargets": [5],
+					"mData": 5,
+					"mRender": function(data, type, full) {
+						if(data == "SUCCESS") {
+							var rowcontent = '<span class="label label-success">' + data + '</span>';
+						} else if(data == "IN_PROGRESS") {
+							var rowcontent = '<span class="label label-info">' + data + '</span>';
+						} else {
+							var rowcontent = '<span class="label label-danger">' + data + '</span>';
+						}
+						return rowcontent;
+					}
+				},
+				{
+					"sWidth": "100px",
+					"aTargets": [6],
+					"mData": 6,
+					"mRender": function(data, type, full) {
+						if(full.type == "Discover") {
+							if(full.status == "SUCCESS") {
+								var rowcontent = '<button type="button" class="btn btn-primary btn-slave">节点信息</button>';
+								return rowcontent;
+							}
+						}
+						var rowcontent = '<button type="button" class="btn btn-primary btn-log">日志信息</button>';
+                                                if(full.type=="Install"&&full.status=="ERROR"){
+                                                    rowcontent += '  <button type="button" class="btn btn-primary btn-reInstall">重装</button>' 
+                                                }
+						return rowcontent;
+					}
+				}
+			]
+		});
+		
 		$(InstallResetButton).click(function() {
 			resetForm();
 		});
@@ -220,121 +338,6 @@ function($) {
 		});
 	}
 
-	var initTable = function() {
-		var table = $('#installTable').DataTable({
-			ajax: {
-				url: "tasks",
-				type: "GET",
-				dataType: "json",
-				contentType: "application/json",
-				dataSrc: ''
-			},
-			bFilter: false,
-                        bLengthChange: false,
-                        bautoWidth: false,
-			order:[[0,"desc"]],
-                        sScrollX: "3000px",
-			columns: [{
-					data: 'id',
-					title: "Tasks"
-                                        
-				}, {
-					data: 'name',
-					title: 'Config File Name'
-				},
-				{
-					data: 'type',
-					title: "Type"
-				},
-				{
-					data: 'process',
-					title: 'Progress'
-				},
-				{
-					data: 'starttime',
-					title: 'Start Time'
-				},
-				{
-					data: 'status',
-					title: 'Status'
-				},
-				{
-					data: null,
-					title: 'Operation'
-				}
-			],
-			"aoColumnDefs": [{
-					"aTargets": [0],
-					"mData": 0,
-				},
-				{
-					"aTargets": [1],
-					"mData": 1,
-				}, {
-					"aTargets": [2],
-					"mData": 2,
-				},
-				{
-					
-					"aTargets": [3],
-					"mData": 3,
-					"mRender": function(data, type, full) {
-						if(type == 'display') {
-							if(data == null) {
-								data = 0;
-							}
-							if(full.status == "SUCCESS") {
-								var rowcontent = '<div class="progress"><div class="progress-bar progress-bar-success" role="progressbar"' + 'aria-valuenow="60"aria-valuemin="0" aria-valuemax="100" style="width:' + data + '%' + ';min-width: 2em;"><span class="sr-only"></span></div></div>';
-							} else if(full.status == "IN_PROGRESS") {
-								var rowcontent = '<div class="progress"><div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar"' + 'aria-valuenow="60"aria-valuemin="0" aria-valuemax="100" style="width:' + data + '%' + ';min-width: 2em;"><span class="sr-only"></span></div></div>';
-							} else {
-								var rowcontent = '<div class="progress"><div class="progress-bar progress-bar-danger" role="progressbar"' + 'aria-valuenow="60"aria-valuemin="0" aria-valuemax="100" style="width:' + data + '%' + ';min-width: 2em;"><span class="sr-only"></span></div></div>';
-							}
-							return rowcontent;
-						} else {
-							return data;
-						}
-					}
-				},
-				{
-					"aTargets": [4],
-					"mData": 4,
-				},
-				{
-					"aTargets": [5],
-					"mData": 5,
-					"mRender": function(data, type, full) {
-						if(data == "SUCCESS") {
-							var rowcontent = '<span class="label label-success">' + data + '</span>';
-						} else if(data == "IN_PROGRESS") {
-							var rowcontent = '<span class="label label-info">' + data + '</span>';
-						} else {
-							var rowcontent = '<span class="label label-danger">' + data + '</span>';
-						}
-						return rowcontent;
-					}
-				},
-				{
-					"aTargets": [6],
-					"mData": 6,
-					"mRender": function(data, type, full) {
-						if(full.type == "Discover") {
-							if(full.status == "SUCCESS") {
-								var rowcontent = '<button type="button" class="btn btn-primary btn-slave">节点信息</button>';
-								return rowcontent;
-							}
-						}
-						var rowcontent = '<button type="button" class="btn btn-primary btn-log">日志信息</button>';
-                                                if(full.type=="Install"&&full.status=="ERROR"){
-                                                    rowcontent += '  <button type="button" class="btn btn-primary btn-reInstall">重装</button>' 
-                                                }
-						return rowcontent;
-					}
-				}
-			]
-		});
-	//	return table;
-	}
 
 	var queryConfig = function() {
 		$.ajax({
