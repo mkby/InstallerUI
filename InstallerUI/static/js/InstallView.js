@@ -70,6 +70,24 @@ function($) {
 				});
 			});
 
+ 
+                     $('#installTable').on('click', '.btn-reInstall',
+                        function() {
+                                var data = oTable.rows(index).data()[0].id
+                                $.ajax({
+                                        url: "tasks/"+data,
+                                        type: "PUT",
+                                        //dataType: "json",
+                                        //contentType: "application/json",
+                                       
+                                      //  dataSrc:'',
+                                        success: function(data) {
+                                            $('#installTable').DataTable().ajax.reload(null, false);    
+                                        }
+                                });
+                        });
+
+
 		$("#slaveSelect").on('change', function() {
 			var data = oTable.rows(index).data()[0]; //获取行数据
 			var jsonList = JSON.parse(data.stdout);
@@ -133,7 +151,7 @@ function($) {
 		var B = setInterval(function() {
 				$('#installTable').DataTable().ajax.reload(null, false);
 			},
-			3000);
+			2900);
 
 	});
 
@@ -180,7 +198,7 @@ function($) {
 			dataSrc: '',
 			success: function(data) {
 				for(var i = 0; i < data.length; i++) {
-					if(data[i].name == fileName && data[i].status == "IN_PROCESS") {
+					if(data[i].name == fileName && data[i].status == "IN_PROGRESS") {
 						document.getElementById("myAlert1").style.display = "block";
 						setTimeout("document.getElementById('myAlert1').style.display='none'", 1000 * 2);
 						return;
@@ -213,11 +231,12 @@ function($) {
 			},
 			bFilter: false,
 			select: 'single',
-			ordering: false,
+			order:[[0,"desc"]],
 			bLengthChange: false,
 			columns: [{
 					data: 'id',
 					title: "Tasks"
+                                        
 				}, {
 					data: 'name',
 					title: 'Config File Name'
@@ -264,11 +283,11 @@ function($) {
 								data = 0;
 							}
 							if(full.status == "SUCCESS") {
-								var rowcontent = '<div class="progress"><div class="progress-bar progress-bar-success" role="progressbar"' + 'aria-valuenow="60"aria-valuemin="0" aria-valuemax="100" style="width:' + data + '%' + ';min-width: 2em;">' + data + '%' + '<span class="sr-only"></span></div></div>';
+								var rowcontent = '<div class="progress"><div class="progress-bar progress-bar-success" role="progressbar"' + 'aria-valuenow="60"aria-valuemin="0" aria-valuemax="100" style="width:' + data + '%' + ';min-width: 2em;"><span class="sr-only"></span></div></div>';
 							} else if(full.status == "IN_PROGRESS") {
-								var rowcontent = '<div class="progress"><div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar"' + 'aria-valuenow="60"aria-valuemin="0" aria-valuemax="100" style="width:' + data + '%' + ';min-width: 2em;">' + data + '%' + '<span class="sr-only"></span></div></div>';
+								var rowcontent = '<div class="progress"><div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar"' + 'aria-valuenow="60"aria-valuemin="0" aria-valuemax="100" style="width:' + data + '%' + ';min-width: 2em;"><span class="sr-only"></span></div></div>';
 							} else {
-								var rowcontent = '<div class="progress"><div class="progress-bar progress-bar-danger" role="progressbar"' + 'aria-valuenow="60"aria-valuemin="0" aria-valuemax="100" style="width:' + data + '%' + ';min-width: 2em;">' + data + '%' + '<span class="sr-only"></span></div></div>';
+								var rowcontent = '<div class="progress"><div class="progress-bar progress-bar-danger" role="progressbar"' + 'aria-valuenow="60"aria-valuemin="0" aria-valuemax="100" style="width:' + data + '%' + ';min-width: 2em;"><span class="sr-only"></span></div></div>';
 							}
 							return rowcontent;
 						} else {

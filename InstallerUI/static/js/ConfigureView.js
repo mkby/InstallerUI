@@ -355,14 +355,11 @@ function($) {
 			newInstall();
 		});
 
-		$("#configFileName").change(function() {
-			// checkFileName();
-		});
 
 		$("#install").click(function() {
 			var val = getChangeVal(document.getElementsByName("checkboxDemo"));
 			if(val == "") {
-				alert("请先选择数据");
+                                $("#alert").modal('show');	
 				return;
 			}
 			$.ajax({
@@ -382,7 +379,7 @@ function($) {
 		$("#discover").click(function() {
 			var val = getChangeVal(document.getElementsByName("checkboxDemo"));
 			if(val == "") {
-				alert("请先选择数据");
+			        $("#alert").modal('show');	
 				return;
 			}
 			$.ajax({
@@ -543,17 +540,6 @@ function($) {
 		}
 	}
 
-	var checkFileName = function() {
-		var fileName = $("#configFileName").val();
-		var data = $('#example').DataTable().data();
-		for(var i = 0; i < data.length; i++) {
-			if(data[i].configFileName == fileName) {
-				alert("该文件名已存在，请重新输入");
-				$("#configFileName").val("");
-				return;
-			}
-		}
-	}
 
 	var newDiscover = function() {
 		buttonClick = "discover";
