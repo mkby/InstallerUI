@@ -99,7 +99,7 @@ function($) {
 					}
 					var table = '<table class="table table-striped table-condensed"><tr><th>checkDetail</th><th>value</th><th>status</th></tr>'
 					for(var o in jsonList[i]) {
-						table += "<tr><td style='font-weight:normal'>" + o + "</td><td>" + jsonList[i][o] + "</td><td><span class='label label-success'>OK<span></td></tr>";
+						table += "<tr><td style='font-weight:normal'>" + o + "</td><td>" + jsonList[i][o] + "</td><td><button type='button' id='new' class='btn btn-success btn-circle btn-small dbmgr-status-btn' style='float:right;margin-left:10px'><i class='fa fa-check'></i></button></td></tr>";//fa-times(X)  fa-warning(!)
 					}
 					table += '</table>';
 					tabContent = tabContent + table + '</div>';
