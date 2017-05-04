@@ -84,8 +84,8 @@ class TaskHandler(object):
             self.rc = EC_NO_FILE
         else:
             if self.type == TYPE_INSTALL:
-                cmd = '%s/db_install.py --config-file %s --log-file %s --silent' % (INSTALLER_PATH, self.configFilePath, self.logFile)
-#                cmd = '%s/fake_install.py' % INSTALLER_PATH
+       #         cmd = '%s/db_install.py --config-file %s --log-file %s --silent' % (INSTALLER_PATH, self.configFilePath, self.logFile)
+                cmd = '%s/fake_install.py  %s' % (INSTALLER_PATH, self.logFile)
             elif self.type == TYPE_DISCOVER:
                 cmd = '%s/discovery.py -j --config-file %s --log-file %s' % (INSTALLER_PATH, self.configFilePath, self.logFile)
 #                cmd = '%s/fake_discover.py' % INSTALLER_PATH
