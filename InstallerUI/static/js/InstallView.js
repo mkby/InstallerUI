@@ -230,9 +230,10 @@ function($) {
 				dataSrc: ''
 			},
 			bFilter: false,
-			select: 'single',
+                        bLengthChange: false,
+                        bautoWidth: false,
 			order:[[0,"desc"]],
-			bLengthChange: false,
+                        sScrollX: "3000px",
 			columns: [{
 					data: 'id',
 					title: "Tasks"
@@ -274,7 +275,7 @@ function($) {
 					"mData": 2,
 				},
 				{
-					"sWidth": "30%",
+					
 					"aTargets": [3],
 					"mData": 3,
 					"mRender": function(data, type, full) {
@@ -332,7 +333,7 @@ function($) {
 				}
 			]
 		});
-		return table;
+	//	return table;
 	}
 
 	var queryConfig = function() {

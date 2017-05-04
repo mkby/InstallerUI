@@ -13,7 +13,6 @@ function($) {
 		index, buttonClick;
 	var alertFileName = false;
 	$(document).ready(function() {
-		$("#common").html("head.html");
 		$('#example').DataTable({
 			ajax: {
 				url: "queryConfig",
