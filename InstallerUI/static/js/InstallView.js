@@ -87,20 +87,32 @@ function($) {
 				$("#checkDialog").modal("show");
 				var data = oTable.rows(index).data()[0]; //获取行数据
 				var jsonList = JSON.parse(data.stdout);
+                                $("#tab").html("");
 				var tab = ' <ul class="nav nav-tabs" role="tablist">';
 				var tabContent = '<div class="tab-content style="margin-top:100px"">';
 				for(var i = 0; i < jsonList.length; i++) {
 					if(i == 0) {
-						tab += '<li role="presentation" class="active"><a href="#' + jsonList[i].hostname + '" aria-controls="' + jsonList[i].hostname + '" role="tab" data-toggle="tab">' + jsonList[i].hostname + '</a></li>';
-						tabContent += '<br><div role="tabpanel" class="tab-pane fade in active" id="' + jsonList[i].hostname + '">';
+						tab += '<li role="presentation" class="active"><a href="#' + jsonList[i].hostname.value + '" aria-controls="' + jsonList[i].hostname.value + '" role="tab" data-toggle="tab">' + jsonList[i].hostname.value + '</a></li>';
+						tabContent += '<br><div role="tabpanel" class="tab-pane fade in active" id="' + jsonList[i].hostname.value + '">';
 					} else {
-						tab += '<li role="presentation"><a href="#' + jsonList[i].hostname + '" aria-controls="' + jsonList[i].hostname + '" role="tab" data-toggle="tab">' + jsonList[i].hostname + '</a></li>';
-						tabContent += '<div role="tabpanel" class="tab-pane fade" id="' + jsonList[i].hostname + '">';
+						tab += '<li role="presentation"><a href="#' + jsonList[i].hostname.value + '" aria-controls="' + jsonList[i].hostname.value + '" role="tab" data-toggle="tab">' + jsonList[i].hostname.value + '</a></li>';
+						tabContent += '<div role="tabpanel" class="tab-pane fade" id="' + jsonList[i].hostname.value + '">';
 					}
 					var table = '<table class="table table-striped table-condensed"><tr><th>checkDetail</th><th>value</th><th>status</th></tr>'
 					for(var o in jsonList[i]) {
-						table += "<tr><td style='font-weight:normal'>" + o + "</td><td>" + jsonList[i][o] + "</td><td><button type='button' id='new' class='btn btn-success btn-circle btn-small dbmgr-status-btn' style='float:right;margin-left:10px'><i class='fa fa-check'></i></button></td></tr>";//fa-times(X)  fa-warning(!)
-					}
+						table += "<tr><td style='font-weight:normal'>"+jsonList[i][o].doc+"</td><td>" + jsonList[i][o].value+ "</td>";
+                                                if(jsonList[i][o].hasOwnProperty("status")){
+                                                    if(jsonList[i][o].status=="OK"){
+                                                        table +="<td><button type='button' id='new' class='btn btn-success btn-circle btn-small dbmgr-status-btn' style='float:right;margin-left:10px'><i class='fa fa-check'></i></button></td></tr>";
+					              }else if(jsonList[i][o].status=="error"){
+                                                        table +="<td><button type='button' id='new' class='btn btn-danger btn-circle btn-small dbmgr-status-btn' style='float:right;margin-left:10px'><i class='fa fa-times'></i></button></td></tr>";   
+                                                      }else{
+                                                        table +="<td><button type='button' id='new' class='btn btn-warning btn-circle btn-small dbmgr-status-btn' style='float:right;margin-left:10px'><i class='fa fa-warning'></i></button></td></tr>"
+                                                      }
+                                                 }else{
+                                                         table +="<td></td></tr>";
+                                                }
+                                        }
 					table += '</table>';
 					tabContent = tabContent + table + '</div>';
 				}
@@ -249,7 +261,7 @@ function($) {
 					"mRender": function(data, type, full) {
 						if(type == 'display') {
 							if(data == null) {
-								data = 100;
+								data = 0;
 							}
 							if(full.status == "SUCCESS") {
 								var rowcontent = '<div class="progress"><div class="progress-bar progress-bar-success" role="progressbar"' + 'aria-valuenow="60"aria-valuemin="0" aria-valuemax="100" style="width:' + data + '%' + ';min-width: 2em;">' + data + '%' + '<span class="sr-only"></span></div></div>';
@@ -294,6 +306,9 @@ function($) {
 							}
 						}
 						var rowcontent = '<button type="button" class="btn btn-primary btn-log">日志信息</button>';
+                                                if(full.type=="Install"&&full.status=="ERROR"){
+                                                    rowcontent += '  <button type="button" class="btn btn-primary btn-reInstall">重装</button>' 
+                                                }
 						return rowcontent;
 					}
 				}
