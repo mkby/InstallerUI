@@ -137,7 +137,7 @@
 												<label for="node_list" class="control-label">node_list</label>
 												<br>trafodion node list, seperated by comma</div>
 											<div class="col-sm-5">
-												<textarea class="form-control" id="node_list" name="nodelist" autocomplete="off"></textarea>
+												<input class="form-control" id="node_list" name="node_list" autocomplete="off" required="required"></input>
 											</div>
 										</div>
 										<hr />
@@ -437,7 +437,7 @@
                                         <div class="modal-content">
                                                 <div class="modal-header">
                                                         <h4 class="modal-title">提示信息</h4></div>
-                                                <div class="modal-body">请选择一条数据</div>
+                                                <div class="modal-body"><span id="alertContent"></span></div>
                                                 <div class="modal-footer">
                                                         <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
                                                 </div>

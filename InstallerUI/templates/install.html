@@ -43,7 +43,7 @@
 						<div class="panel-heading" style="height:50px">安装列表
 							<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#installDialog" style="float:right;margin-left:10px">新建</button>
 						</div>
-						<table id="installTable" class="table table-hover"></table>
+						<table id="installTable" class="table table-hover" style="table-layout:fixed"></table>
 					</div>
 				</div>
 
@@ -119,6 +119,18 @@
 						</div>
 					</div>
 				</div>
+                                <div id="alert" class="modal fade bs-example-modal-sm" role="dialog" style="top:150px">
+                                    <div class="modal-dialog modal-sm">                                     
+                                        <div class="modal-content">                             
+                                                <div class="modal-header">              
+                                                        <h4 class="modal-title">提示信息</h4></div>
+                                                <div class="modal-body">该集群已有一个正在进行的安装任务</div>
+                                                <div class="modal-footer">              
+                                                        <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+                                                </div>                                          
+                                        </div>                                          
+                                    </div>                                                          
+                               </div>
 			</div>
 		</div>
 	</body>

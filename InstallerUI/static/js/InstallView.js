@@ -16,9 +16,9 @@ function($) {
 		InstallDialog = '#installDialog',
 		Form = '#form',
 		SelectConfig = '#selectConfig';
-	var index;
+	var oTable,index;
 	$(document).ready(function() {
-		$('#installTable').DataTable({
+		oTable=$('#installTable').DataTable({
 			ajax: {
 				url: "tasks",
 				type: "GET",
@@ -28,12 +28,9 @@ function($) {
 			},
 			bFilter: false,
                         bLengthChange: false,
-                        bautoWidth: false,
-			order:[[0,"desc"]],
-                        sScrollX: "3000px",
 			columns: [{
 					data: 'id',
-					title: "Tasks"
+					title: "Tasks",
                                         
 				}, {
 					data: 'name',
@@ -61,21 +58,21 @@ function($) {
 				}
 			],
 			"aoColumnDefs": [{
-				    "sWidth": "100px",
+				    "sWidth": "40px",
 					"aTargets": [0],
 					"mData": 0,
 				},
 				{
-					"sWidth": "100px",
+					"sWidth": "120px",
 					"aTargets": [1],
 					"mData": 1,
 				}, {
-					"sWidth": "100px",
+					"sWidth": "50px",
 					"aTargets": [2],
 					"mData": 2,
 				},
 				{
-					"sWidth": "300px",
+					"sWidth": "250px",
 					"aTargets": [3],
 					"mData": 3,
 					"mRender": function(data, type, full) {
@@ -97,7 +94,7 @@ function($) {
 					}
 				},
 				{
-					"sWidth": "100px",
+					"sWidth": "130px",
 					"aTargets": [4],
 					"mData": 4,
 				},
@@ -117,7 +114,7 @@ function($) {
 					}
 				},
 				{
-					"sWidth": "100px",
+					"sWidth": "130px",
 					"aTargets": [6],
 					"mData": 6,
 					"mRender": function(data, type, full) {
@@ -179,7 +176,8 @@ function($) {
 					traditional: true,
 					data: "logPath=" + data.logfile,
 					success: function(data) {
-						$("#logContent").append(data.log.replace(/\n/g, "<br>"));
+					        $("#logContent").css("color", "black");
+                                        	$("#logContent").append(data.log.replace(/\n/g, "<br>"));
 					},
 					error: function(msg) {
 						$("#logContent").css("color", "red");
@@ -191,6 +189,14 @@ function($) {
  
                      $('#installTable').on('click', '.btn-reInstall',
                         function() {
+                               var dataAll = oTable.data();                               
+                               var fileName = oTable.rows(index).data()[0].name;
+                               for(var i = 0; i < dataAll.length; i++) {
+                                        if(dataAll[i].name == fileName && dataAll[i].status == "IN_PROGRESS") {
+                                                $("#alert").modal("show");
+                                                return;
+                                        }
+                                }
                                 var data = oTable.rows(index).data()[0].id
                                 $.ajax({
                                         url: "tasks/"+data,

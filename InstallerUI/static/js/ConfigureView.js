@@ -23,9 +23,7 @@ function($) {
 			},
 			bFilter: false,
 			bLengthChange: false,
-			bautoWidth: false,
 			ordering: false,
-			sScrollX: "3000px",
 			columns: [{
 					data: null,
 					title: 'Check'
@@ -63,22 +61,25 @@ function($) {
 				}
 			],
 			"aoColumnDefs": [{
+                                        "sWidth": "40px",
 					"aTargets": [0],
 					"mData": 0,
 					"mRender": function(data, type, full) {
-						return '<input type="radio" name="checkboxDemo" value=' + full.configFileName + '>';
+						return '<input type="radio" name="checkboxDemo"value=' + full.configFileName + '>';
 					}
 				},
 				{
+                                        "sWidth": "120px",
 					"aTargets": [1],
 					"mData": 1,
 				},
 				{
+                                        "sWidth": "120px",
 					"aTargets": [2],
 					"mData": 2,
 					"mRender": function(data, type, full) {
 						if(full.apacheHadoop == "apacheHadoop") {
-							var rowcontent = full.nodelist
+							var rowcontent = full.node_list;
 							return rowcontent;
 						}
 						return full.mgr_url;
@@ -86,11 +87,13 @@ function($) {
 
 				},
 				{
+                                        "sWidth": "140px",
 					"aTargets": [3],
 					"mData": 3
 				},
 				{
-					"aTargets": [4],
+				        "sWidth": "40px",
+                                  	"aTargets": [4],
 					"mData": 4,
 					"mRender": function(data, type, full) {
 						if(data == "Y") {
@@ -103,6 +106,7 @@ function($) {
 
 				},
 				{
+                                        "sWidth": "40px",
 					"aTargets": [5],
 					"mData": 5,
 					"mRender": function(data, type, full) {
@@ -116,6 +120,7 @@ function($) {
 
 				},
 				{
+                                        "sWidth": "40px",
 					"aTargets": [6],
 					"mData": 6,
 					"mRender": function(data, type, full) {
@@ -129,6 +134,7 @@ function($) {
 
 				},
 				{
+                                        "sWidth": "40px",
 					"aTargets": [7],
 					"mData": 7,
 					"mRender": function(data, type, full) {
@@ -142,6 +148,7 @@ function($) {
 
 				},
 				{
+                                        "sWidth": "120px",
 					"aTargets": [8],
 					"mData": 8,
 					"mRender": function(data, type, full) {
@@ -332,7 +339,7 @@ function($) {
 				e.preventDefault();
 				var href = window.location.href;
 				if(buttonClick == "install") {
-					window.location = href + "installPage";
+					window.location = href + "oinstallPage";
 				} else if(buttonClick == "discover") {
 					window.location = href + "installPage";
 				} else {
@@ -358,26 +365,50 @@ function($) {
 		$("#install").click(function() {
 			var val = getChangeVal(document.getElementsByName("checkboxDemo"));
 			if(val == "") {
+                                $("#alertContent").html("请先选择数据");
                                 $("#alert").modal('show');	
 				return;
-			}
-			$.ajax({
-				url: "install",
-				type: "POST",
-				dataType: "json",
-				contentType: "application/json",
-				dataSrc: '',
-				data: val,
-				success: function() {
-					var href = window.location.href;
-					window.location = href + "installPage";
-				}
-			});
+			}else{
+                            $.ajax({
+                                 url: "tasks",
+                                 type: "GET",
+                                 dataType: "json",
+                                 contentType: "application/json",
+                                 dataSrc: '',
+                                 success: function(data) {
+                                       var isInstall =true;
+                                       for(var i=0;i<data.length;i++){
+                                          if(data[i].name == val && data[i].status == "IN_PROGRESS") {
+                                               isInstall =false;
+                                               break ;
+                                         }     
+                                     }
+                                     if(isInstall){
+                                       $.ajax({
+                                          url: "install",
+                                          type: "POST",
+                                          dataType: "json",
+                                          contentType: "application/json",
+                                          dataSrc: '',
+                                          data: val,
+                                          success: function() {
+                                              var href = window.location.href;
+                                              window.location = href + "installPage";
+                                          }
+                                     }); 
+                                   }else{
+                                       $("#alertContent").html("该集群已有一个正在进行的安装任务");
+                                       $("#alert").modal('show');
+                                   }  
+                                }
+                           });
+                        }
 		});
 
 		$("#discover").click(function() {
 			var val = getChangeVal(document.getElementsByName("checkboxDemo"));
 			if(val == "") {
+                                $("#alertContent").html("请先选择数据");       
 			        $("#alert").modal('show');	
 				return;
 			}
@@ -432,13 +463,17 @@ function($) {
 				$("#ssh_user").val(data.ssh_user);
 				$("#ssh_pwd").val(data.ssh_pwd);
 				if(data.apacheHadoop == "CDH_HDP") {
-					document.getElementById("radio1").checked = true;
+		                        $(".cdhhdp").show();
+                                        $(".apacheHadoop").hide();
+                       			document.getElementById("radio1").checked = true;
 					document.getElementById("radio2").checked = false;
 					$("#mgr_url").val(data.mgr_url);
 					$("#mgr_user").val(data.mgr_user);
 					$("#mgr_pwd").val(data.mgr_pwd);
 					$("#cluster_no").val(data.cluster_no);
 				} else {
+                                        $(".cdhhdp").hide();
+                                        $(".apacheHadoop").show();
 					document.getElementById("radio1").checked = false;
 					document.getElementById("radio2").checked = true;
 					$("#node_list").val(data.node_list);
@@ -526,14 +561,39 @@ function($) {
 				dataType: "json",
 				traditional: true
 			});
-			$.ajax({
-				url: "install",
-				type: "POST",
-				dataType: "json",
-				contentType: "application/json",
-				dataSrc: '',
-				data: $("#configFileName").val(),
-			});
+	                $.ajax({
+                                 url: "tasks",
+                                 type: "GET",
+                                 dataType: "json",
+                                 contentType: "application/json",
+                                 dataSrc: '',
+                                 success: function(data) {
+                                       var isInstall =true;
+                                       for(var i=0;i<data.length;i++){
+                                          if(data[i].name ==$("#configFileName").val()&& data[i].status == "IN_PROGRESS") {
+                                               isInstall =false;
+                                               break ;
+                                         }
+                                     }
+                                     if(isInstall){
+                                       $.ajax({
+                                          url: "install",
+                                          type: "POST",
+                                          dataType: "json",
+                                          contentType: "application/json",
+                                          dataSrc: '',
+                                          data:$("#configFileName").val(),
+                                          success: function() {
+                                              var href = window.location.href;
+                                              window.location = href + "installPage";
+                                          }
+                                     }); 
+                                   }else{
+                                       $("#alertContent").html("该集群已有一个正在进行的安装任务，请稍后再试");
+                                       $("#alert").modal('show');
+                                   }
+                                }
+                           });
 		} else {
 			alert("校验不通过!");
 		}
