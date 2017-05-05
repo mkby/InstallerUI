@@ -27,6 +27,7 @@ function($) {
 				dataSrc: ''
 			},
 			bFilter: false,
+                        order:[[0,"desc"]],
                         bLengthChange: false,
 			columns: [{
 					data: 'id',
