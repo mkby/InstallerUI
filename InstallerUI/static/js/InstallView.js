@@ -245,11 +245,11 @@ function($) {
 						table += "<tr><td style='font-weight:normal'>"+jsonList[i][o].doc+"</td><td>" + jsonList[i][o].value+ "</td>";
                                                 if(jsonList[i][o].hasOwnProperty("status")){
                                                     if(jsonList[i][o].status=="OK"){
-                                                        table +="<td><button type='button' id='new' class='btn btn-success btn-circle btn-small dbmgr-status-btn' style='float:right;margin-left:10px'><i class='fa fa-check'></i></button></td></tr>";
+                                                        table +="<td><button type='button' id='new' class='btn btn-success btn-circle btn-small dbmgr-status-btn sm'><i class='fa fa-check'></i></button></td></tr>";
 					              }else if(jsonList[i][o].status=="error"){
-                                                        table +="<td><button type='button' id='new' class='btn btn-danger btn-circle btn-small dbmgr-status-btn' style='float:right;margin-left:10px'><i class='fa fa-times'></i></button></td></tr>";   
+                                                        table +="<td><button type='button' id='new' class='btn btn-danger btn-circle btn-small dbmgr-status-btn'><i class='fa fa-times'></i></button></td></tr>";   
                                                       }else{
-                                                        table +="<td><button type='button' id='new' class='btn btn-warning btn-circle btn-small dbmgr-status-btn' style='float:right;margin-left:10px'><i class='fa fa-warning'></i></button></td></tr>"
+                                                        table +="<td><button type='button' id='new' class='btn btn-warning btn-circle btn-small dbmgr-status-btn'><i class='fa fa-warning'></i></button></td></tr>"
                                                       }
                                                  }else{
                                                          table +="<td></td></tr>";
