@@ -8,8 +8,9 @@
 		<link href="../static/lib/css/jquery.dataTables.min.css" rel="stylesheet">
 		<link href="../static/lib/css/bootstrapValidator.min.css" rel="stylesheet" />
 		<link href="../static/lib/css/bootstrap-switch.css" rel="stylesheet" />
-        <link href="../static/css/installation.css" rel="stylesheet" />
-        <link type="text/css" href="../static/lib/css/font-awesome/css/font-awesome.css" rel="stylesheet" />
+                <link href="../static/css/installation.css" rel="stylesheet" />
+                <link type="text/css" href="../static/lib/css/font-awesome/css/font-awesome.css" rel="stylesheet" />
+                <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 		<script src="../static/lib/js/jquery.min.js"></script>
 		<script src="../static/lib/js/jquery.dataTables.min.js"></script>
 		<script src="../static/lib/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -232,6 +233,8 @@
 												<br>trafodion binary package location on server</div>
 											<div class="col-sm-5">
 												<input type="text" class="form-control" id="traf_package" name="traf_package" required="required" autocomplete="off"></div>
+                                                                                        <div class="col-sm-3">
+                                                                                                <a class="btn btn-primary" data-toggle="modal" data-target="#folderModal" id="folderBtn"><i class='fa fa-folder-open'></i></a></div>
 										</div>
 										<div class="form-group">
 											<div class="col-sm-4">
@@ -440,6 +443,33 @@
                                                 <div class="modal-body"><span id="alertContent"></span></div>
                                                 <div class="modal-footer">
                                                         <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+                                                </div>
+                                        </div>
+                                </div>
+                      </div>
+                      <div id="folderModal" class="modal fade bs-example-modal-md" role="dialog">
+                                <div class="modal-dialog modal-md">
+                                        <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title">选择路径</h4></div>
+                                                <div class="modal-body">
+                                                     <div class="input-group">
+                                                         <span class="input-group-addon" id="basic-addon3"><i class='fa fa-folder-open'></i>当前路径</span>
+                                                         <input type="text" class="form-control" id="now-folder" aria-describedby="basic-addon3" readonly="readonly">
+                                                     </div>           
+                                                     <div  style="height:400px;max-height:400px;overflow-y:auto;">
+                                                     <table id="folderTable" class="table table-hover table-condensed" style="font-size:16px">
+                                                     </table>
+                                                     </div> 
+                                                </div>
+                                                <div class="modal-footer">
+                                                       <!-- <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>-->
+                                                        <div class="input-group">
+                                                              <input type="text" class="form-control" aria-label="..." id="folderValue">
+                                                              <div class="input-group-btn">
+                                                                 <button id="chooseFile" class="btn btn-primary" data-dismiss="modal">选择文件</button>
+                                                              </div>
+                                                       </div> 
                                                 </div>
                                         </div>
                                 </div>

@@ -361,7 +361,32 @@ function($) {
 			newInstall();
 		});
 
-
+                $("#folderTable").on('click','tr',function(){
+                      if(this.classList.contains("folderClass")){
+                          //重画表格
+                          var folder = this.innerText.replace(/(^\s*)|(\s*$)/g, "");
+                          var nowFolder = $("#now-folder").val();
+                          $("#folderValue").val("");
+                          drawFolderTable(folder,nowFolder);
+                          
+                      }else if(this.classList.contains("fileClass")){
+                          $("#folderValue").val("");
+                          $("#folderValue").val(this.innerText.replace(/(^\s*)|(\s*$)/g, ""));
+                      }else if(this.classList.contains("backClass")){
+                         //返回上一级目录
+                         var nowFolder = $("#now-folder").val();
+                         nowFolder=nowFolder.substring(0,nowFolder.length-1);
+                         nowFolder=nowFolder.substring(0,nowFolder.lastIndexOf("/"));
+                         drawFolderTable("",nowFolder);
+                      }
+                });
+ 
+ 
+                $("#chooseFile").click(function(){
+                    $("#traf_package").val($("#now-folder").val()+$("#folderValue").val());
+             
+                }); 
+               
 		$("#install").click(function() {
 			var val = getChangeVal(document.getElementsByName("checkboxDemo"));
 			if(val == "") {
@@ -434,6 +459,13 @@ function($) {
 			$(".cdhhdp").show();
 			$(".apacheHadoop").hide();
 		});
+ 
+
+                $("#folderBtn").click(function() {
+                    var traf_package = $("#traf_package").val();
+                    drawFolderTable('','');  
+                });
+
 
 		$("#radio2").click(function() {
 			$(".apacheHadoop").show();
@@ -670,4 +702,34 @@ function($) {
 		}
 		return "";
 	}
+
+
+        var drawFolderTable = function(chooseFolder,nowFolder){ //传入一个对象
+            var folder=nowFolder+chooseFolder+"/";
+            $.ajax({
+                       url:"fileList",
+                       type:"PUT",
+                       dataType:"json",
+                       contentType:"application/json",
+                       dataSrc:'',
+                       data:folder,
+                       success:function(data){
+                           $("#now-folder").val((folder=="/")?"":folder);
+                           var dirs = data.dirs;
+                           var files = data.files;
+                           $("#folderTable").html("");
+                           if($("#now-folder").val()!=""){
+                               $("#folderTable").append('<tr class="backClass"><td style="cursor:default" ><i class="fa fa-folder-o" aria-hidden="true"></i>&nbsp&nbsp&nbsp&nbsp<i style="font-size:13px">..</i></td></tr>');
+                           }
+                           for(var i=0;i<dirs.length;i++){
+                              var trHTML ='<tr class="folderClass"><td style="cursor:default" ><i class="fa fa-folder" aria-hidden="true"></i>&nbsp&nbsp&nbsp&nbsp<i style="font-size:13px">'+dirs[i]+'</i></td></tr>';
+                              $("#folderTable").append(trHTML);
+                           }
+                           for(var i=0;i<files.length;i++){
+                            var trHTML ='<tr class="fileClass"><td style="cursor:default" ><i class="fa fa-file" aria-hidden="true"></i>&nbsp&nbsp&nbsp&nbsp<i style="font-size:13px">'+files[i]+'</i></td></tr>';
+                            $("#folderTable").append(trHTML);
+                           }
+                       }
+           });
+        }
 }(jQuery);
