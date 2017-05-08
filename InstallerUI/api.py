@@ -285,4 +285,4 @@ def get_file_list(dirname):
     except StopIteration:
         dirs = files = []
     g.close()
-    return {'dirs': dirs, 'files':files}
+    return {'abspath': path, 'dirs': dirs, 'files':files}
