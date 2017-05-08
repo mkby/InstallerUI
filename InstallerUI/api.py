@@ -281,6 +281,7 @@ def get_file_list(dirname):
     g = os.walk(path)
     try:
         name, dirs, files = g.next()
+        files = [f for f in files if re.findall(r'esgynDB_.*_server-.*.tar.gz', f)]
     except StopIteration:
         dirs = files = []
     g.close()
