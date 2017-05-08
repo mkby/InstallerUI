@@ -18,6 +18,7 @@ count = 0 # global counter
 ########## constants #############
 CONFIG_PATH = app.root_path + '/properties'
 INSTALLER_PATH = app.root_path + '/installer'
+PKG_PATH = app.root_path + '/packages'
 
 TYPE_INSTALL = 'Install'
 TYPE_DISCOVER = 'Discover'
@@ -84,11 +85,11 @@ class TaskHandler(object):
             self.rc = EC_NO_FILE
         else:
             if self.type == TYPE_INSTALL:
-       #         cmd = '%s/db_install.py --config-file %s --log-file %s --silent' % (INSTALLER_PATH, self.configFilePath, self.logFile)
+#                cmd = '%s/db_install.py --config-file %s --log-file %s --silent' % (INSTALLER_PATH, self.configFilePath, self.logFile)
                 cmd = '%s/fake_install.py  %s' % (INSTALLER_PATH, self.logFile)
             elif self.type == TYPE_DISCOVER:
-                cmd = '%s/discovery.py -j --config-file %s --log-file %s' % (INSTALLER_PATH, self.configFilePath, self.logFile)
-#                cmd = '%s/fake_discover.py' % INSTALLER_PATH
+       #         cmd = '%s/discovery.py -j --config-file %s --log-file %s' % (INSTALLER_PATH, self.configFilePath, self.logFile)
+                cmd = '%s/fake_discover.py' % INSTALLER_PATH
             elif self.type == TYPE_PERF:
                 cmd = '%s/discovery.py -p --config-file %s --log-file %s' % (INSTALLER_PATH, self.configFilePath, self.logFile)
 
@@ -271,3 +272,16 @@ def save_config(conf):
         return SUCCESS
     except:
         return EC_INT_ERR
+
+def get_file_list(dirname):
+    if not dirname:
+        path = PKG_PATH
+    else:
+        path = PKG_PATH + '/' + dirname
+    g = os.walk(path)
+    try:
+        name, dirs, files = g.next()
+    except StopIteration:
+        dirs = files = []
+    g.close()
+    return {'dirs': dirs, 'files':files}
