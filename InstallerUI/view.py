@@ -6,10 +6,6 @@ import json
 from api import *
 
 ############## views ###############
-@app.route('/ui')
-def ui():
-    return flask.render_template('flatui.html')
-
 @app.route('/')
 def mainPage():
     return flask.render_template('index.html')
@@ -112,3 +108,9 @@ def queryLog():
         return MSG[EC_NO_FILE], 400
     else:
         return flask.jsonify(dic), 200
+
+@app.route('/fileList',methods=['PUT'])
+def getFileList():
+    path = flask.request.data
+    dic = get_file_list(path)
+    return flask.jsonify(dic), 201
