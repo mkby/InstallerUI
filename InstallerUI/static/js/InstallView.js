@@ -134,7 +134,7 @@ function($) {
 				}
 			]
 		});
-		
+
 		$(InstallResetButton).click(function() {
 			resetForm();
 		});
@@ -148,7 +148,7 @@ function($) {
 		});
 		//init selector
 		queryConfig();
-
+                $('[data-toggle="tooltip"]').tooltip();
 		//form show function 
 		//      $(InstallDialog).on('show.bs.modal', function (e) {
 		//      });
@@ -243,14 +243,29 @@ function($) {
 					}
 					var table = '<table class="table table-striped table-condensed"><tr><th>checkDetail</th><th>value</th><th>status</th></tr>'
 					for(var o in jsonList[i]) {
+                                                if(o=="dependencies"){
+                                                    table += "<tr data-toggle='collapse' href='.collapseExample"+i+"' aria-expanded='false' aria-controls='collapseExample'><td style='font-weight:normal;text-decoration:underline;cursor:pointer'>"+jsonList[i][o].doc+"</td><td></td><td></td></tr>"
+                                                    for(var j in jsonList[i][o].value){
+                                                        j;
+                                                        table += "<tr class='collapseExample"+i+" collapse' style='background-color:yellow'><td>"+j+"</td><td>"+jsonList[i][o].value[j]+"</td><td></td><tr>";
+                                                    }
+                                                    continue;
+                                                }
 						table += "<tr><td style='font-weight:normal'>"+jsonList[i][o].doc+"</td><td>" + jsonList[i][o].value+ "</td>";
                                                 if(jsonList[i][o].hasOwnProperty("status")){
                                                     if(jsonList[i][o].status=="OK"){
                                                         table +="<td><button type='button' id='new' class='btn btn-success btn-circle btn-small dbmgr-status-btn sm'><i class='fa fa-check'></i></button></td></tr>";
 					              }else if(jsonList[i][o].status=="error"){
-                                                        table +="<td><button type='button' id='new' class='btn btn-danger btn-circle btn-small dbmgr-status-btn'><i class='fa fa-times'></i></button></td></tr>";   
+                                                        if(typeof(jsonList[i][o].expected)!="undefined"){
+
+                                                        table +="<td><button type='button' id='new' class='btn btn-danger btn-circle btn-small dbmgr-status-btn' data-toggle='tooltip' data-placement='left' title='expected:"+jsonList[i][o].expected+"'><i class='fa fa-times'></i></button></td></tr>";}else{
+                                                        table +="<td><button type='button' id='new' class='btn btn-danger btn-circle btn-small dbmgr-status-btn'><i class='fa fa-times'></i></button></td></tr>";
+}
                                                       }else{
-                                                        table +="<td><button type='button' id='new' class='btn btn-warning btn-circle btn-small dbmgr-status-btn'><i class='fa fa-warning'></i></button></td></tr>"
+                                                          if(typeof(jsonList[i][o].expected)!="undefined"){
+                                                          table +="<td><button type='button' id='new' class='btn btn-warning btn-circle btn-small dbmgr-status-btn'data-toggle='tooltip' data-placement='left' title='expected:"+jsonList[i][o].expected+"'><i class='fa fa-warning'></i></button></td></tr>";}else{
+                                                          table +="<td><button type='button' id='new' class='btn btn-warning btn-circle btn-small dbmgr-status-btn'><i class='fa fa-warning'></i></button></td></tr>";
+							}
                                                       }
                                                  }else{
                                                          table +="<td></td></tr>";
@@ -262,6 +277,7 @@ function($) {
 				tabContent += '</div>';
 				tab += '</ul>';
 				$("#tab").append(tab + tabContent);
+                                $('[data-toggle="tooltip"]').tooltip();
 			});
 
 		$('#installTable tbody').on('click', 'tr',

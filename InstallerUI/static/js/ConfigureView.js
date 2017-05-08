@@ -12,6 +12,7 @@ function($) {
 	var delFileName = "",
 		index, buttonClick;
 	var alertFileName = false;
+        var folderPath = "";
 	$(document).ready(function() {
 		$('#example').DataTable({
 			ajax: {
@@ -383,7 +384,7 @@ function($) {
  
  
                 $("#chooseFile").click(function(){
-                    $("#traf_package").val($("#now-folder").val()+$("#folderValue").val());
+                    $("#traf_package").val(folderPath+$("#folderValue").val());
              
                 }); 
                
@@ -717,6 +718,7 @@ function($) {
                            $("#now-folder").val((folder=="/")?"":folder);
                            var dirs = data.dirs;
                            var files = data.files;
+                           folderPath= data.abspath;
                            $("#folderTable").html("");
                            if($("#now-folder").val()!=""){
                                $("#folderTable").append('<tr class="backClass"><td style="cursor:default" ><i class="fa fa-folder-o" aria-hidden="true"></i>&nbsp&nbsp&nbsp&nbsp<i style="font-size:13px">..</i></td></tr>');
