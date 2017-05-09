@@ -527,6 +527,8 @@ function($) {
 				$("#traf_package").val(data.traf_package);
 				$("#dcs_cnt_per_node").val(data.dcs_cnt_per_node);
 				$("#scratch_locs").val(data.scratch_locs);
+				$("#cgroups_cpu_pct").val(data.cgroups_cpu_pct);
+				$("#cgroups_mem_pct").val(data.cgroups_mem_pct);
 				$("#kdc_server").val(data.kdc_server);
 				$("#kdcadmin_pwd").val(data.kdcadmin_pwd);
 				$("#admin_principal").val(data.admin_principal);

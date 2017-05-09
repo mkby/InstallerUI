@@ -84,18 +84,31 @@ class TaskHandler(object):
         if not os.path.exists(self.configFilePath):
             self.rc = EC_NO_FILE
         else:
+            # read user name and password from config file
+            user = pwd = ''
+            with open(self.configFilePath, 'r') as f:
+                for line in f:
+                    if 'ssh_user' in line:
+                        user = line.replace('\n', '').split('=')[1]
+                    if 'ssh_pwd' in line:
+                        pwd = line.replace('\n', '').split('=')[1]
+
             if self.type == TYPE_INSTALL:
-#                cmd = '%s/db_install.py --config-file %s --log-file %s --silent' % (INSTALLER_PATH, self.configFilePath, self.logFile)
-                cmd = '%s/fake_install.py  %s' % (INSTALLER_PATH, self.logFile)
+                cmd = '%s/db_install.py --config-file %s --log-file %s --silent -u %s --enable-pwd -p %s' % (INSTALLER_PATH, self.configFilePath, self.logFile, user, pwd)
+#                cmd = '%s/fake_install.py  %s' % (INSTALLER_PATH, self.logFile)
             elif self.type == TYPE_DISCOVER:
-       #         cmd = '%s/discovery.py -j --config-file %s --log-file %s' % (INSTALLER_PATH, self.configFilePath, self.logFile)
-                cmd = '%s/fake_discover.py' % INSTALLER_PATH
+                cmd = '%s/discovery.py -j --config-file %s --log-file %s -u %s --enable-pwd -p %s' % (INSTALLER_PATH, self.configFilePath, self.logFile, user, pwd)
+#                cmd = '%s/fake_discover.py' % INSTALLER_PATH
             elif self.type == TYPE_PERF:
-                cmd = '%s/discovery.py -p --config-file %s --log-file %s' % (INSTALLER_PATH, self.configFilePath, self.logFile)
+                cmd = '%s/discovery.py -n --config-file %s --log-file %s -u %s --enable-pwd -p %s' % (INSTALLER_PATH, self.configFilePath, self.logFile, user, pwd)
 
             p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             self.pid = p.pid
             self.stdout, self.stderr = p.communicate()
+            # filter out non-json strings
+            if self.type == TYPE_DISCOVER:
+                self.stdout = re.search(r'(\[.*\])', self.stdout).groups()[0]
+
             self.rc = p.returncode
 
 def run_cmd(cmd):
