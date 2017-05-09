@@ -178,6 +178,7 @@ function($) {
 			offText: "N",
 		});
 
+
 		$('#configForm').on('init.form.bv',
 			function(e, data) {}).bootstrapValidator({
 			message: 'This value is not valid',
@@ -706,6 +707,7 @@ function($) {
 
 
         var drawFolderTable = function(chooseFolder,nowFolder){ //传入一个对象
+            $('#folderModal').modal({backdrop: 'static', keyboard: false});
             var folder=nowFolder+chooseFolder+"/";
             $.ajax({
                        url:"fileList",

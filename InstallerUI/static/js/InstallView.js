@@ -247,13 +247,13 @@ function($) {
                                                     table += "<tr data-toggle='collapse' href='.collapseExample"+i+"' aria-expanded='false' aria-controls='collapseExample'><td style='font-weight:normal;text-decoration:underline;cursor:pointer'>"+jsonList[i][o].doc+"</td><td></td><td></td></tr>"
                                                     for(var j in jsonList[i][o].value){
                                                         j;
-                                                        table += "<tr class='collapseExample"+i+" collapse' style='background-color:yellow'><td>"+j+"</td><td>"+jsonList[i][o].value[j]+"</td><td></td><tr>";
+                                                        table += "<tr class='collapseExample"+i+" collapse' style='text-align:center;background-color: rgba(221, 221, 221, 0.46)'><td>"+j+"</td><td>"+jsonList[i][o].value[j]+"</td><td></td><tr>";
                                                     }
                                                     continue;
                                                 }
 						table += "<tr><td style='font-weight:normal'>"+jsonList[i][o].doc+"</td><td>" + jsonList[i][o].value+ "</td>";
                                                 if(jsonList[i][o].hasOwnProperty("status")){
-                                                    if(jsonList[i][o].status=="OK"){
+                                                    if(jsonList[i][o].status=="ok"){
                                                         table +="<td><button type='button' id='new' class='btn btn-success btn-circle btn-small dbmgr-status-btn sm'><i class='fa fa-check'></i></button></td></tr>";
 					              }else if(jsonList[i][o].status=="error"){
                                                         if(typeof(jsonList[i][o].expected)!="undefined"){
