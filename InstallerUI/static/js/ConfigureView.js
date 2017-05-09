@@ -153,7 +153,7 @@ function($) {
 					"aTargets": [8],
 					"mData": 8,
 					"mRender": function(data, type, full) {
-						var rowcontent = '<a type="button" class="btn btn-primary btn-alert">修改</a>  <button type="button" class="btn btn-danger btn-del">删除</button>';
+						var rowcontent = '<a type="button" class="btn btn-primary btn-alert">Modify</a>  <button type="button" class="btn btn-danger btn-del">Delete</button>';
 						return rowcontent;
 					}
 				}
@@ -192,7 +192,7 @@ function($) {
 					selector: '#configFileName',
 					validators: {
 						callback: {
-							message: '文件已存在，请重新输入',
+							message: 'Config file exists, please enter a new one',
 							callback: function(value, validator) {
 								var data = $('#example').DataTable().data();
 								if(alertFileName == true)
@@ -370,7 +370,6 @@ function($) {
                           var nowFolder = $("#now-folder").val();
                           $("#folderValue").val("");
                           drawFolderTable(folder,nowFolder);
-                          
                       }else if(this.classList.contains("fileClass")){
                           $("#folderValue").val("");
                           $("#folderValue").val(this.innerText.replace(/(^\s*)|(\s*$)/g, ""));
@@ -392,7 +391,7 @@ function($) {
 		$("#install").click(function() {
 			var val = getChangeVal(document.getElementsByName("checkboxDemo"));
 			if(val == "") {
-                                $("#alertContent").html("请先选择数据");
+                                $("#alertContent").html("Please select data");
                                 $("#alert").modal('show');	
 				return;
 			}else{
@@ -424,7 +423,7 @@ function($) {
                                           }
                                      }); 
                                    }else{
-                                       $("#alertContent").html("该集群已有一个正在进行的安装任务");
+                                       $("#alertContent").html("The cluster is being installed now");
                                        $("#alert").modal('show');
                                    }  
                                 }
@@ -435,8 +434,8 @@ function($) {
 		$("#discover").click(function() {
 			var val = getChangeVal(document.getElementsByName("checkboxDemo"));
 			if(val == "") {
-                                $("#alertContent").html("请先选择数据");       
-			        $("#alert").modal('show');	
+                $("#alertContent").html("Please select data");
+                $("#alert").modal('show');
 				return;
 			}
 			$.ajax({
@@ -623,13 +622,13 @@ function($) {
                                           }
                                      }); 
                                    }else{
-                                       $("#alertContent").html("该集群已有一个正在进行的安装任务，请稍后再试");
+                                       $("#alertContent").html("The cluster is being installed now, please try later");
                                        $("#alert").modal('show');
                                    }
                                 }
                            });
 		} else {
-			alert("校验不通过!");
+			alert("Verified failed");
 		}
 	}
 

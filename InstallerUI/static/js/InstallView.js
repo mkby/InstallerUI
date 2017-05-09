@@ -32,7 +32,6 @@ function($) {
 			columns: [{
 					data: 'id',
 					title: "Tasks",
-                                        
 				}, {
 					data: 'name',
 					title: 'Config File Name'
@@ -121,13 +120,13 @@ function($) {
 					"mRender": function(data, type, full) {
 						if(full.type == "Discover") {
 							if(full.status == "SUCCESS") {
-								var rowcontent = '<button type="button" class="btn btn-primary btn-slave">节点信息</button>';
+								var rowcontent = '<button type="button" class="btn btn-primary btn-slave">Node info</button>';
 								return rowcontent;
 							}
 						}
-						var rowcontent = '<button type="button" class="btn btn-primary btn-log">日志信息</button>';
+						var rowcontent = '<button type="button" class="btn btn-primary btn-log">Logs</button>';
                                                 if(full.type=="Install"&&full.status=="ERROR"){
-                                                    rowcontent += '  <button type="button" class="btn btn-primary btn-reInstall">重装</button>' 
+                                                    rowcontent += '  <button type="button" class="btn btn-primary btn-reInstall">Reinstall</button>'
                                                 }
 						return rowcontent;
 					}
@@ -204,7 +203,6 @@ function($) {
                                         type: "PUT",
                                         //dataType: "json",
                                         //contentType: "application/json",
-                                       
                                       //  dataSrc:'',
                                         success: function(data) {
                                             $('#installTable').DataTable().ajax.reload(null, false);    
@@ -375,7 +373,7 @@ function($) {
 				for(var i = 0; i < jsonObj.length; i++) {
 					optionstring += "<option value=\"" + jsonObj[i].configFileName + "\" >" + jsonObj[i].configFileName + "</option>";
 				}
-				$(SelectConfig).html("<option value=''>请选择...</option> " + optionstring);
+				$(SelectConfig).html("<option value=''>Please select ...</option> " + optionstring);
 			}
 		});
 	}

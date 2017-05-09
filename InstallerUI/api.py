@@ -80,7 +80,7 @@ class TaskHandler(object):
         self.configFileName = ''
 
     def run(self):
-        self.rc = -1
+        self.rc = RC_INIT
         if not os.path.exists(self.configFilePath):
             self.rc = EC_NO_FILE
         else:
@@ -96,9 +96,6 @@ class TaskHandler(object):
             p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             self.pid = p.pid
             self.stdout, self.stderr = p.communicate()
-            # filter discover output
-            if self.type == TYPE_DISCOVER:
-                self.stdout = re.search(r'(\[.*\])', self.stdout).groups()[0]
             self.rc = p.returncode
 
 def run_cmd(cmd):
@@ -281,6 +278,7 @@ def get_file_list(dirname):
     g = os.walk(path)
     try:
         name, dirs, files = g.next()
+        dirs.sort()
         files = [f for f in files if re.findall(r'esgynDB_.*_server-.*.tar.gz', f)]
     except StopIteration:
         dirs = files = []

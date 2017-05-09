@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="utf-8">
-		<title>易鲸捷数据库安装</title>
+		<title>EsgynDB Dababase Installer</title>
 		<link href="../static/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
 		<link href="../static/lib/css/jquery.dataTables.min.css" rel="stylesheet">
 		<link href="../static/lib/css/bootstrapValidator.min.css" rel="stylesheet" />
@@ -26,15 +26,15 @@
 			<nav class="navbar navbar-inverse navbar-fixed-top">
 				<div class="container">
 					<div class="navbar-header">
-						<a class="navbar-brand" href="#">易鲸捷数据库安装</a>
+						<a class="navbar-brand" href="#">EsgynDB Database Installer</a>
 					</div>
 					<div id="navbar" class="navbar-collapse collapse">
 						<ul class="nav navbar-nav">
 							<li>
-								<a href="">配置</a>
+								<a href="">Config</a>
 							</li>
 							<li>
-								<a href="installPage">安装</a>
+								<a href="installPage">Install</a>
 							</li>
 						</ul>
 					</div>
@@ -44,10 +44,10 @@
 				<div style="margin-top:100px">
 					<ul class="nav nav-tabs" role="tablist" id="myTab">
 						<li role="presentation" class="active">
-							<a href="#list" aria-controls="list" role="tab" data-toggle="tab">配置列表</a>
+							<a href="#list" aria-controls="list" role="tab" data-toggle="tab">Config List</a>
 						</li>
 						<li role="presentation">
-							<a href="#config" id="configTab" aria-controls="config" role="tab" data-toggle="tab">配置</a>
+							<a href="#config" id="configTab" aria-controls="config" role="tab" data-toggle="tab">Detail Configurations</a>
 						</li>
 					</ul>
 					<div class="tab-content">
@@ -55,8 +55,8 @@
 							<!-- <div class="btn-group pull-left" style="margin-bottom: 20px">
               <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">新建</button></div> -->
 							<div class="panel panel-default" style="margin-top:30px">
-								<div class="panel-heading" style="height:50px">配置文件列表
-									<button type="button" id="new" class="btn btn-primary" style="float:right;margin-left:10px">new</button>
+								<div class="panel-heading" style="height:50px">Config List
+									<button type="button" id="new" class="btn btn-primary" style="float:right;margin-left:10px">New</button>
 									<button type="button" id="discover" class="btn btn-primary" style="float:right;margin-left:10px">Discover</button>
 									<button type="button" id="install" class="btn btn-primary" style="float:right">Install</button>
 								</div>
@@ -216,21 +216,21 @@
 										<div class="form-group">
 											<div class="col-sm-4">
 												<label for="traf_dirname" class="control-label">traf_dirname</label>
-												<br>trafodion binary folder location</div>
+												<br>trafodion binary folder name, installer will use a default name if not provided</div>
 											<div class="col-sm-5">
 												<input type="text" class="form-control" id="traf_dirname" name="traf_dirname" autocomplete="off"></div>
 										</div>
 										<div class="form-group">
 											<div class="col-sm-4">
 												<label for="java_home" class="control-label">java_home</label>
-												<br>java home location on each trafodion node</div>
+												<br>java home location on each trafodion node, installer will auto detect java if not provided</div>
 											<div class="col-sm-5">
 												<input type="text" class="form-control" id="java_home" name="java_home" autocomplete="off"></div>
 										</div>
 										<div class="form-group">
 											<div class="col-sm-4">
 												<label for="traf_package" class="control-label">traf_package</label>
-												<br>trafodion binary package location on server</div>
+												<br>trafodion binary package location on server, default location is {web_root_dir}/packages</div>
 											<div class="col-sm-5">
 												<input type="text" class="form-control" id="traf_package" name="traf_package" required="required" autocomplete="off"></div>
                                                                                         <div class="col-sm-3">
@@ -257,7 +257,10 @@
 											<div class=" col-sm-5">
 												<input type="checkbox" checked name="traf_start" id="traf_start" /></div>
 										</div>
-										<br>
+										<hr />
+										<div style="border-bottom:3 double green;height:30px; font-size: 19px">Kerberos Settings</div>
+                                        <div> user should manually check kerberos status and provide info here if enabled</div>
+                                        <br>
 										<div class="form-group">
 											<div class="col-sm-4">
 												<label for="scratch_locs" class="control-label">kdc_server</label>
