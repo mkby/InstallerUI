@@ -41,7 +41,7 @@ function($) {
 					title: "Type"
 				},
 				{
-					data: 'process',
+					data: 'progress',
 					title: 'Progress'
 				},
 				{
@@ -125,11 +125,11 @@ function($) {
 							}
 						}
 						var rowcontent = '<button type="button" class="btn btn-primary btn-log">Logs</button>';
-                                                if(full.type=="Install"&&full.status=="ERROR"){
+                                                if(full.type=="Install"&&(full.status=="ERROR"||full.status=="UNKNOWN")){
                                                     rowcontent += '  <button type="button" class="btn btn-primary btn-reInstall">Reinstall</button>'
                                                 }
                                                 if(full.type=="Install"&&full.status=="IN_PROGRESS"){
-                                                    rowcontent += '  <button type="button" class="btn btn-danger btn-delete">Delete</button>'
+                                                    rowcontent += '  <button type="button" class="btn btn-danger btn-delete">Terminate</button>'
                                                 }
 						return rowcontent;
 					}
@@ -260,7 +260,7 @@ function($) {
 						tab += '<li role="presentation"><a href="#' + jsonList[i].hostname.value + '" aria-controls="' + jsonList[i].hostname.value + '" role="tab" data-toggle="tab">' + jsonList[i].hostname.value + '</a></li>';
 						tabContent += '<div role="tabpanel" class="tab-pane fade" id="' + jsonList[i].hostname.value + '">';
 					}
-					var table = '<table class="table table-striped table-condensed"><tr><th>checkDetail</th><th>value</th><th>status</th></tr>'
+					var table = '<table class="table table-striped table-condensed"><tr><th>CheckItem</th><th>Value</th><th>Status</th></tr>'
 					for(var o in jsonList[i]) {
                                                 if(o=="dependencies"){
                                                     table += "<tr data-toggle='collapse' href='.collapseExample"+i+"' aria-expanded='false' aria-controls='collapseExample'><td style='font-weight:normal;text-decoration:underline;cursor:pointer'>"+jsonList[i][o].doc+"</td><td></td><td></td></tr>"

@@ -41,6 +41,14 @@ def runInstallById(task_id):
     else:
         return MSG[SUCCESS], 201
 
+@app.route('/tasks/<int:task_id>', methods=['DELETE'])
+def cancelById(task_id):
+    ec = cancel_by_id(task_id)
+    if ec == EC_NO_TASK:
+        return MSG[EC_NO_TASK], 400
+    else:
+        return MSG[SUCCESS], 201
+
 @app.route('/install', methods=['POST'])
 def runInstall():
     config_file = flask.request.data
