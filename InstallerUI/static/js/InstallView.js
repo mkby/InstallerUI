@@ -128,6 +128,9 @@ function($) {
                                                 if(full.type=="Install"&&full.status=="ERROR"){
                                                     rowcontent += '  <button type="button" class="btn btn-primary btn-reInstall">Reinstall</button>'
                                                 }
+                                                if(full.type=="Install"&&full.status=="IN_PROGRESS"){
+                                                    rowcontent += '  <button type="button" class="btn btn-danger btn-delete">Delete</button>'
+                                                }
 						return rowcontent;
 					}
 				}
@@ -209,6 +212,24 @@ function($) {
                                         }
                                 });
                         });
+               
+                $("#delTask").click(function(){
+                      var data = oTable.rows(index).data()[0].id;
+                      $.ajax({
+                          url: "tasks/"+data,
+                          type: "DELETE",
+                          success: function(data) {
+                              $('#installTable').DataTable().ajax.reload(null, false);
+                          },
+                          error:function(msg){
+                              alert(msg.responseText);
+                          }
+                    });
+                 });
+
+                $('#installTable').on('click', '.btn-delete',function() {
+                    $("#del-confirm-modal").modal('show');
+                 });
 
 
 		$("#slaveSelect").on('change', function() {
