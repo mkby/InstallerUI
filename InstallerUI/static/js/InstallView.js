@@ -18,6 +18,11 @@ function($) {
 		SelectConfig = '#selectConfig';
 	var oTable,index;
 	$(document).ready(function() {
+		$("[data-localize]").localize("static/lang/installationUI", { language: navigator.language });
+		this.langResource = $.localize.data.installationUI;
+//		session.saveLocale(navigator.language);
+		writeOptions.secure = (window.location.protocol === "https:");
+		$.cookie(s, val, writeOptions);
 		oTable=$('#installTable').DataTable({
 			ajax: {
 				url: "tasks",
@@ -320,6 +325,25 @@ function($) {
 		document.getElementById("form").reset();
 	}
 
+
+var Localizer = (function() {
+			var localizedData = {};
+			
+			function Localizer() {
+
+				var lng = window.navigator.userLanguage || window.navigator.language;
+				$("[data-localize]").localize("installationUI", { language: lng, pathPrefix: "static/lang", fallback: "en", callback: function(data, defaultCallback){
+					localizedData = data;
+			        defaultCallback(data)
+			    }});
+				
+				this.get = function(s) {
+					if(localizedData.hasOwnProperty(s))
+						return localizedData[s];
+				}
+			}
+			return new Localizer();
+		}());
 	//discover function
 	var discover = function() {
 		var fileName = $("#selectConfig").val();

@@ -8,14 +8,16 @@
 		<link href="../static/lib/css/jquery.dataTables.min.css" rel="stylesheet">
 		<link href="../static/lib/css/bootstrapValidator.min.css" rel="stylesheet" />
 		<link href="../static/lib/css/bootstrap-switch.css" rel="stylesheet" />
-                <link href="../static/css/installation.css" rel="stylesheet" />
-                <link type="text/css" href="../static/lib/css/font-awesome/css/font-awesome.css" rel="stylesheet" />
-                <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+		<link href="../static/css/installation.css" rel="stylesheet" />
+		<link type="text/css" href="../static/lib/css/font-awesome/css/font-awesome.css" rel="stylesheet" />
+		<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 		<script src="../static/lib/js/jquery.min.js"></script>
+		<script src="../static/lib/js/jquery.cookie.js"></script>
 		<script src="../static/lib/js/jquery.dataTables.min.js"></script>
 		<script src="../static/lib/bootstrap/dist/js/bootstrap.min.js"></script>
 		<script src="../static/lib/js/bootstrapValidator.min.js"></script>
 		<script src="../static/lib/js/bootstrap-switch.min.js"></script>
+		<script src="../static/lib/js/jquery.localize.js"></script>
 		<script src="../static/js/ConfigureView.js"></script>
 		<link href="../static/lib/images/sort_asc.png" rel="stylesheet">
 		<link href="../static/lib/images/sort_both.png" rel="stylesheet">
@@ -26,15 +28,15 @@
 			<nav class="navbar navbar-inverse navbar-fixed-top">
 				<div class="container">
 					<div class="navbar-header">
-						<a class="navbar-brand" href="#">EsgynDB Database Installer</a>
+						<a class="navbar-brand" href="#" data-localize="EsgynDB-Database-Installer"></a>
 					</div>
 					<div id="navbar" class="navbar-collapse collapse">
 						<ul class="nav navbar-nav">
 							<li>
-								<a href="">Config</a>
+								<a href="" data-localize="Config"></a>
 							</li>
 							<li>
-								<a href="installPage">Install</a>
+								<a href="installPage" data-localize="Install"></a>
 							</li>
 						</ul>
 					</div>
@@ -44,10 +46,10 @@
 				<div style="margin-top:100px">
 					<ul class="nav nav-tabs" role="tablist" id="myTab">
 						<li role="presentation" class="active">
-							<a href="#list" aria-controls="list" role="tab" data-toggle="tab">Config List</a>
+							<a href="#list" aria-controls="list" role="tab" data-toggle="tab" data-localize="Config-List">Config List</a>
 						</li>
 						<li role="presentation">
-							<a href="#config" id="configTab" aria-controls="config" role="tab" data-toggle="tab">Detail Configurations</a>
+							<a href="#config" id="configTab" aria-controls="config" role="tab" data-toggle="tab" data-localize="Detail-Configurations"></a>
 						</li>
 					</ul>
 					<div class="tab-content">
@@ -55,17 +57,17 @@
 							<!-- <div class="btn-group pull-left" style="margin-bottom: 20px">
               <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">新建</button></div> -->
 							<div class="panel panel-default" style="margin-top:30px">
-								<div class="panel-heading" style="height:50px">Config List
-									<button type="button" id="new" class="btn btn-primary" style="float:right;margin-left:10px">New</button>
-									<button type="button" id="discover" class="btn btn-primary" style="float:right;margin-left:10px">Discover</button>
-									<button type="button" id="install" class="btn btn-primary" style="float:right">Install</button>
+								<div class="panel-heading" style="height:50px"><span data-localize="Config-List"></span>
+									<button type="button" id="new" class="btn btn-primary" style="float:right;margin-left:10px" data-localize="New">New</button>
+									<button type="button" id="discover" class="btn btn-primary" style="float:right;margin-left:10px" data-localize="Discover"></button>
+									<button type="button" id="install" class="btn btn-primary" style="float:right" data-localize="Install"></button>
 								</div>
 								<table id="example" class="table table-hover"></table>
 							</div>
 						</div>
 						<div role="tabpanel" class="tab-pane" id="config">
 							<div class="panel panel-default" style="margin-top:30px">
-								<div class="panel-heading">配置项</div>
+								<div class="panel-heading" data-localize="Detail-Configurations"></div>
 								<form class="form form-horizontal" id="configForm">
 									<div class="modal-body">
 										<div class="form-group">
@@ -233,8 +235,9 @@
 												<br>trafodion binary package location on server, default location is {web_root_dir}/packages</div>
 											<div class="col-sm-5">
 												<input type="text" class="form-control" id="traf_package" name="traf_package" required="required" autocomplete="off"></div>
-                                                                                        <div class="col-sm-3">
-                                                                                                <a class="btn btn-primary" id="folderBtn"><i class='fa fa-folder-open'></i></a></div>
+											<div class="col-sm-3">
+												<a class="btn btn-primary" id="folderBtn"><i class='fa fa-folder-open'></i></a>
+											</div>
 										</div>
 										<div class="form-group">
 											<div class="col-sm-4">
@@ -273,8 +276,8 @@
 										</div>
 										<hr />
 										<div style="border-bottom:3 double green;height:30px; font-size: 19px">Kerberos Settings</div>
-                                        <div> user should manually check kerberos status and provide info here if enabled</div>
-                                        <br>
+										<div> user should manually check kerberos status and provide info here if enabled</div>
+										<br>
 										<div class="form-group">
 											<div class="col-sm-4">
 												<label for="scratch_locs" class="control-label">kdc_server</label>
@@ -429,9 +432,9 @@
 										</div>
 									</div>
 									<div class="modal-footer">
-										<button type="submit" id="newConfig" class="btn btn-success">Save</button>
-										<button type="submit" class="btn btn-success" id="newInstall">Install</button>
-										<button type="submit" class="btn btn-success" id="newDiscover">Discover</button>
+										<button type="submit" id="newConfig" class="btn btn-success" data-localize="New"></button>
+										<button type="submit" class="btn btn-success" id="newInstall" data-localize="Install"></button>
+										<button type="submit" class="btn btn-success" id="newDiscover" data-localize="Discover"></button>
 										<button type="reset" class="btn btn-primary">Reset</button></div>
 								</form>
 							</div>
@@ -452,46 +455,46 @@
 					</div>
 				</div>
 			</div>
-                       <div id="alert" class="modal fade bs-example-modal-sm" role="dialog" style="top:150px">
-                                <div class="modal-dialog modal-sm">
-                                        <div class="modal-content">
-                                                <div class="modal-header">
-                                                        <h4 class="modal-title">Messages</h4></div>
-                                                <div class="modal-body"><span id="alertContent"></span></div>
-                                                <div class="modal-footer">
-                                                        <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
-                                                </div>
-                                        </div>
-                                </div>
-                      </div>
-                      <div id="folderModal" class="modal fade bs-example-modal-md" role="dialog" style="backdrop:'static'">
-                                <div class="modal-dialog modal-md">
-                                        <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                    <h4 class="modal-title">Select package</h4></div>
-                                                <div class="modal-body">
-                                                     <div class="input-group">
-                                                         <span class="input-group-addon" id="basic-addon3"><i class='fa fa-folder-open'></i>Current path</span>
-                                                         <input type="text" class="form-control" id="now-folder" aria-describedby="basic-addon3" readonly="readonly">
-                                                     </div>           
-                                                     <div  style="height:400px;max-height:400px;overflow-y:auto;">
-                                                     <table id="folderTable" class="table table-hover table-condensed" style="font-size:16px">
-                                                     </table>
-                                                     </div> 
-                                                </div>
-                                                <div class="modal-footer">
-                                                       <!-- <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>-->
-                                                        <div class="input-group">
-                                                              <input type="text" class="form-control" aria-label="..." id="folderValue">
-                                                              <div class="input-group-btn">
-                                                                 <button id="chooseFile" class="btn btn-primary" data-dismiss="modal">Select</button>
-                                                              </div>
-                                                       </div> 
-                                                </div>
-                                        </div>
-                                </div>
-                        </div>
+			<div id="alert" class="modal fade bs-example-modal-sm" role="dialog" style="top:150px">
+				<div class="modal-dialog modal-sm">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h4 class="modal-title">Messages</h4></div>
+						<div class="modal-body"><span id="alertContent"></span></div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="folderModal" class="modal fade bs-example-modal-md" role="dialog" style="backdrop:'static'">
+				<div class="modal-dialog modal-md">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h4 class="modal-title" data-localize="Select-package"></h4></div>
+						<div class="modal-body">
+							<div class="input-group">
+								<span class="input-group-addon" id="basic-addon3"><i class='fa fa-folder-open'></i>Current path</span>
+								<input type="text" class="form-control" id="now-folder" aria-describedby="basic-addon3" readonly="readonly">
+							</div>
+							<div style="height:400px;max-height:400px;overflow-y:auto;">
+								<table id="folderTable" class="table table-hover table-condensed" style="font-size:16px">
+								</table>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<!-- <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>-->
+							<div class="input-group">
+								<input type="text" class="form-control" aria-label="..." id="folderValue">
+								<div class="input-group-btn">
+									<button id="chooseFile" class="btn btn-primary" data-dismiss="modal" data-localize="Select"></button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</body>
 

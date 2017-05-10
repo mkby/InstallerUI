@@ -7,13 +7,14 @@
 		<link href="../static/lib/css/jquery.dataTables.min.css" rel="stylesheet">
 		<link href="../static/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
 		<link href="../static/lib/css/bootstrap-multiselect.css" rel="stylesheet">
-                <link href="../static/css/installation.css" rel="stylesheet" />
-                <link type="text/css" href="../static/lib/css/font-awesome/css/font-awesome.css" rel="stylesheet" />
-                <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+        <link href="../static/css/installation.css" rel="stylesheet" />
+        <link type="text/css" href="../static/lib/css/font-awesome/css/font-awesome.css" rel="stylesheet" />
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 		<script src="../static/lib/js/jquery.min.js"></script>
 		<script src="../static/lib/js/jquery.dataTables.min.js"></script>
 		<script src="../static/lib/js/bootstrap.min.js"></script>
 		<script src="../static/lib/js/bootstrap-multiselect.js"></script>
+		<script src="../static/lib/js/jquery.localize.js" ></script>
 		<script src="../static/js/InstallView.js"></script>
 		<link href="../static/lib/images/sort_asc.png" rel="stylesheet">
 		<link href="../static/lib/images/sort_both.png" rel="stylesheet">
@@ -24,15 +25,15 @@
 			<nav class="navbar navbar-inverse  navbar-fixed-top">
 				<div class="container">
 					<div class="navbar-header">
-						<a class="navbar-brand" href="#">EsgynDB Database Installer</a>
+						<a class="navbar-brand" href="#"  data-localize="EsgynDB-Database-Installer"></a>
 					</div>
 					<div id="navbar" class="navbar-collapse collapse">
 						<ul class="nav navbar-nav">
 							<li>
-								<a href="/">Config</a>
+								<a href="/"data-localize="Config"></a>
 							</li>
 							<li>
-								<a href="installPage">Install</a>
+								<a href="installPage" data-localize="Install"></a>
 							</li>
 						</ul>
 					</div>
@@ -42,7 +43,7 @@
 				<div role="tabpanel" class="tab-pane active" id="list">
 					<div class="panel panel-default" style="margin-top:100px">
 						<div class="panel-heading" style="height:50px">Task list
-							<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#installDialog" style="float:right;margin-left:10px">New</button>
+							<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#installDialog" style="float:right;margin-left:10px" data-localize="New"></button>
 						</div>
 						<table id="installTable" class="table table-hover" style="table-layout:fixed"></table>
 					</div>
@@ -54,26 +55,26 @@
 						<div class="modal-content">
 							<div class="modal-header">
 								<button type="button" class="close" data-dismiss="modal">&times;</button>
-								<h4 class="modal-title">Confiuration Detail</h4></div>
+								<h4 class="modal-title" data-localize="Detail-Configurations"></h4></div>
 							<div class="modal-body">
 								<form class="form-horizontal" id="form">
 									<div class="form-group">
-										<label for="exampleInputEmail1" class="col-sm-3 control-label" style="padding-left: 0px; padding-right: 0px">Select a config file</label>
+										<label for="exampleInputEmail1" class="col-sm-3 control-label" style="padding-left: 0px; padding-right: 0px" ></label>
 										<div class="col-sm-9">
 											<select id="selectConfig" name="selectConfig" class="form-control"></select>
 										</div>
 									</div>
 								</form>
 								<div class="alert alert-danger alert-dismissible fade in" role="alert" id="myAlert" style="display:none">
-									<button type="button" class="close" aria-label="close"></button>Please select a config file</div>
+									<button type="button" class="close" aria-label="close"></button><span data-localize="Select-a-config-file"></span></div>
 								<div class="alert alert-danger alert-dismissible fade in" role="alert" id="myAlert1" style="display:none">
-									<button type="button" class="close" aria-label="close"></button>The cluster is being installed now</div>
+									<button type="button" class="close" aria-label="close"></button><span data-localize="The-cluster-is-being-installed-now"></span></div>
 							</div>
 							<div class="modal-footer" style="height: 90px">
-								<input id="installApplyButton" class="submit btn btn-success" type="submit" value="Install">
-								<input id="discoverApplyButton" class="submit btn btn-success" type="submit" value="Discover">
-								<input id="installResetButton" class="submit btn btn-primary" type="button" value="Reset">
-								<button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button></div>
+								<input id="installApplyButton" class="submit btn btn-success" type="submit" data-localize="Install">
+								<input id="discoverApplyButton" class="submit btn btn-success" type="submit" data-localize="DIscover">
+								<input id="installResetButton" class="submit btn btn-primary" type="button" data-localize="Reset">
+								<button type="button" class="btn btn-primary" data-dismiss="modal" data-localize="Cancel"></button></div>
 						</div>
 					</div>
 				</div>
@@ -85,12 +86,12 @@
 							<div class="modal-header">
 								<button type="button" class="close" data-dismiss="modal">&times;</button>
 								<div class="slave-detail">
-									<h4 class="modal-title">Slave Detail</h4></div>
+									<h4 class="modal-title"><span data-localize="Slave-Detail"></span></h4></div>
 							</div>
 							<div class="modal-body">
-								<h3 class="errMsg">Return Message</h3>
+								<h3 class="errMsg" data-localize="Return-Message"></h3>
 								<div id="errMsg" class="well errMsg"></div>
-								<h3>Log Content</h3>
+								<h3 data-localize="Log-Content"></h3>
 								<div id="logContent" class="well"></div>
 							</div>
 							<div class="modal-footer">
@@ -104,7 +105,7 @@
 						<div class="modal-content">
 							<div class="modal-header">
 								<button type="button" class="close" data-dismiss="modal">&times;</button>
-								<h4 class="modal-title check-list">Slave Check</h4>
+								<h4 class="modal-title check-list" data-localize="Slave-Check"></h4>
 								<h4 id="hostName" class="modal-title check-detail" style="display:none"></h4>
 							</div>
 							<div class="modal-body">
@@ -125,7 +126,7 @@
                                         <div class="modal-content">
                                                 <div class="modal-header">
                                                         <h4 class="modal-title">Message</h4></div>
-                                                <div class="modal-body">The cluster is being installed now</div>
+                                                <div class="modal-body" data-localize="The-cluster-is-being-installed-now"></div>
                                                 <div class="modal-footer">
                                                         <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
                                                 </div>
@@ -137,10 +138,10 @@
                                         <div class="modal-content">
                                                 <div class="modal-header">
                                                         <h4 class="modal-title">Messages</h4></div>
-                                                <div class="modal-body">Are you sure to delete?</div>
+                                                <div class="modal-body" data-localize="delete-confirm"></div>
                                                 <div class="modal-footer">
-                                                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
-                                                        <a id="delTask" class="btn btn-danger" data-dismiss="modal">OK</a>
+                                                        <button type="button" class="btn btn-primary" data-dismiss="modal" data-localize="Cancel"></button>
+                                                        <a id="delTask" class="btn btn-danger" data-dismiss="modal" data-localize="OK"></a>
                                                 </div>
                                         </div>
                                    </div>

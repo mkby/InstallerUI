@@ -13,7 +13,15 @@ function($) {
 		index, buttonClick;
 	var alertFileName = false;
         var folderPath = "";
+    var writeOptions = {
+			path : '/',
+			secure : true
+	};
+	var langResource =null;
+	var _this =null;
 	$(document).ready(function() {
+		$("[data-localize]").localize("static/lang/installationUI", { language: navigator.language });
+		_this=this;
 		$('#example').DataTable({
 			ajax: {
 				url: "queryConfig",
@@ -153,7 +161,7 @@ function($) {
 					"aTargets": [8],
 					"mData": 8,
 					"mRender": function(data, type, full) {
-						var rowcontent = '<a type="button" class="btn btn-primary btn-alert">Modify</a>  <button type="button" class="btn btn-danger btn-del">Delete</button>';
+						var rowcontent = '<a type="button" class="btn btn-primary btn-alert">'+langResource["Modify"]+'</a>  <button type="button" class="btn btn-danger btn-del">'+langResource["Delete"]+'</button>';
 						return rowcontent;
 					}
 				}
@@ -423,7 +431,7 @@ function($) {
                                           }
                                      }); 
                                    }else{
-                                       $("#alertContent").html("The cluster is being installed now");
+                                       $("#alertContent").html(langResource['The-cluster-is-being-installed-now']);
                                        $("#alert").modal('show');
                                    }  
                                 }
@@ -434,7 +442,7 @@ function($) {
 		$("#discover").click(function() {
 			var val = getChangeVal(document.getElementsByName("checkboxDemo"));
 			if(val == "") {
-                $("#alertContent").html("Please select data");
+                $("#alertContent").html(langResource['Please-select-data']);
                 $("#alert").modal('show');
 				return;
 			}
@@ -569,6 +577,7 @@ function($) {
 			});
 	});
 
+
 	var newConfig = function() {
 		buttonClick = "submit";
 		$('#configForm').bootstrapValidator('validate');
@@ -624,7 +633,7 @@ function($) {
                                           }
                                      }); 
                                    }else{
-                                       $("#alertContent").html("The cluster is being installed now, please try later");
+                                       $("#alertContent").html(langResource['The-cluster-is-being-installed-now']);
                                        $("#alert").modal('show');
                                    }
                                 }
@@ -737,4 +746,24 @@ function($) {
                        }
            });
         }
+        
+	var Localizer = (function() {
+				var localizedData = {};
+				
+				function Localizer() {
+	
+					var lng = window.navigator.userLanguage || window.navigator.language;
+					$("[data-localize]").localize("installationUI", { language: lng, pathPrefix: "static/lang", fallback: "en", callback: function(data, defaultCallback){
+						localizedData = data;
+						langResource=data;
+				        defaultCallback(data)
+				    }});
+
+					this.get = function(s) {
+						if(localizedData.hasOwnProperty(s))
+							return localizedData[s];
+					}
+				}
+				return new Localizer();
+			}());
 }(jQuery);
