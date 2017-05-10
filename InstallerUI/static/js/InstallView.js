@@ -331,6 +331,7 @@ var Localizer = (function() {
 				var lng = window.navigator.userLanguage || window.navigator.language;
 				$("[data-localize]").localize("installationUI", { language: lng, pathPrefix: "static/lang", fallback: "en", callback: function(data, defaultCallback){
 					localizedData = data;
+					langResource=data;
 			        defaultCallback(data)
 			    }});
 				
@@ -415,7 +416,7 @@ var Localizer = (function() {
 				for(var i = 0; i < jsonObj.length; i++) {
 					optionstring += "<option value=\"" + jsonObj[i].configFileName + "\" >" + jsonObj[i].configFileName + "</option>";
 				}
-				$(SelectConfig).html("<option value=''>Please select ...</option> " + optionstring);
+				$(SelectConfig).html("<option value=''>"+langResource['Please-select-data']+"</option> " + optionstring);
 			}
 		});
 	}
