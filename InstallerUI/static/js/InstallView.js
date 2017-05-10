@@ -122,7 +122,7 @@ function($) {
 					"mRender": function(data, type, full) {
 						if(full.type == "Discover") {
 							if(full.status == "SUCCESS") {
-								var rowcontent = '<button type="button" class="btn btn-primary btn-slave">Node info</button>';
+								var rowcontent = '<button type="button" class="btn btn-primary btn-slave">'+langResource['Node-info']+'</button>';
 								return rowcontent;
 							}
 						}
