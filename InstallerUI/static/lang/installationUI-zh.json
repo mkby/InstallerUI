@@ -22,5 +22,8 @@
 "Slave-Check":"节点检查",
 "delete-confirm":"确定要删除吗？",
 "OK":"确定",
-"Task-list":"任务列表"
+"Task-list":"任务列表",
+"Logs":"日志",
+"Reinstall":"重装",
+"Terminate":"删除"
 }

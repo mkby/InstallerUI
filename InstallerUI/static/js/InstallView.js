@@ -126,12 +126,12 @@ function($) {
 								return rowcontent;
 							}
 						}
-						var rowcontent = '<button type="button" class="btn btn-primary btn-log">Logs</button>';
+						var rowcontent = '<button type="button" class="btn btn-primary btn-log">'+langResource['Logs']+'</button>';
                                                 if(full.type=="Install"&&(full.status=="ERROR"||full.status=="UNKNOWN")){
-                                                    rowcontent += '  <button type="button" class="btn btn-primary btn-reInstall">Reinstall</button>'
+                                                    rowcontent += '  <button type="button" class="btn btn-primary btn-reInstall">'+langResource['Reinstall']+'</button>'
                                                 }
                                                 if(full.type=="Install"&&full.status=="IN_PROGRESS"){
-                                                    rowcontent += '  <button type="button" class="btn btn-danger btn-delete">Terminate</button>'
+                                                    rowcontent += '  <button type="button" class="btn btn-danger btn-delete">'+langResource['Terminate']+'</button>'
                                                 }
 						return rowcontent;
 					}
@@ -153,12 +153,6 @@ function($) {
 		//init selector
 		queryConfig();
                 $('[data-toggle="tooltip"]').tooltip();
-		//form show function 
-		//      $(InstallDialog).on('show.bs.modal', function (e) {
-		//      });
-		//form hide function
-		//      $("#slaveDialog").on('hide.bs.modal', function (e, v) {
-		//      });
 
 		$('#installTable').on('click', '.btn-log',
 			function() {
