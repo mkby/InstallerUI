@@ -17,12 +17,9 @@ function($) {
 		Form = '#form',
 		SelectConfig = '#selectConfig';
 	var oTable,index;
+	var langResource=null;
 	$(document).ready(function() {
 		$("[data-localize]").localize("static/lang/installationUI", { language: navigator.language });
-		this.langResource = $.localize.data.installationUI;
-//		session.saveLocale(navigator.language);
-		writeOptions.secure = (window.location.protocol === "https:");
-		$.cookie(s, val, writeOptions);
 		oTable=$('#installTable').DataTable({
 			ajax: {
 				url: "tasks",
