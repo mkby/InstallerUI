@@ -70,7 +70,7 @@ class TaskHandler(object):
     def __init__(self):
         self.id = 0       # task id
         self.pid = 0      # task running pid
-        self.process = 0  # task progress
+        self.progress = 0  # task progress
         self.status = ''  # task return status
         self.logFile = '' # log file location
         self.stdout = ''
@@ -120,6 +120,9 @@ def run_cmd(cmd):
 def is_process_exist(pid):
     return run_cmd("ps -ef|awk '{print $2}' |grep -o %s" % pid)
 
+def kill_process(pid):
+    run_cmd("kill -9 %s" % pid)
+
 def get_handler_by_id(task_id):
     task_handler = None
     for th in task_handlers:
@@ -129,16 +132,16 @@ def get_handler_by_id(task_id):
 
 def get_taskdic_by_handler(task_handler):
     status = get_status(task_handler)
-    process = get_process(task_handler)
+    progress = get_progress(task_handler)
     if status != STAT_IN_PROGRESS:
-        process = 100
+        progress = 100
     return {'id':        task_handler.id,
             'logfile':   task_handler.logFile,
             'name':      task_handler.configFileName,
             'starttime': task_handler.startTime,
             'type':      task_handler.type,
             'status':    status,
-            'process':   process,
+            'progress':   progress,
             'stdout':    task_handler.stdout,
             'stderr':    task_handler.stderr}
 
@@ -156,26 +159,26 @@ def get_all_tasks():
         tasks.append(get_taskdic_by_handler(task_handler))
     return tasks
 
-def get_process(task_handler):
+def get_progress(task_handler):
     try:
         with open(task_handler.logFile, 'r') as f:
             logdata = f.read()
     except IOError:
         logdata = ''
 
-    # first process in the list is the latest
-    for process in STAGES:
-        if process in logdata:
-            return int(float(100)/float(len(STAGES))*(len(STAGES)-STAGES.index(process)))
+    # first progress in the list is the latest
+    for progress in STAGES:
+        if progress in logdata:
+            return int(float(100)/float(len(STAGES))*(len(STAGES)-STAGES.index(progress)))
 
 
 def get_status(task_handler):
     if task_handler.rc == RC_INIT and is_process_exist(task_handler.pid):
         return STAT_IN_PROGRESS
-    elif task_handler.rc == RC_ERROR and not is_process_exist(task_handler.pid):
-        return STAT_ERROR
     elif task_handler.rc == RC_OK and not is_process_exist(task_handler.pid):
         return STAT_SUCCESS
+    elif task_handler.rc == RC_ERROR:
+        return STAT_ERROR
     else:
         return STAT_UNKNOWN
 
@@ -194,6 +197,16 @@ def perform_by_id(task_id):
         thread.join(0.1) # async
 
         return task_handler.rc
+    else:
+        return EC_NO_TASK
+
+def cancel_by_id(task_id):
+    task_handler = get_handler_by_id(task_id)
+    if task_handler:
+        pid = task_handler.pid
+        task_handler.rc = RC_ERROR
+        kill_process(pid)
+        return SUCCESS
     else:
         return EC_NO_TASK
 
