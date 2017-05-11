@@ -5,10 +5,10 @@
 		<meta charset="utf-8">
 		<title>EsgynDB Dababase Installer</title>
 		<link href="../static/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+		<link href="../static/css/installation.css" rel="stylesheet" />
 		<link href="../static/lib/css/jquery.dataTables.min.css" rel="stylesheet">
 		<link href="../static/lib/css/bootstrapValidator.min.css" rel="stylesheet" />
 		<link href="../static/lib/css/bootstrap-switch.css" rel="stylesheet" />
-		<link href="../static/css/installation.css" rel="stylesheet" />
 		<link type="text/css" href="../static/lib/css/font-awesome/css/font-awesome.css" rel="stylesheet" />
 		<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 		<script src="../static/lib/js/jquery.min.js"></script>
@@ -24,7 +24,7 @@
 
 	<body>
 		<div class="navbar-wrapper">
-			<nav class="navbar navbar-inverse navbar-fixed-top">
+			<nav class="navbar navbar-inverse navbar-static-top">
 				<div class="container">
 					<div class="navbar-header">
 						<a class="navbar-brand" href="#" data-localize="EsgynDB-Database-Installer"></a>
@@ -41,7 +41,7 @@
 				</div>
 			</nav>
 			<div class="container">
-				<div style="margin-top:100px">
+				<div>
 					<ul class="nav nav-tabs" role="tablist" id="myTab">
 						<li role="presentation" class="active">
 							<a href="#list" aria-controls="list" role="tab" data-toggle="tab" data-localize="Config-List">Config List</a>
