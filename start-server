@@ -1,0 +1,19 @@
+#!/bin/bash
+PORT=5000
+pid=`ps -ef|grep 'InstallerUI/run'|grep -v grep |awk '{print $2}'`
+
+if [[ $pid ]]; then
+    echo "***INFO: Installer Web Service already started"
+    exit 1
+else
+    nohup InstallerUI/run.py $PORT> /tmp/installer_webui.log 2>&1 &
+fi
+
+pid=`ps -ef|grep 'InstallerUI/run'|grep -v grep |awk '{print $2}'`
+
+if [[ $pid ]]; then
+    echo "***INFO: Installer Web Service started successfully!"
+    echo "***INFO: Please visit http://localhost:$PORT for the GUI"
+else
+    echo "***ERROR: Failed to start Installer Web Service."
+fi
