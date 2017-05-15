@@ -266,6 +266,8 @@ function($) {
                                                     }
                                                     continue;
                                                 }
+                                                if(jsonList[i][o].value=="")
+                                                    continue;
 						table += "<tr><td style='font-weight:normal'>"+jsonList[i][o].doc+"</td><td>" + jsonList[i][o].value+ "</td>";
                                                 if(jsonList[i][o].hasOwnProperty("status")){
                                                     if(jsonList[i][o].status=="ok"){
