@@ -97,17 +97,20 @@ class TaskHandler(object):
                 cmd = '%s/db_install.py --config-file %s --log-file %s --silent -u %s --enable-pwd -p %s' % (INSTALLER_PATH, self.configFilePath, self.logFile, user, pwd)
 #                cmd = '%s/fake_install.py  %s' % (INSTALLER_PATH, self.logFile)
             elif self.type == TYPE_DISCOVER:
-                cmd = '%s/discovery.py -j --config-file %s --log-file %s -u %s --enable-pwd -p %s' % (INSTALLER_PATH, self.configFilePath, self.logFile, user, pwd)
+                cmd = '%s/inspector.py -j --config-file %s --log-file %s -u %s --enable-pwd -p %s' % (INSTALLER_PATH, self.configFilePath, self.logFile, user, pwd)
 #                cmd = '%s/fake_discover.py' % INSTALLER_PATH
             elif self.type == TYPE_PERF:
-                cmd = '%s/discovery.py -n --config-file %s --log-file %s -u %s --enable-pwd -p %s' % (INSTALLER_PATH, self.configFilePath, self.logFile, user, pwd)
+                cmd = '%s/inspector.py -n --config-file %s --log-file %s -u %s --enable-pwd -p %s' % (INSTALLER_PATH, self.configFilePath, self.logFile, user, pwd)
 
             p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             self.pid = p.pid
             self.stdout, self.stderr = p.communicate()
             # filter out non-json strings
             if self.type == TYPE_DISCOVER:
-                self.stdout = re.search(r'(\[.*\])', self.stdout).groups()[0]
+                try:
+                    self.stdout = re.search(r'(\[.*\])', self.stdout).groups()[0]
+                except AttributeError:
+                    pass
 
             self.rc = p.returncode
 

@@ -3,7 +3,11 @@
 import sys
 import api, view
 
-port = sys.argv[1]
+try:
+    port = sys.argv[1]
+except IndexError:
+    port = 5000
+
 try:
     api.run_cmd('rm -rf %s/logs/*' % api.INSTALLER_PATH)
     api.app.run(host='0.0.0.0', port=int(port))
