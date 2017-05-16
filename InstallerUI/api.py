@@ -73,6 +73,7 @@ class TaskHandler(object):
         self.progress = 0  # task progress
         self.status = ''  # task return status
         self.logFile = '' # log file location
+        self.statFile = '' # status file location
         self.stdout = ''
         self.stderr = ''  # task error msg
         self.type = ''    # install or discover
@@ -94,7 +95,7 @@ class TaskHandler(object):
                         pwd = line.replace('\n', '').split('=')[1]
 
             if self.type == TYPE_INSTALL:
-                cmd = '%s/db_install.py --config-file %s --log-file %s --silent -u %s --enable-pwd -p %s' % (INSTALLER_PATH, self.configFilePath, self.logFile, user, pwd)
+                cmd = '%s/db_install.py --config-file %s --log-file %s --stat-file %s --silent -u %s --enable-pwd -p %s' % (INSTALLER_PATH, self.configFilePath, self.logFile, self.statFile, user, pwd)
 #                cmd = '%s/fake_install.py  %s' % (INSTALLER_PATH, self.logFile)
             elif self.type == TYPE_DISCOVER:
                 cmd = '%s/inspector.py -j --config-file %s --log-file %s -u %s --enable-pwd -p %s' % (INSTALLER_PATH, self.configFilePath, self.logFile, user, pwd)
@@ -193,6 +194,8 @@ def perform_by_id(task_id):
     task_handler = get_handler_by_id(task_id)
 
     if task_handler:
+        if os.path.exists(task_handler.logFile):
+            os.remove(task_handler.logFile)
         if is_process_exist(task_handler.pid):
             return EC_PID_EXIST
         thread = threading.Thread(target=task_handler.run)
@@ -225,6 +228,7 @@ def perform(task_type, config_file):
     task_handler.configFilePath = '%s/%s.properties' % (CONFIG_PATH, config_file)
     task_handler.startTime = get_current_time()
     task_handler.logFile = '%s/logs/%s_task%s_%s.log' % (INSTALLER_PATH, task_handler.type, count, time.strftime('%y%m%d_%H%M'))
+    task_handler.statFile = '%s/%s_task_status_%s' % (INSTALLER_PATH, task_handler.type, count)
 
     # perform task
     thread = threading.Thread(target=task_handler.run)
@@ -285,6 +289,7 @@ def save_config(conf):
         config_file = '%s/%s.properties' % (CONFIG_PATH, conf['configFileName'])
 
         conf['createTime'] = get_current_time()
+        conf['use_rs_node'] = 'Y' # force to yes in installer UI
         for key in ['traf_start','dcs_ha','offline_mode','ldap_security']:
             if conf.has_key(key) and conf[key] == 'on':
                 conf[key] = 'Y'
