@@ -390,14 +390,14 @@ function($) {
                       }
                 });
 
-                $("#folderTable").on('dbclick','tr',function(){
+                $("#folderTable").on('dblclick','tr',function(){
                     if(this.classList.contains("fileClass")){
                         $("#folderValue").val("");
                         $("#folderValue").val(this.innerText.replace(/(^\s*)|(\s*$)/g, ""));
                         $("#traf_package").val(folderPath+$("#folderValue").val());
-                        $("#folderModal").hide();       
+                        $("#folderModal").modal('hide');       
                     }
-                }
+                });
  
                 $("#chooseFile").click(function(){
                     $("#traf_package").val(folderPath+$("#folderValue").val());
