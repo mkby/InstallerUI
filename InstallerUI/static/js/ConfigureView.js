@@ -389,7 +389,15 @@ function($) {
                          drawFolderTable("",nowFolder);
                       }
                 });
- 
+
+                $("#folderTable").on('dbclick','tr',function(){
+                    if(this.classList.contains("fileClass")){
+                        $("#folderValue").val("");
+                        $("#folderValue").val(this.innerText.replace(/(^\s*)|(\s*$)/g, ""));
+                        $("#traf_package").val(folderPath+$("#folderValue").val());
+                        $("#folderModal").hide();       
+                    }
+                }
  
                 $("#chooseFile").click(function(){
                     $("#traf_package").val(folderPath+$("#folderValue").val());
